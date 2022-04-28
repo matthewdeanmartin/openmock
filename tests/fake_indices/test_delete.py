@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tests import TestElasticmock, INDEX_NAME
+from tests import Testopenmock, INDEX_NAME
 
 
-class TestDelete(TestElasticmock):
+class TestDelete(Testopenmock):
 
     def test_should_delete_index(self):
         self.assertFalse(self.es.indices.exists(INDEX_NAME))

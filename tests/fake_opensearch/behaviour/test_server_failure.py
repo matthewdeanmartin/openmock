@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from elasticmock import behaviour
-from tests.fake_elasticsearch.behaviour import TestElasticmockBehaviour
+from openmock import behaviour
+from tests.fake_opensearch.behaviour import TestopenmockBehaviour
 from tests import INDEX_NAME, DOC_TYPE, BODY
 
 
-class TestBehaviourServerFailure(TestElasticmockBehaviour):
+class TestBehaviourServerFailure(TestopenmockBehaviour):
 
     def test_should_return_internal_server_error_when_simulate_server_error_is_true(self):
         behaviour.server_failure.enable()

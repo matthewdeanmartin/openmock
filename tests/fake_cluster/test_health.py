@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tests import TestElasticmock
+from tests import Testopenmock
 
 
-class TestHealth(TestElasticmock):
+class TestHealth(Testopenmock):
 
     def test_should_return_health(self):
         health_status = self.es.cluster.health()

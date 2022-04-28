@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from elasticsearch.exceptions import NotFoundError
+from opensearchpy.exceptions import NotFoundError
 
-from tests import TestElasticmock, INDEX_NAME, DOC_TYPE, BODY
+from tests import Testopenmock, INDEX_NAME, DOC_TYPE, BODY
 
 
-class TestSuggest(TestElasticmock):
+class TestSuggest(Testopenmock):
 
     def test_should_raise_notfounderror_when_nonindexed_id_is_used_for_suggest(self):
         with self.assertRaises(NotFoundError):

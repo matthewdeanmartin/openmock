@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from elasticsearch.client.cluster import ClusterClient
-from elasticsearch.client.utils import query_params
+from opensearchpy.client.cluster import ClusterClient
+from opensearchpy.client.utils import query_params
 
 
 class FakeClusterClient(ClusterClient):

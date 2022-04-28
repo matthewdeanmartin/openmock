@@ -5,18 +5,18 @@ import sys
 from collections import defaultdict
 
 import dateutil.parser
-from elasticsearch import Elasticsearch
-from elasticsearch.client.utils import query_params
-from elasticsearch.client import _normalize_hosts
-from elasticsearch.transport import Transport
-from elasticsearch.exceptions import NotFoundError, RequestError
+from opensearchpy import OpenSearch
+from opensearchpy.client.utils import query_params
+from openmock.normalize_hosts import _normalize_hosts
+from opensearchpy.transport import Transport
+from opensearchpy.exceptions import NotFoundError, RequestError
 
-from elasticmock.behaviour.server_failure import server_failure
-from elasticmock.fake_cluster import FakeClusterClient
-from elasticmock.fake_indices import FakeIndicesClient
-from elasticmock.utilities import (extract_ignore_as_iterable, get_random_id,
+from openmock.behaviour.server_failure import server_failure
+from openmock.fake_cluster import FakeClusterClient
+from openmock.fake_indices import FakeIndicesClient
+from openmock.utilities import (extract_ignore_as_iterable, get_random_id,
     get_random_scroll_id)
-from elasticmock.utilities.decorator import for_all_methods
+from openmock.utilities.decorator import for_all_methods
 
 PY3 = sys.version_info[0] == 3
 if PY3:
@@ -286,7 +286,7 @@ class FakeQueryCondition:
 
 
 @for_all_methods([server_failure])
-class FakeElasticsearch(Elasticsearch):
+class FakeOpenSearch(OpenSearch):
     __documents_dict = None
 
     def __init__(self, hosts=None, transport_class=None, **kwargs):
@@ -310,7 +310,7 @@ class FakeElasticsearch(Elasticsearch):
     def info(self, params=None, headers=None):
         return {
             'status': 200,
-            'cluster_name': 'elasticmock',
+            'cluster_name': 'openmock',
             'version':
                 {
                     'lucene_version': '4.10.4',

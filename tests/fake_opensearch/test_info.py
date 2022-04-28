@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tests import TestElasticmock
+from tests import Testopenmock
 
 
-class TestInfo(TestElasticmock):
+class TestInfo(Testopenmock):
 
     def test_should_return_status_200_for_info(self):
         info = self.es.info()

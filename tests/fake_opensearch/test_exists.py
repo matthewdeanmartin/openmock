@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tests import TestElasticmock, INDEX_NAME, DOC_TYPE, BODY
+from tests import Testopenmock, INDEX_NAME, DOC_TYPE, BODY
 
 
-class TestExists(TestElasticmock):
+class TestExists(Testopenmock):
 
     def test_should_return_exists_false_if_nonindexed_id_is_used(self):
         self.assertFalse(self.es.exists(index=INDEX_NAME, doc_type=DOC_TYPE, id=1))

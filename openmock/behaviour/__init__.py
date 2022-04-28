@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from elasticmock.behaviour import server_failure
+from openmock.behaviour import server_failure
 
 
 def disable_all():

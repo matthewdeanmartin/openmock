@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from elasticsearch.exceptions import NotFoundError
+from opensearchpy.exceptions import NotFoundError
 from parameterized import parameterized
 
-from tests import TestElasticmock, INDEX_NAME, DOC_TYPE
+from tests import Testopenmock, INDEX_NAME, DOC_TYPE
 
 
-class TestSearch(TestElasticmock):
+class TestSearch(Testopenmock):
 
     def test_should_raise_notfounderror_when_search_for_unexistent_index(self):
         with self.assertRaises(NotFoundError):

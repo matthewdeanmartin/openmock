@@ -2,10 +2,10 @@
 
 import json
 
-from tests import TestElasticmock, INDEX_NAME, DOC_TYPE, BODY, DOC_ID
+from tests import Testopenmock, INDEX_NAME, DOC_TYPE, BODY, DOC_ID
 
 
-class TestBulk(TestElasticmock):
+class TestBulk(Testopenmock):
 
     def test_should_bulk_index_documents_index_creates(self):
         action = {'index': {'_index': INDEX_NAME, '_type': DOC_TYPE}}

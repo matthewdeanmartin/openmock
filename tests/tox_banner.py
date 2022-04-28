@@ -4,12 +4,12 @@ from __future__ import print_function
 
 import platform
 
-import elasticsearch
+import opensearchpy
 
 print(
-    "{} {}; ElasticSearch {}".format(
+    "{} {}; opensearchpy {}".format(
         platform.python_implementation(),
         platform.python_version(),
-        elasticsearch.VERSION
+        opensearchpy.VERSION
     )
 )

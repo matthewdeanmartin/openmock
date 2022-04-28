@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tests import TestElasticmock, INDEX_NAME, DOC_TYPE, BODY
+from tests import Testopenmock, INDEX_NAME, DOC_TYPE, BODY
 
 UPDATED_BODY = {
     'author': 'vrcmarcos',
@@ -8,7 +8,7 @@ UPDATED_BODY = {
 }
 
 
-class TestIndex(TestElasticmock):
+class TestIndex(Testopenmock):
 
     def test_should_index_document(self):
         data = self.es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=BODY)

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from elasticsearch.exceptions import NotFoundError
+from opensearchpy.exceptions import NotFoundError
 
-from tests import TestElasticmock, INDEX_NAME, DOC_TYPE, BODY
+from tests import Testopenmock, INDEX_NAME, DOC_TYPE, BODY
 
 
-class TestDelete(TestElasticmock):
+class TestDelete(Testopenmock):
 
     def test_should_raise_exception_when_delete_nonindexed_document(self):
         with self.assertRaises(NotFoundError):

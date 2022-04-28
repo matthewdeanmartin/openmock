@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tests import TestElasticmock, DOC_TYPE
+from tests import Testopenmock, DOC_TYPE
 
 
-class TestCount(TestElasticmock):
+class TestCount(Testopenmock):
 
     def test_should_return_count_for_indexed_documents_on_index(self):
         index_quantity = 0

@@ -1,4 +1,4 @@
-ELASTICMOCK_VERSION='1.8.1'
+OPENMOCK_VERSION='2.0.0'
 
 install:
 	pip3 install -r requirements.txt
@@ -23,8 +23,8 @@ create_dist_no_commit: update_pip
 	python3.9 setup.py sdist
 
 create_dist_commit:
-	git commit --all -m "Bump version ${ELASTICMOCK_VERSION}"
-	git tag ${ELASTICMOCK_VERSION}
+	git commit --all -m "Bump version ${OPENMOCK_VERSION}"
+	git tag ${OPENMOCK_VERSION}
 
 update_pip:
 	pip3 install --upgrade pip

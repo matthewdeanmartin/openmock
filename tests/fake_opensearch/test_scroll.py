@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tests import TestElasticmock, INDEX_NAME, DOC_TYPE, BODY
+from tests import Testopenmock, INDEX_NAME, DOC_TYPE, BODY
 
 
-class TestScroll(TestElasticmock):
+class TestScroll(Testopenmock):
 
     def test_scrolling(self):
         for _ in range(100):

@@ -11,17 +11,17 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setuptools.setup(
-    name='ElasticMock',
+    name='openmock',
     version=__version__,
-    author='Marcos Cardoso',
-    author_email='vrcmarcos@gmail.com',
-    description='Python Elasticsearch Mock for test purposes',
+    author='Marcos Cardoso, Matthew Martin',
+    author_email='matthewdeanmartin@gmail.com',
+    description='Python OpenSearch Mock for test purposes',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/vrcmarcos/elasticmock',
+    url='https://github.com/matthewdeanmartin/openmock',
     packages=setuptools.find_packages(exclude=('tests')),
     install_requires=[
-        'elasticsearch',
+        'opensearchpy',
         'python-dateutil',
     ],
     classifiers=[

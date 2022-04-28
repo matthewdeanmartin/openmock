@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from elasticsearch.client.indices import IndicesClient
-from elasticsearch.client.utils import query_params
+from opensearchpy.client.indices import IndicesClient
+from opensearchpy.client.utils import query_params
 
 
 class FakeIndicesClient(IndicesClient):
@@ -29,4 +29,4 @@ class FakeIndicesClient(IndicesClient):
             del documents_dict[index]
 
     def __get_documents_dict(self):
-        return self.client._FakeElasticsearch__documents_dict
+        return self.client._FakeOpenSearch__documents_dict
