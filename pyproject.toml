@@ -1,0 +1,77 @@
+[tool.poetry]
+name = "openmock"
+version = "2.0.0"
+description = "Python OpenSearch Mock for test purposes"
+authors = ["Marcos Cardoso",
+    "Mathew Martin <matthewdeanmartin@gmail.com>"]
+keywords = ["opensearch", "mocking", "testing"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/matthewdeanmartin/openmock"
+homepage = "https://github.com/matthewdeanmartin/openmock"
+documentation ="https://github.com/matthewdeanmartin/openmock"
+
+classifiers = [
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+include = [
+    "openmock/**/*.py",
+    "LICENSE",
+    "README.md",
+]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/matthewdeanmartin/openmock/issues"
+"Change Log" = "https://github.com/matthewdeanmartin/openmock/blob/main/CHANGES.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4"
+opensearch-py = "*"
+python-dateutil = "*"
+
+[tool.poetry.dev-dependencies]
+parameterized = "*"
+pytest = "*"
+requests = "*"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[[tool.poetry.source]]
+name = "pypi-public"
+url = "https://pypi.org/simple/"

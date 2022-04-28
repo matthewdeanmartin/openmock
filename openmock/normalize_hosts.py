@@ -15,7 +15,8 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
-from urllib.parse import  unquote, urlparse
+from urllib.parse import unquote, urlparse
+
 
 def _normalize_hosts(hosts):
     """
