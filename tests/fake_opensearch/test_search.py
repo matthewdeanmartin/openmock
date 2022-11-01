@@ -436,6 +436,74 @@ class TestSearch(Testopenmock):
         hits = response["hits"]["hits"]
         self.assertEqual(set(expected_ids), set(hit["_source"]["id"] for hit in hits))
 
+    @parameterized.expand(
+        [
+            (
+                "data_int (100, 200) no overlap",
+                {"data_int": {"gt": 100, "lt": 200}},
+                {"intersects": [], "within": [], "contains": []},
+            ),
+            (
+                "data_int (1,3)",
+                {"data_int": {"gt": 1, "lt": 3}},
+                {"intersects": [0], "within": [], "contains": [0]},
+            ),
+            (
+                "data_int (5,10) exclusive",
+                {"data_int": {"gt": 5, "lt": 10}},
+                {"intersects": [], "within": [], "contains": []},
+            ),
+            (
+                "data_int (5,10] inclusive",
+                {"data_int": {"gt": 5, "lte": 10}},
+                {"intersects": [1], "within": [], "contains": []},
+            ),
+            (
+                "data_int (3,6) overlapping",
+                {"data_int": {"gt": 3, "lt": 6}},
+                {"intersects": [0], "within": [], "contains": []},
+            ),
+            (
+                "data_int [0,25] inclusive covers both ranges",
+                {"data_int": {"gte": 0, "lte": 25}},
+                {"intersects": [0, 1], "within": [0, 1], "contains": []},
+            ),
+            (
+                "data_int (0,25) exclusive covers both ranges",
+                {"data_int": {"gt": 0, "lt": 25}},
+                {"intersects": [0, 1], "within": [1], "contains": []},
+            ),
+
+        ]
+    )
+
+    def test_range_search_with_range_query(self, _, query_range, expected_ids_by_relationship):
+        for i in range(0, 2):
+            body = {
+                "id": i,
+                "data_int": {
+                    "gte": 10 * i,
+                    "lte": (10 * i) + 5,
+                }
+            }
+            self.es.index(index="index_for_search", doc_type=DOC_TYPE, body=body)
+
+        for relationship in ["contains", "intersects", "within"]:
+            query_range[list(query_range.keys())[0]]["relation"] = relationship
+            response = self.es.search(
+                index="index_for_search",
+                doc_type=DOC_TYPE,
+                body={"query": {"range": query_range}},
+            )
+
+            expected_ids = expected_ids_by_relationship[relationship]
+
+            hits = response["hits"]["hits"]
+            found_ids = list(hit["_source"]["id"] for hit in hits)
+
+            self.assertCountEqual(expected_ids, found_ids, msg=f"Relationship: {relationship}")
+            self.assertEqual(len(expected_ids), response["hits"]["total"]["value"])
+
     def test_bucket_aggregation(self):
         data = [
             {"data_x": 1, "data_y": "a"},
