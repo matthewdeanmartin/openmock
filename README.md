@@ -117,7 +117,7 @@ class FooServiceTest(TestCase):
 ## Notes:
 
 - The mocked **search** method returns **all available documents** indexed on the index with the requested document type.
-- The mocked **suggest** method returns the exactly suggestions dictionary passed as body serialized in OpenSearch.suggest response. **Atention:** If the term is an *int*, the suggestion will be ```python term + 1```. If not, the suggestion will be formatted as ```python {0}_suggestion.format(term) ```.
+- The mocked **suggest** method returns the exactly suggestions dictionary passed as body serialized in OpenSearch.suggest response. **Attention:** If the term is an *int*, the suggestion will be ```python term + 1```. If not, the suggestion will be formatted as ```python {0}_suggestion.format(term) ```.
 Example:
 	- **Suggestion Body**:
 	```python
