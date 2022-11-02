@@ -5,6 +5,8 @@ import sys
 from collections import defaultdict
 
 import dateutil.parser
+import ranges
+
 from opensearchpy import OpenSearch
 from opensearchpy.client.utils import query_params
 from opensearchpy.exceptions import NotFoundError, RequestError
@@ -21,6 +23,53 @@ from openmock.utilities.decorator import for_all_methods
 PY3 = sys.version_info[0] == 3
 if PY3:
     unicode = str
+
+
+LT_KEYS = {"lt", "lte"}
+GT_KEYS = {"gt", "gte"}
+
+
+def _create_range(field):
+    if not any([x in field.keys() for x in LT_KEYS]) or not any([x in field.keys() for x in GT_KEYS]):
+        raise ValueError("Range queries on maps must contain one of {} and one of {}".format(LT_KEYS, GT_KEYS))
+    interval_notation = ""
+    if "gte" in field:
+        interval_notation += f"[{field['gte']}"
+    elif "gt" in field:
+        interval_notation += f"({field['gt']}"
+
+    if "lte" in field:
+        interval_notation += f",{field['lte']}]"
+    elif "lt" in field:
+        interval_notation += f",{field['lt']})"
+
+    return ranges.Range(interval_notation)
+
+def _compare_sign(sign, lhs, rhs):
+    if sign == "gte":
+        if lhs < rhs:
+            return False
+    elif sign == "gt":
+        if lhs <= rhs:
+            return False
+    elif sign == "lte":
+        if lhs > rhs:
+            return False
+    elif sign == "lt":
+        if lhs >= rhs:
+            return False
+    else:
+        raise ValueError(f"Invalid comparison type {sign}")
+    return True
+
+def _compare_point(comparisons, point):
+    for sign, value in comparisons.items():
+        if isinstance(point, datetime.datetime):
+            value = dateutil.parser.isoparse(value)
+        print("Compare: ", sign, point, value)
+        if not _compare_sign(sign, point, value):
+            return False
+    return True
 
 
 class QueryType:
@@ -160,6 +209,7 @@ class FakeQueryCondition:
         return return_val
 
     def _evaluate_for_range_query_type(self, document):
+
         for field, comparisons in self.condition.items():
             doc_val = document["_source"]
             for k in field.split("."):
@@ -173,24 +223,22 @@ class FakeQueryCondition:
             if isinstance(doc_val, list):
                 return False
 
-            for sign, value in comparisons.items():
-                if isinstance(doc_val, datetime.datetime):
-                    value = dateutil.parser.isoparse(value)
-                if sign == "gte":
-                    if doc_val < value:
-                        return False
-                elif sign == "gt":
-                    if doc_val <= value:
-                        return False
-                elif sign == "lte":
-                    if doc_val > value:
-                        return False
-                elif sign == "lt":
-                    if doc_val >= value:
-                        return False
-                else:
-                    raise ValueError(f"Invalid comparison type {sign}")
-            return True
+            lt_keys = {"lt", "lte"}
+            gt_keys = {"gt", "gte"}
+            if isinstance(doc_val, dict):
+                if not any([x in doc_val.keys() for x in lt_keys]) or not any([x in doc_val.keys() for x in gt_keys]):
+                    raise ValueError("Range queries on maps must contain one of {} and one of {}".format(lt_keys, gt_keys))
+                document_range = _create_range(doc_val)
+                query_range = _create_range(comparisons)
+                relation = comparisons.get("relation", "intersects")
+
+                if relation == "within":
+                    return document_range in query_range
+                if relation == "contains":
+                    return query_range in document_range
+                return document_range.intersection(query_range) != None
+
+            return _compare_point(comparisons, doc_val)
 
     def _evaluate_for_compound_query_type(self, document):
         return_val = False

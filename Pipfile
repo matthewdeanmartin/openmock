@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 opensearch-py = "*"
 python-dateutil = "*"
+python-ranges = "*"
 
 [dev-packages]
 parameterized = "*"
