@@ -66,7 +66,6 @@ def _compare_point(comparisons, point):
     for sign, value in comparisons.items():
         if isinstance(point, datetime.datetime):
             value = dateutil.parser.isoparse(value)
-        print("Compare: ", sign, point, value)
         if not _compare_sign(sign, point, value):
             return False
     return True
