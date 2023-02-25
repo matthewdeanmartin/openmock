@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+"""
+Fake Index state
+"""
 
 from opensearchpy.client.indices import IndicesClient
 from opensearchpy.client.utils import query_params

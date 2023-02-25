@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+"""
+Module initialization
+"""
 
 from functools import wraps
 from unittest.mock import patch
@@ -9,9 +11,9 @@ from openmock.normalize_hosts import _normalize_hosts
 OPEN_INSTANCES = {}
 
 
-def _get_openmock(hosts=None, *args, **kwargs):
+def _get_openmock(*args, hosts=None, **kwargs):
     host = _normalize_hosts(hosts)[0]
-    open_key = "{0}:{1}".format(host.get("host", "localhost"), host.get("port", 9200))
+    open_key = f'{host.get("host", "localhost")}:{host.get("port", 9200)}'
 
     if open_key in OPEN_INSTANCES:
         connection = OPEN_INSTANCES.get(open_key)

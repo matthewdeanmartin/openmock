@@ -67,7 +67,7 @@ You can also disable all behaviours by calling `behaviour.disable_all()` (Consid
 Let's say you have a prod code snippet like this one:
 
 ```python
-import openmock
+import opensearchpy
 
 class FooService:
 
@@ -172,11 +172,30 @@ Example:
 
 ## Testing
 
+Preferred for testing one version of python.
 ```bash
-python setup.py test
+pytest test
+```
+
+Won't catch pytest tests.
+```bash
+python -m unittest
+```
+
+We are trying to support a full matrix of openmock versions and python versions 3.6+. This is slow.
+```bash
+tox
 ```
 
 ## Changelog
 
+#### 2.1.0:
+- Update function (Thanks!)
+- tox runs against full matrix
+- Range queries (Thanks!)
+
 #### 2.0.0:
 - Fork from elasticmock
+
+## License
+MIT with normalize_host.py being Apache 2 from Elasticsearch.

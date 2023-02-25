@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+"""
+Simulate server failure
+"""
 
 from functools import wraps
 

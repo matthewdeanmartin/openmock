@@ -17,6 +17,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "License :: OSI Approved :: MIT License",
     "Topic :: Software Development :: Libraries :: Python Modules"
@@ -32,15 +33,22 @@ include = [
 "Change Log" = "https://github.com/matthewdeanmartin/openmock/blob/main/CHANGES.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4"
+python = ">=3.8"
 opensearch-py = "*"
 python-dateutil = "*"
-python-ranges = "^1.2.1"
+
+# Old python had support up to 1.0.0
+# python-ranges  = "1.0.0" # nope!
+python-ranges  = "0.2.1"
+
+#{ version = "1.0.0", python = "<=3.8" }
+# this is 3.9+ for most recent
+# python-ranges  = { version = "^1.2.2", python = ">=3.9" }
 
 [tool.poetry.dev-dependencies]
 parameterized = "*"
 pytest = "*"
-requests = "*"
+# requests = "*"
 
 [tool.black]
 line-length = 88

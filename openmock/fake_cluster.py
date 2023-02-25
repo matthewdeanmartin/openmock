@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+"""
+Fake cluster with static health
+"""
 
 from opensearchpy.client.cluster import ClusterClient
 from opensearchpy.client.utils import query_params

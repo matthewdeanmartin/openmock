@@ -473,18 +473,18 @@ class TestSearch(Testopenmock):
                 {"data_int": {"gt": 0, "lt": 25}},
                 {"intersects": [0, 1], "within": [1], "contains": []},
             ),
-
         ]
     )
-
-    def test_range_search_with_range_query(self, _, query_range, expected_ids_by_relationship):
+    def test_range_search_with_range_query(
+        self, _, query_range, expected_ids_by_relationship
+    ):
         for i in range(0, 2):
             body = {
                 "id": i,
                 "data_int": {
                     "gte": 10 * i,
                     "lte": (10 * i) + 5,
-                }
+                },
             }
             self.es.index(index="index_for_search", doc_type=DOC_TYPE, body=body)
 
@@ -501,7 +501,9 @@ class TestSearch(Testopenmock):
             hits = response["hits"]["hits"]
             found_ids = list(hit["_source"]["id"] for hit in hits)
 
-            self.assertCountEqual(expected_ids, found_ids, msg=f"Relationship: {relationship}")
+            self.assertCountEqual(
+                expected_ids, found_ids, msg=f"Relationship: {relationship}"
+            )
             self.assertEqual(len(expected_ids), response["hits"]["total"]["value"])
 
     def test_bucket_aggregation(self):

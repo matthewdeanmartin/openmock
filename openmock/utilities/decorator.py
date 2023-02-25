@@ -4,7 +4,6 @@
 def for_all_methods(decorators, apply_on_public_only=True):
     def decorate(cls):
         for attr in cls.__dict__:
-
             if apply_on_public_only:
                 if attr.startswith("_"):
                     continue

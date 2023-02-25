@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
+"""
+Simulate some range queries
+"""
 import datetime
 import json
 import sys
-import copy
 from collections import defaultdict
 
 import dateutil.parser
@@ -33,13 +34,11 @@ GT_KEYS = {"gt", "gte"}
 
 
 def _create_range(field):
-    if not any([x in field.keys() for x in LT_KEYS]) or not any(
-        [x in field.keys() for x in GT_KEYS]
+    if not any(x in field.keys() for x in LT_KEYS) or not any(
+        x in field.keys() for x in GT_KEYS
     ):
         raise ValueError(
-            "Range queries on maps must contain one of {} and one of {}".format(
-                LT_KEYS, GT_KEYS
-            )
+            f"Range queries on maps must contain one of {LT_KEYS} and one of {GT_KEYS}"
         )
     interval_notation = ""
     if "gte" in field:
@@ -56,6 +55,7 @@ def _create_range(field):
 
 
 def _compare_sign(sign, lhs, rhs):
+    """Convert text to symbol and evaluate"""
     if sign == "gte":
         if lhs < rhs:
             return False
@@ -100,32 +100,30 @@ class QueryType:
     def get_query_type(type_str):
         if type_str == "bool":
             return QueryType.BOOL
-        elif type_str == "filter":
+        if type_str == "filter":
             return QueryType.FILTER
-        elif type_str == "match":
+        if type_str == "match":
             return QueryType.MATCH
-        elif type_str == "match_all":
+        if type_str == "match_all":
             return QueryType.MATCH_ALL
-        elif type_str == "term":
+        if type_str == "term":
             return QueryType.TERM
-        elif type_str == "terms":
+        if type_str == "terms":
             return QueryType.TERMS
-        elif type_str == "must":
+        if type_str == "must":
             return QueryType.MUST
-        elif type_str == "range":
+        if type_str == "range":
             return QueryType.RANGE
-        elif type_str == "should":
+        if type_str == "should":
             return QueryType.SHOULD
-        elif type_str == "minimum_should_match":
+        if type_str == "minimum_should_match":
             return QueryType.MINIMUM_SHOULD_MATCH
-        elif type_str == "multi_match":
+        if type_str == "multi_match":
             return QueryType.MULTI_MATCH
-        elif type_str == "must_not":
+        if type_str == "must_not":
             return QueryType.MUST_NOT
-        else:
-            raise NotImplementedError(
-                f"type {type_str} is not implemented for QueryType"
-            )
+
+        raise NotImplementedError(f"type {type_str} is not implemented for QueryType")
 
 
 class MetricType:
@@ -135,10 +133,8 @@ class MetricType:
     def get_metric_type(type_str):
         if type_str == "cardinality":
             return MetricType.CARDINALITY
-        else:
-            raise NotImplementedError(
-                f"type {type_str} is not implemented for MetricType"
-            )
+
+        raise NotImplementedError(f"type {type_str} is not implemented for MetricType")
 
 
 class FakeQueryCondition:
@@ -155,30 +151,29 @@ class FakeQueryCondition:
     def _evaluate_for_query_type(self, document):
         if self.type == QueryType.MATCH:
             return self._evaluate_for_match_query_type(document)
-        elif self.type == QueryType.MATCH_ALL:
+        if self.type == QueryType.MATCH_ALL:
             return True
-        elif self.type == QueryType.TERM:
+        if self.type == QueryType.TERM:
             return self._evaluate_for_term_query_type(document)
-        elif self.type == QueryType.TERMS:
+        if self.type == QueryType.TERMS:
             return self._evaluate_for_terms_query_type(document)
-        elif self.type == QueryType.RANGE:
+        if self.type == QueryType.RANGE:
             return self._evaluate_for_range_query_type(document)
-        elif self.type == QueryType.BOOL:
+        if self.type == QueryType.BOOL:
             return self._evaluate_for_compound_query_type(document)
-        elif self.type == QueryType.FILTER:
+        if self.type == QueryType.FILTER:
             return self._evaluate_for_compound_query_type(document)
-        elif self.type == QueryType.MUST:
+        if self.type == QueryType.MUST:
             return self._evaluate_for_compound_query_type(document)
-        elif self.type == QueryType.SHOULD:
+        if self.type == QueryType.SHOULD:
             return self._evaluate_for_should_query_type(document)
-        elif self.type == QueryType.MULTI_MATCH:
+        if self.type == QueryType.MULTI_MATCH:
             return self._evaluate_for_multi_match_query_type(document)
-        elif self.type == QueryType.MUST_NOT:
+        if self.type == QueryType.MUST_NOT:
             return self._evaluate_for_must_not_query_type(document)
-        else:
-            raise NotImplementedError(
-                "Fake query evaluation not implemented for query type: %s" % self.type
-            )
+        raise NotImplementedError(
+            f"Fake query evaluation not implemented for query type: {self.type}"
+        )
 
     def _evaluate_for_match_query_type(self, document):
         return self._evaluate_for_field(document, True)
@@ -235,13 +230,11 @@ class FakeQueryCondition:
             lt_keys = {"lt", "lte"}
             gt_keys = {"gt", "gte"}
             if isinstance(doc_val, dict):
-                if not any([x in doc_val.keys() for x in lt_keys]) or not any(
-                    [x in doc_val.keys() for x in gt_keys]
+                if not any(x in doc_val.keys() for x in lt_keys) or not any(
+                    x in doc_val.keys() for x in gt_keys
                 ):
                     raise ValueError(
-                        "Range queries on maps must contain one of {} and one of {}".format(
-                            lt_keys, gt_keys
-                        )
+                        f"Range queries on maps must contain one of {lt_keys} and one of {gt_keys}"
                     )
                 document_range = _create_range(doc_val)
                 query_range = _create_range(comparisons)
@@ -251,7 +244,7 @@ class FakeQueryCondition:
                     return document_range in query_range
                 if relation == "contains":
                     return query_range in document_range
-                return document_range.intersection(query_range) != None
+                return document_range.intersection(query_range) is not None
 
             return _compare_point(comparisons, doc_val)
 
@@ -321,11 +314,10 @@ class FakeQueryCondition:
             if hasattr(doc_val, k):
                 doc_val = getattr(doc_val, k)
                 break
-            elif k in doc_val:
+            if k in doc_val:
                 doc_val = doc_val[k]
                 break
-            else:
-                return False
+            return False
 
         if not isinstance(doc_val, list):
             doc_val = [doc_val]
@@ -396,7 +388,7 @@ class FakeOpenSearch(OpenSearch):
     )
     def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
         if index not in self.__documents_dict:
-            self.__documents_dict[index] = list()
+            self.__documents_dict[index] = []
 
         version = 1
 
@@ -492,7 +484,7 @@ class FakeOpenSearch(OpenSearch):
                         items.append(item)
 
                     if index not in self.__documents_dict:
-                        self.__documents_dict[index] = list()
+                        self.__documents_dict[index] = []
                 else:
                     if "doc" in line and action == "update":
                         source = line["doc"]
@@ -547,24 +539,23 @@ class FakeOpenSearch(OpenSearch):
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 409, "version_conflict_engine_exception", True
-        elif action in ["index", "create"] and not self.exists(
+        if action in ["index", "create"] and not self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 201, "created", False
-        elif action == "delete" and self.exists(
+        if action == "delete" and self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 200, "deleted", False
-        elif action == "update" and not self.exists(
+        if action == "update" and not self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 404, "document_missing_exception", True
-        elif action == "delete" and not self.exists(
+        if action == "delete" and not self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 404, "not_found", True
-        else:
-            raise NotImplementedError(f"{action} behaviour hasn't been implemented")
+        raise NotImplementedError(f"{action} behaviour hasn't been implemented")
 
     @query_params("parent", "preference", "realtime", "refresh", "routing")
     def exists(self, index, id, doc_type=None, params=None, headers=None):
@@ -599,19 +590,17 @@ class FakeOpenSearch(OpenSearch):
                     if doc_type == "_all":
                         result = document
                         break
-                    else:
-                        if document.get("_type") == doc_type:
-                            result = document
-                            break
+                    if document.get("_type") == doc_type:
+                        result = document
+                        break
 
         if result:
             result["found"] = True
             return result
-        elif params and 404 in ignore:
+        if params and 404 in ignore:
             return {"found": False}
-        else:
-            error_data = {"_index": index, "_type": doc_type, "_id": id, "found": False}
-            raise NotFoundError(404, json.dumps(error_data))
+        error_data = {"_index": index, "_type": doc_type, "_id": id, "found": False}
+        raise NotFoundError(404, json.dumps(error_data))
 
     @query_params(
         "_source",
@@ -634,14 +623,14 @@ class FakeOpenSearch(OpenSearch):
                 "action_request_validation_exception",
                 "Validation Failed: 1: script or doc is missing;",
             )
-        elif "doc" not in body and "script" not in body:
-            field = [field for field in body.keys()]
+        if "doc" not in body and "script" not in body:
+            field = list(body.keys())
             raise RequestError(
                 400,
                 "x_content_parse_exception",
                 f"[1:2] [UpdateRequest] unknown field [{field[0]}]",
             )
-        elif "doc" in body and "script" in body:
+        if "doc" in body and "script" in body:
             raise RequestError(
                 400,
                 "action_request_validation_exception",
@@ -668,14 +657,15 @@ class FakeOpenSearch(OpenSearch):
                         }
                     elif "script" in body:
                         # TODO: Add pain(ful)less language support
-                        raise NotImplementedError("Using script is currently not supported.")
+                        raise NotImplementedError(
+                            "Using script is currently not supported."
+                        )
 
         if result:
             return result
-        else:
-            raise NotFoundError(
-                404, "document_missing_exception", f"[{id}]: document missing"
-            )
+        raise NotFoundError(
+            404, "document_missing_exception", f"[{id}]: document missing"
+        )
 
     @query_params(
         "_source",
@@ -774,6 +764,7 @@ class FakeOpenSearch(OpenSearch):
         ids = [doc["_id"] for doc in docs]
         results = []
         for id in ids:
+            # pylint: disable=bare-except
             try:
                 results.append(
                     self.get(
@@ -872,6 +863,7 @@ class FakeOpenSearch(OpenSearch):
     def msearch(self, body, index=None, doc_type=None, params=None, headers=None):
         def grouped(iterable):
             if len(iterable) % 2 != 0:
+                # pylint: disable=broad-exception-raised
                 raise Exception("Malformed body")
             iterator = iter(iterable)
             while True:
@@ -1059,10 +1051,9 @@ class FakeOpenSearch(OpenSearch):
 
         if found:
             return result_dict
-        elif params and 404 in ignore:
+        if params and 404 in ignore:
             return {"found": False}
-        else:
-            raise NotFoundError(404, json.dumps(result_dict))
+        raise NotFoundError(404, json.dumps(result_dict))
 
     @query_params(
         "allow_no_indices",
@@ -1073,17 +1064,13 @@ class FakeOpenSearch(OpenSearch):
     )
     def suggest(self, body, index=None, params=None, headers=None):
         if index is not None and index not in self.__documents_dict:
-            raise NotFoundError(
-                404, "IndexMissingException[[{0}] missing]".format(index)
-            )
+            raise NotFoundError(404, f"IndexMissingException[[{index}] missing]")
 
         result_dict = {}
         for key, value in body.items():
             text = value.get("text")
             suggestion = (
-                int(text) + 1
-                if isinstance(text, int)
-                else "{0}_suggestion".format(text)
+                int(text) + 1 if isinstance(text, int) else f"{text}_suggestion"
             )
             result_dict[key] = [
                 {
@@ -1099,7 +1086,7 @@ class FakeOpenSearch(OpenSearch):
         # Ensure to have a list of index
         if index is None:
             searchable_indexes = self.__documents_dict.keys()
-        elif isinstance(index, str) or isinstance(index, unicode):
+        elif isinstance(index, (str, unicode)):
             searchable_indexes = [index]
         elif isinstance(index, list):
             searchable_indexes = index
@@ -1111,7 +1098,7 @@ class FakeOpenSearch(OpenSearch):
         for searchable_index in searchable_indexes:
             if searchable_index not in self.__documents_dict:
                 raise NotFoundError(
-                    404, "IndexMissingException[[{0}] missing]".format(searchable_index)
+                    404, f"IndexMissingException[[{searchable_index}] missing]"
                 )
 
         return searchable_indexes
@@ -1136,7 +1123,7 @@ class FakeOpenSearch(OpenSearch):
 
         def make_bucket(bucket_key, bucket):
             out = {
-                "key": {k: v for k, v in zip(bucket_key_fields, bucket_key)},
+                "key": dict(zip(bucket_key_fields, bucket_key)),
                 "doc_count": len(bucket),
             }
 

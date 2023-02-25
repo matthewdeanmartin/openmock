@@ -1,0 +1,28 @@
+name: Build and Test
+
+on: [ push ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          # Maximum supported by AWS Lambda as of right now.
+          python-version: '3.9'
+          cache: 'pipenv' # caching pipenv dependencies
+      - name: Install pipenv and pipx
+        run: |
+          pip install pipenv && pip install pipx
+
+      - name: Install global dependencies
+        run: |
+          pipx install isort && pipx install black && pipx install bandit && pipx install pylint && pipx install pre-commit
+
+      - name: Install Dependencies
+        run: pipenv install --dev --skip-lock
+
+      - name: Run Makefile
+        run: make check
