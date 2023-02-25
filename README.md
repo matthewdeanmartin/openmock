@@ -2,7 +2,7 @@
 
 Mock/fake of opensearch library, allows you to mock opensearch-py
 
-Fork of Python Elasticsearch(TM) Mock. Sometimes the developers who work with elasticsearch (TM), 
+Fork of Python Elasticsearch(TM) Mock. Sometimes the developers who work with elasticsearch (TM),
 don't really have any input in choice of host and need to get work done.
 
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/pypi/openmock) [![Downloads](https://pepy.tech/badge/openmock/month)](https://pepy.tech/project/openmock/month)
