@@ -2,6 +2,7 @@
 import datetime
 import json
 import sys
+import copy
 from collections import defaultdict
 
 import dateutil.parser
@@ -16,22 +17,30 @@ from openmock.behaviour.server_failure import server_failure
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_indices import FakeIndicesClient
 from openmock.normalize_hosts import _normalize_hosts
-from openmock.utilities import (extract_ignore_as_iterable, get_random_id,
-                                get_random_scroll_id)
+from openmock.utilities import (
+    extract_ignore_as_iterable,
+    get_random_id,
+    get_random_scroll_id,
+)
 from openmock.utilities.decorator import for_all_methods
 
 PY3 = sys.version_info[0] == 3
 if PY3:
     unicode = str
 
-
 LT_KEYS = {"lt", "lte"}
 GT_KEYS = {"gt", "gte"}
 
 
 def _create_range(field):
-    if not any([x in field.keys() for x in LT_KEYS]) or not any([x in field.keys() for x in GT_KEYS]):
-        raise ValueError("Range queries on maps must contain one of {} and one of {}".format(LT_KEYS, GT_KEYS))
+    if not any([x in field.keys() for x in LT_KEYS]) or not any(
+        [x in field.keys() for x in GT_KEYS]
+    ):
+        raise ValueError(
+            "Range queries on maps must contain one of {} and one of {}".format(
+                LT_KEYS, GT_KEYS
+            )
+        )
     interval_notation = ""
     if "gte" in field:
         interval_notation += f"[{field['gte']}"
@@ -44,6 +53,7 @@ def _create_range(field):
         interval_notation += f",{field['lt']})"
 
     return ranges.Range(interval_notation)
+
 
 def _compare_sign(sign, lhs, rhs):
     if sign == "gte":
@@ -61,6 +71,7 @@ def _compare_sign(sign, lhs, rhs):
     else:
         raise ValueError(f"Invalid comparison type {sign}")
     return True
+
 
 def _compare_point(comparisons, point):
     for sign, value in comparisons.items():
@@ -208,7 +219,6 @@ class FakeQueryCondition:
         return return_val
 
     def _evaluate_for_range_query_type(self, document):
-
         for field, comparisons in self.condition.items():
             doc_val = document["_source"]
             for k in field.split("."):
@@ -225,8 +235,14 @@ class FakeQueryCondition:
             lt_keys = {"lt", "lte"}
             gt_keys = {"gt", "gte"}
             if isinstance(doc_val, dict):
-                if not any([x in doc_val.keys() for x in lt_keys]) or not any([x in doc_val.keys() for x in gt_keys]):
-                    raise ValueError("Range queries on maps must contain one of {} and one of {}".format(lt_keys, gt_keys))
+                if not any([x in doc_val.keys() for x in lt_keys]) or not any(
+                    [x in doc_val.keys() for x in gt_keys]
+                ):
+                    raise ValueError(
+                        "Range queries on maps must contain one of {} and one of {}".format(
+                            lt_keys, gt_keys
+                        )
+                    )
                 document_range = _create_range(doc_val)
                 query_range = _create_range(comparisons)
                 relation = comparisons.get("relation", "intersects")
@@ -601,6 +617,70 @@ class FakeOpenSearch(OpenSearch):
         "_source",
         "_source_excludes",
         "_source_includes",
+        "if_primary_term",
+        "if_seq_no",
+        "lang",
+        "refresh",
+        "require_alias",
+        "retry_on_conflict",
+        "routing",
+        "timeout",
+        "wait_for_active_shards",
+    )
+    def update(self, index, id, body, params=None, headers=None):
+        if not body:
+            raise RequestError(
+                400,
+                "action_request_validation_exception",
+                "Validation Failed: 1: script or doc is missing;",
+            )
+        elif "doc" not in body and "script" not in body:
+            field = [field for field in body.keys()]
+            raise RequestError(
+                400,
+                "x_content_parse_exception",
+                f"[1:2] [UpdateRequest] unknown field [{field[0]}]",
+            )
+        elif "doc" in body and "script" in body:
+            raise RequestError(
+                400,
+                "action_request_validation_exception",
+                "Validation Failed: 1: can't provide both script and doc;",
+            )
+
+        result = None
+
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get("_id") == id:
+                    if "doc" in body:
+                        document["_source"] = {**document["_source"], **body["doc"]}
+                        document["_version"] += 1
+
+                        # TODO: Might be removed since it seems that latest open search doesn't respond the _type anymore.
+                        result = {
+                            "_index": index,
+                            "_id": id,
+                            "_type": document.get("_type", "_doc"),
+                            "_version": document["_version"],
+                            "result": "updated",
+                            "_shards": {"total": 1, "successful": 1, "failed": 0},
+                        }
+                    elif "script" in body:
+                        # TODO: Add pain(ful)less language support
+                        raise NotImplementedError("Using script is currently not supported.")
+
+        if result:
+            return result
+        else:
+            raise NotFoundError(
+                404, "document_missing_exception", f"[{id}]: document missing"
+            )
+
+    @query_params(
+        "_source",
+        "_source_excludes",
+        "_source_includes",
         "allow_no_indices",
         "analyze_wildcard",
         "analyzer",
@@ -857,9 +937,7 @@ class FakeOpenSearch(OpenSearch):
                     self._get_fake_query_condition(query_type_str, condition)
                 )
         for searchable_index in searchable_indexes:
-
             for document in self.__documents_dict[searchable_index]:
-
                 if doc_type:
                     if (
                         isinstance(doc_type, list)
@@ -958,7 +1036,6 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     def delete(self, index, id, doc_type=None, params=None, headers=None):
-
         found = False
         ignore = extract_ignore_as_iterable(params)
 
