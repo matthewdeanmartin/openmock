@@ -45,4 +45,11 @@ class TestCreate(Testopenmock):
     def test_should_throw_error_if_doc_exists(self):
         data = self.es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=BODY)
         document_id = data.get("_id")
-        self.assertRaises(ConflictError, self.es.create, INDEX_NAME, UPDATED_BODY, DOC_TYPE, document_id)
+        self.assertRaises(
+            ConflictError,
+            self.es.create,
+            INDEX_NAME,
+            UPDATED_BODY,
+            DOC_TYPE,
+            document_id,
+        )

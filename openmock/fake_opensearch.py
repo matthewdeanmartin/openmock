@@ -386,7 +386,6 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
-
     def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
         if self.exists(index, id, doc_type=doc_type, params=params):
             raise ConflictError(
@@ -596,7 +595,9 @@ class FakeOpenSearch(OpenSearch):
         result = False
         if index in self.__documents_dict:
             for document in self.__documents_dict[index]:
-                if document.get("_id") == id and document.get("_type") == doc_type:
+                if document.get("_id") == id and (
+                    document.get("_type") == doc_type or doc_type is None
+                ):
                     result = True
                     break
         return result
