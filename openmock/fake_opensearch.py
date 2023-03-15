@@ -386,6 +386,40 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
+
+    def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
+        if self.exists(index, id, doc_type=doc_type, params=params):
+            raise RequestError(
+                409,
+                "action_request_validation_exception",
+                "Validation Failed: 1: no documents to get;",
+            )
+
+        if index not in self.__documents_dict:
+            self.__documents_dict[index] = []
+
+        if id is None:
+            id = get_random_id()
+
+        self.__documents_dict[index].append(
+            {
+                "_type": doc_type,
+                "_id": id,
+                "_source": body,
+                "_index": index,
+                "_version": 1,
+            }
+        )
+
+        return {
+            "_type": doc_type,
+            "_id": id,
+            "created": True,
+            "_version": 1,
+            "_index": index,
+            "result": "created",
+        }
+
     def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
         if index not in self.__documents_dict:
             self.__documents_dict[index] = []
@@ -503,7 +537,7 @@ class FakeOpenSearch(OpenSearch):
                         }
                     }
                     if not error:
-                        item[action]["result"] = result
+                        item[action]["result" ] = result
                         if self.exists(
                             index, document_id, doc_type=doc_type, params=params
                         ):
