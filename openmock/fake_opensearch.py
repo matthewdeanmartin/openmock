@@ -537,7 +537,7 @@ class FakeOpenSearch(OpenSearch):
                         }
                     }
                     if not error:
-                        item[action]["result" ] = result
+                        item[action]["result"] = result
                         if self.exists(
                             index, document_id, doc_type=doc_type, params=params
                         ):
