@@ -16,8 +16,8 @@ class TestCreate(Testopenmock):
         self.assertEqual(INDEX_NAME, data.get("_index"))
         self.assertEqual("created", data.get("result"))
 
-    def test_should_index_document_without_doc_type(self):
-        data = self.es.index(index=INDEX_NAME, body=BODY)
+    def test_should_create_document_without_doc_type(self):
+        data = self.es.create(index=INDEX_NAME, body=BODY)
 
         self.assertEqual("_doc", data.get("_type"))
         self.assertTrue(data.get("created"))
@@ -30,7 +30,7 @@ class TestCreate(Testopenmock):
 
         for doc_type in doc_types:
             for _ in range(count_per_doc_type):
-                self.es.index(index=INDEX_NAME, doc_type=doc_type, body={})
+                self.es.create(index=INDEX_NAME, doc_type=doc_type, body={})
 
         result = self.es.search(doc_type=[doc_types[0]])
         self.assertEqual(
