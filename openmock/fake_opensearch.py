@@ -595,9 +595,7 @@ class FakeOpenSearch(OpenSearch):
         result = False
         if index in self.__documents_dict:
             for document in self.__documents_dict[index]:
-                if document.get("_id") == id and (
-                    document.get("_type") == doc_type or doc_type is None
-                ):
+                if document.get("_id") == id and document.get("_type") == doc_type:
                     result = True
                     break
         return result
