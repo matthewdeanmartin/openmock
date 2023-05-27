@@ -11,7 +11,7 @@ import ranges
 
 from opensearchpy import OpenSearch
 from opensearchpy.client.utils import query_params
-from opensearchpy.exceptions import NotFoundError, RequestError
+from opensearchpy.exceptions import NotFoundError, RequestError, ConflictError
 from opensearchpy.transport import Transport
 
 from openmock.behaviour.server_failure import server_failure
@@ -386,6 +386,39 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
+    def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
+        if self.exists(index, id, doc_type=doc_type, params=params):
+            raise ConflictError(
+                409,
+                "action_request_validation_exception",
+                "Validation Failed: 1: no documents to get;",
+            )
+
+        if index not in self.__documents_dict:
+            self.__documents_dict[index] = []
+
+        if id is None:
+            id = get_random_id()
+
+        self.__documents_dict[index].append(
+            {
+                "_type": doc_type,
+                "_id": id,
+                "_source": body,
+                "_index": index,
+                "_version": 1,
+            }
+        )
+
+        return {
+            "_type": doc_type,
+            "_id": id,
+            "created": True,
+            "_version": 1,
+            "_index": index,
+            "result": "created",
+        }
+
     def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
         if index not in self.__documents_dict:
             self.__documents_dict[index] = []
