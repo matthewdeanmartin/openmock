@@ -1,5 +1,10 @@
 name: tox
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ["Build and Test"]
+    types:
+      - completed
+
 permissions:
   contents: read # to fetch code (actions/checkout)
 jobs:
@@ -10,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest ]
-        python-version: [ "3.8", "3.9", "3.10", "3.11" ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12.0-beta.1" ]
     steps:
       - uses: actions/checkout@v3
       - name: Using Python ${{ matrix.python-version }}

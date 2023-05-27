@@ -74,6 +74,10 @@ bandit: .build_history/bandit
 
 check: test pylint bandit pre-commit
 
+.PHONY: build
+build: check
+	rm -rf dist && poetry build
+
 .PHONY: publish
 publish_test:
 	rm -rf dist && poetry version minor && poetry build && twine upload -r testpypi dist/*

@@ -1,6 +1,6 @@
 name: Build and Test
 
-on: [ push ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -10,7 +10,6 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          # Maximum supported by AWS Lambda as of right now.
           python-version: '3.9'
           cache: 'pipenv' # caching pipenv dependencies
       - name: Install pipenv and pipx
@@ -19,10 +18,39 @@ jobs:
 
       - name: Install global dependencies
         run: |
-          pipx install isort && pipx install black && pipx install bandit && pipx install pylint && pipx install pre-commit
+          pipx install isort && pipx install black && pipx install bandit && \
+          pipx install pylint && pipx install pre-commit && pipx install poetry
 
       - name: Install Dependencies
         run: pipenv install --dev --skip-lock
 
       - name: Run Makefile
-        run: make check
+        run: make build
+
+      - name: Upload Package
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: packages
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1
+
+
+  pypi-publish:
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/openmock
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    steps:
+      - name: Get packages
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: packages
+          path: dist/
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+    needs: build

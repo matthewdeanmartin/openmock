@@ -439,6 +439,7 @@ disable=raw-checker-failed,
         global-statement, # mock library needs state
         line-too-long, # no, black is right.
         fixme, # People will just rewrite it in esperanto
+        too-many-public-methods, # wrong way to handle complexity
 
 
 
