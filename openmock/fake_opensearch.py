@@ -95,6 +95,7 @@ class QueryType:
     MINIMUM_SHOULD_MATCH = "MINIMUM_SHOULD_MATCH"
     MULTI_MATCH = "MULTI_MATCH"
     MUST_NOT = "MUST_NOT"
+    EXISTS = "EXISTS"
 
     @staticmethod
     def get_query_type(type_str):
@@ -122,6 +123,8 @@ class QueryType:
             return QueryType.MULTI_MATCH
         if type_str == "must_not":
             return QueryType.MUST_NOT
+        if type_str == "exists":
+            return QueryType.EXISTS
 
         raise NotImplementedError(f"type {type_str} is not implemented for QueryType")
 
@@ -171,6 +174,8 @@ class FakeQueryCondition:
             return self._evaluate_for_multi_match_query_type(document)
         if self.type == QueryType.MUST_NOT:
             return self._evaluate_for_must_not_query_type(document)
+        if self.type == QueryType.EXISTS:
+            return self._evaluate_for_exists_query_type(document)
         raise NotImplementedError(
             f"Fake query evaluation not implemented for query type: {self.type}"
         )
@@ -302,6 +307,11 @@ class FakeQueryCondition:
 
     def _evaluate_for_multi_match_query_type(self, document):
         return self._evaluate_for_fields(document)
+
+    def _evaluate_for_exists_query_type(self, document):
+        doc_source = document["_source"]
+        field = self.condition.get("field")
+        return not self._compare_value_for_field(doc_source, field, None, False)
 
     def _compare_value_for_field(self, doc_source, field, value, ignore_case):
         if ignore_case and isinstance(value, str):
