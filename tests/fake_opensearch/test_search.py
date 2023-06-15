@@ -546,3 +546,27 @@ class TestSearch(Testopenmock):
         for x, y in zip(expected, actual):
             self.assertDictEqual(x["key"], y["key"])
             self.assertEqual(x["doc_count"], y["doc_count"])
+
+    def test_search_with_exists_query(self):
+        for i in range(0, 10):
+            self.es.index(
+                index="index_for_search",
+                doc_type=DOC_TYPE,
+                body={"data": {"x": {"y": i if i % 3 == 0 else None}}},
+            )
+
+        response = self.es.search(
+            index="index_for_search",
+            doc_type=DOC_TYPE,
+            body={"query": {"bool": {"must": [{"exists": {"field": "data.x.y"}}]}}},
+        )
+        self.assertEqual(4, response["hits"]["total"]["value"])
+        self.assertEqual(4, len(response["hits"]["hits"]))
+
+        response = self.es.search(
+            index="index_for_search",
+            doc_type=DOC_TYPE,
+            body={"query": {"bool": {"must_not": [{"exists": {"field": "data.x.y"}}]}}},
+        )
+        self.assertEqual(6, response["hits"]["total"]["value"])
+        self.assertEqual(6, len(response["hits"]["hits"]))
