@@ -323,11 +323,10 @@ class FakeQueryCondition:
         for k in field.split("."):
             if hasattr(doc_val, k):
                 doc_val = getattr(doc_val, k)
-                break
-            if k in doc_val:
+            elif k in doc_val:
                 doc_val = doc_val[k]
-                break
-            return False
+            else:
+                return False
 
         if not isinstance(doc_val, list):
             doc_val = [doc_val]
