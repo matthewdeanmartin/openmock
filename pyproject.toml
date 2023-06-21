@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "openmock"
-version = "2.3.2"
+version = "2.3.3"
 description = "Python OpenSearch Mock for test purposes"
 authors = ["Marcos Cardoso",
     "Mathew Martin <matthewdeanmartin@gmail.com>"]
