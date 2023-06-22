@@ -320,6 +320,9 @@ class FakeQueryCondition:
         doc_val = doc_source
         # Remove boosting
         field, *_ = field.split("*")
+        # Remove ".keyword"
+        exact_search = field.lower().endswith(".keyword")
+        field = field[:-len(".keyword")] if exact_search else field
         for k in field.split("."):
             if hasattr(doc_val, k):
                 doc_val = getattr(doc_val, k)
@@ -339,7 +342,7 @@ class FakeQueryCondition:
 
             if value == val:
                 return True
-            if isinstance(val, str) and str(value) in val:
+            if isinstance(val, str) and str(value) in val and not exact_search:
                 return True
 
         return False

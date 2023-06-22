@@ -120,6 +120,33 @@ class TestSearch(Testopenmock):
         self.assertEqual(len(hits), 1)
         self.assertEqual(hits[0]["_source"], {"data": "test_3"})
 
+    def test_search_with_match_keyword_query(self):
+        for i in range(0, 10):
+            self.es.index(
+                index="index_for_search",
+                doc_type=DOC_TYPE,
+                body={"data": "test_{0}".format(i)},
+            )
+
+        response = self.es.search(
+            index="index_for_search",
+            doc_type=DOC_TYPE,
+            body={"query": {"match": {"data.keyword": "TEST"}}},
+        )
+        self.assertEqual(response["hits"]["total"]["value"], 0)
+        hits = response["hits"]["hits"]
+        self.assertEqual(len(hits), 0)
+
+        response = self.es.search(
+            index="index_for_search",
+            doc_type=DOC_TYPE,
+            body={"query": {"match": {"data.keyword": "TEST_1"}}},
+        )
+        self.assertEqual(response["hits"]["total"]["value"], 1)
+        hits = response["hits"]["hits"]
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0]["_source"], {"data": "test_1"})
+
     def test_search_with_match_query_in_int_list(self):
         for i in range(0, 10):
             self.es.index(
