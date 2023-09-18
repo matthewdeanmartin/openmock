@@ -431,6 +431,19 @@ class FakeOpenSearch(OpenSearch):
             "result": "created",
         }
 
+    @query_params(
+        "consistency",
+        "op_type",
+        "parent",
+        "refresh",
+        "replication",
+        "routing",
+        "timeout",
+        "timestamp",
+        "ttl",
+        "version",
+        "version_type",
+    )
     def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
         if index not in self.__documents_dict:
             self.__documents_dict[index] = []
