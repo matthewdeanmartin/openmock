@@ -319,6 +319,9 @@ class FakeQueryCondition:
         doc_val = doc_source
         # Remove boosting
         field, *_ = field.split("*")
+        # Remove ".keyword"
+        exact_search = field.lower().endswith(".keyword")
+        field = field[:-len(".keyword")] if exact_search else field
         for k in field.split("."):
             if hasattr(doc_val, k):
                 doc_val = getattr(doc_val, k)
@@ -338,7 +341,7 @@ class FakeQueryCondition:
 
             if value == val:
                 return True
-            if isinstance(val, str) and str(value) in val:
+            if isinstance(val, str) and str(value) in val and not exact_search:
                 return True
 
         return False
@@ -427,6 +430,19 @@ class FakeOpenSearch(OpenSearch):
             "result": "created",
         }
 
+    @query_params(
+        "consistency",
+        "op_type",
+        "parent",
+        "refresh",
+        "replication",
+        "routing",
+        "timeout",
+        "timestamp",
+        "ttl",
+        "version",
+        "version_type",
+    )
     def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
         if index not in self.__documents_dict:
             self.__documents_dict[index] = []
