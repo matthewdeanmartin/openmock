@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import opensearchpy
 
 from openmock import openmock

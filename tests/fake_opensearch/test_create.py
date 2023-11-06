@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
-from tests import Testopenmock, INDEX_NAME, DOC_TYPE, BODY
 from opensearchpy.exceptions import ConflictError
+
+from tests import BODY, DOC_TYPE, INDEX_NAME, Testopenmock
 
 UPDATED_BODY = {"author": "vrcmarcos", "text": "Updated Text"}
 

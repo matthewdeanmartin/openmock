@@ -7,9 +7,10 @@ The old elasticmock might be an inspiration for new features, but I don't have t
 ## Setup
 
 Dependencies
+
 ```bash
-pipenv install --dev
-pipenv shell
+poetry install --with dev
+poetry shell
 ```
 
 Poetry might work, too.
@@ -17,6 +18,7 @@ Poetry might work, too.
 ## Checks and Tests
 
 Minimal expectations.
+
 ```bash
 black .
 pylint openmock

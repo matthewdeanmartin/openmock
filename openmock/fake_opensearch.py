@@ -8,10 +8,9 @@ from collections import defaultdict
 
 import dateutil.parser
 import ranges
-
 from opensearchpy import OpenSearch
 from opensearchpy.client.utils import query_params
-from opensearchpy.exceptions import NotFoundError, RequestError, ConflictError
+from opensearchpy.exceptions import ConflictError, NotFoundError, RequestError
 from opensearchpy.transport import Transport
 
 from openmock.behaviour.server_failure import server_failure
@@ -815,8 +814,8 @@ class FakeOpenSearch(OpenSearch):
                         index, id, doc_type=doc_type, params=params, headers=headers
                     )
                 )
-            except:
-                pass
+            except:  # noqa
+                pass  # nosec
         if not results:
             raise RequestError(
                 400,

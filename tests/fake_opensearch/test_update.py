@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 from opensearchpy.exceptions import NotFoundError, RequestError
 
-from tests import Testopenmock, INDEX_NAME, BODY
+from tests import BODY, INDEX_NAME, Testopenmock
 
 UPDATED_BODY = {"author": "schenkd", "text": "Updated Text"}
 

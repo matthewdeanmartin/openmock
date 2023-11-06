@@ -252,5 +252,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
-/poetry.lock
+
 /.build_history/

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openmock.behaviour import server_failure
 
 

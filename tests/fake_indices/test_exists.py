@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from tests import Testopenmock, INDEX_NAME
+from tests import INDEX_NAME, Testopenmock
 
 
 class TestExists(Testopenmock):

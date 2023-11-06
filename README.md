@@ -54,13 +54,13 @@ You can also disable all behaviours by calling `behaviour.disable_all()` (Consid
 
 #### Available Behaviours
 
-* `server_failure`: Will make all calls to OpenSearch returns the following error message:
-    ```python
-    {
-        'status_code': 500,
-        'error': 'Internal Server Error'
-    }
-    ```
+- `server_failure`: Will make all calls to OpenSearch returns the following error message:
+  ```python
+  {
+      'status_code': 500,
+      'error': 'Internal Server Error'
+  }
+  ```
 
 ## Code example
 
@@ -117,72 +117,75 @@ class FooServiceTest(TestCase):
 ## Notes:
 
 - The mocked **search** method returns **all available documents** indexed on the index with the requested document type.
-- The mocked **suggest** method returns the exactly suggestions dictionary passed as body serialized in OpenSearch.suggest response. **Attention:** If the term is an *int*, the suggestion will be ```python term + 1```. If not, the suggestion will be formatted as ```python {0}_suggestion.format(term) ```.
-Example:
-	- **Suggestion Body**:
-	```python
-    suggestion_body = {
-        'suggestion-string': {
-            'text': 'test_text',
-            'term': {
-                'field': 'string'
-            }
-        },
-        'suggestion-id': {
-            'text': 1234567,
-            'term': {
-                'field': 'id'
-            }
-        }
-    }
-    ```
-    - **Suggestion Response**:
-    ```python
-    {
-        'suggestion-string': [
-            {
-                'text': 'test_text',
-                'length': 1,
-                'options': [
-                    {
-                        'text': 'test_text_suggestion',
-                        'freq': 1,
-                        'score': 1.0
-                    }
-                ],
-                'offset': 0
-            }
-        ],
-        'suggestion-id': [
-            {
-                'text': 1234567,
-                'length': 1,
-                'options': [
-                    {
-                        'text': 1234568,
-                        'freq': 1,
-                        'score': 1.0
-                    }
-                ],
-                'offset': 0
-            }
-        ],
-    }
-    ```
+- The mocked **suggest** method returns the exactly suggestions dictionary passed as body serialized in OpenSearch.suggest response. **Attention:** If the term is an *int*, the suggestion will be `python term + 1`. If not, the suggestion will be formatted as `python {0}_suggestion.format(term) `.
+  Example:
+  - **Suggestion Body**:
+  ```python
+  suggestion_body = {
+      'suggestion-string': {
+          'text': 'test_text',
+          'term': {
+              'field': 'string'
+          }
+      },
+      'suggestion-id': {
+          'text': 1234567,
+          'term': {
+              'field': 'id'
+          }
+      }
+  }
+  ```
+  - **Suggestion Response**:
+  ```python
+  {
+      'suggestion-string': [
+          {
+              'text': 'test_text',
+              'length': 1,
+              'options': [
+                  {
+                      'text': 'test_text_suggestion',
+                      'freq': 1,
+                      'score': 1.0
+                  }
+              ],
+              'offset': 0
+          }
+      ],
+      'suggestion-id': [
+          {
+              'text': 1234567,
+              'length': 1,
+              'options': [
+                  {
+                      'text': 1234568,
+                      'freq': 1,
+                      'score': 1.0
+                  }
+              ],
+              'offset': 0
+          }
+      ],
+  }
+  ```
 
 ## Testing
 
 Preferred for testing one version of python.
+
 ```bash
 pytest test
 ```
 
 Won't catch pytest tests.
+
 ```bash
 python -m unittest
 ```
 
 We are trying to support a full matrix of openmock versions and python versions 3.6+. This is slow.
+
 ```bash
 tox
 ```
@@ -190,12 +193,15 @@ tox
 ## Changelog
 
 #### 2.1.0:
+
 - Update function (Thanks!)
 - tox runs against full matrix
 - Range queries (Thanks!)
 
 #### 2.0.0:
+
 - Fork from elasticmock
 
 ## License
+
 MIT with normalize_host.py being Apache 2 from Elasticsearch.

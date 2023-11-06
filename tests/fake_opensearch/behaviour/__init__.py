@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openmock import behaviour
 from tests import Testopenmock
 

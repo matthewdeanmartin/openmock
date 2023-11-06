@@ -55,7 +55,7 @@ def _normalize_hosts(hosts):
                 h["use_ssl"] = True
 
             if parsed_url.username or parsed_url.password:
-                h["http_auth"] = "%s:%s" % (
+                h["http_auth"] = "{}:{}".format(
                     unquote(parsed_url.username),
                     unquote(parsed_url.password),
                 )

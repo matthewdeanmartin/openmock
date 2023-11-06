@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from tests import Testopenmock, DOC_TYPE
+from tests import DOC_TYPE, Testopenmock
 
 
 class TestCount(Testopenmock):
@@ -8,9 +6,9 @@ class TestCount(Testopenmock):
         index_quantity = 0
         for i in range(0, index_quantity):
             self.es.index(
-                index="index_{0}".format(i),
+                index=f"index_{i}",
                 doc_type=DOC_TYPE,
-                body={"data": "test_{0}".format(i)},
+                body={"data": f"test_{i}"},
             )
 
         count = self.es.count()

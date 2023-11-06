@@ -37,9 +37,9 @@ include = [
 "Change Log" = "https://github.com/matthewdeanmartin/openmock/blob/main/CHANGES.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.9, <4"
 opensearch-py = "*"
-python-dateutil = "*"
+python-dateutil = ">=2.8.2"
 
 # Old python had support up to 1.0.0
 # python-ranges  = "1.0.0" # nope!
@@ -50,9 +50,14 @@ python-ranges  = "0.2.1"
 # python-ranges  = { version = "^1.2.2", python = ">=3.9" }
 
 [tool.poetry.dev-dependencies]
-parameterized = "*"
-pytest = "*"
-# requests = "*"
+parameterized = ">=0.9.0"
+pytest = ">=7.4.3"
+mypy = ">=1.6.1"
+requests = ">=2.31.0"
+types-python-dateutil = "*"
+tox = ">=4.11.3"
+coverage = ">=7.3.2"
+pytest-cov = ">=4.1.0"
 
 [tool.black]
 line-length = 88
@@ -85,3 +90,10 @@ build-backend = "poetry.masonry.api"
 [[tool.poetry.source]]
 name = "pypi-public"
 url = "https://pypi.org/simple/"
+priority = "primary"
+
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+

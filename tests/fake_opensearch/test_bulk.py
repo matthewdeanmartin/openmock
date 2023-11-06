@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import json
 
-from tests import Testopenmock, INDEX_NAME, DOC_TYPE, BODY, DOC_ID
+from tests import BODY, DOC_ID, DOC_TYPE, INDEX_NAME, Testopenmock
 
 
 class TestBulk(Testopenmock):

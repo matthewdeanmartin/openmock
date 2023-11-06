@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import setuptools
 
 __version__ = "1.8.1"

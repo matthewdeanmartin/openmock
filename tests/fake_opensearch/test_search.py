@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import datetime
 
 from opensearchpy.exceptions import NotFoundError
 from parameterized import parameterized
 
-from tests import Testopenmock, INDEX_NAME, DOC_TYPE
+from tests import DOC_TYPE, INDEX_NAME, Testopenmock
 
 
 class TestSearch(Testopenmock):
@@ -25,9 +24,9 @@ class TestSearch(Testopenmock):
         index_quantity = 10
         for i in range(0, index_quantity):
             self.es.index(
-                index="index_{0}".format(i),
+                index=f"index_{i}",
                 doc_type=DOC_TYPE,
-                body={"data": "test_{0}".format(i)},
+                body={"data": f"test_{i}"},
             )
 
         search = self.es.search()
@@ -37,9 +36,9 @@ class TestSearch(Testopenmock):
         index_quantity = 10
         for i in range(0, index_quantity):
             self.es.index(
-                index="index_{0}".format(i),
+                index=f"index_{i}",
                 doc_type=DOC_TYPE,
-                body={"data": "test_{0}".format(i)},
+                body={"data": f"test_{i}"},
             )
 
         search = self.es.search(body={"query": {"match_all": {}}})
@@ -49,7 +48,7 @@ class TestSearch(Testopenmock):
         index_quantity = 2
         for i in range(0, index_quantity):
             self.es.index(
-                index=INDEX_NAME, doc_type=DOC_TYPE, body={"data": "test_{0}".format(i)}
+                index=INDEX_NAME, doc_type=DOC_TYPE, body={"data": f"test_{i}"}
             )
 
         search = self.es.search(index=INDEX_NAME)
@@ -59,7 +58,7 @@ class TestSearch(Testopenmock):
         index_quantity = 2
         for i in range(0, index_quantity):
             self.es.index(
-                index=INDEX_NAME, doc_type=DOC_TYPE, body={"data": "test_{0}".format(i)}
+                index=INDEX_NAME, doc_type=DOC_TYPE, body={"data": f"test_{i}"}
             )
         self.es.index(
             index=INDEX_NAME, doc_type="another-Doctype", body={"data": "test"}
@@ -98,7 +97,7 @@ class TestSearch(Testopenmock):
             self.es.index(
                 index="index_for_search",
                 doc_type=DOC_TYPE,
-                body={"data": "test_{0}".format(i)},
+                body={"data": f"test_{i}"},
             )
 
         response = self.es.search(
@@ -158,7 +157,7 @@ class TestSearch(Testopenmock):
             self.es.index(
                 index="index_for_search",
                 doc_type=DOC_TYPE,
-                body={"data": "test_{0}".format(i)},
+                body={"data": f"test_{i}"},
             )
 
         response = self.es.search(
@@ -249,8 +248,8 @@ class TestSearch(Testopenmock):
                 index="index_for_search",
                 doc_type=DOC_TYPE,
                 body={
-                    "data": "test_{0}".format(i) if i % 2 == 0 else None,
-                    "data2": "test_{0}".format(i) if (i + 1) % 2 == 0 else None,
+                    "data": f"test_{i}" if i % 2 == 0 else None,
+                    "data2": f"test_{i}" if (i + 1) % 2 == 0 else None,
                 },
             )
 
@@ -275,7 +274,7 @@ class TestSearch(Testopenmock):
             self.es.index(
                 index="index_for_search",
                 doc_type=DOC_TYPE,
-                body={"data": "test_{0}".format(i)},
+                body={"data": f"test_{i}"},
             )
 
         response = self.es.search(
@@ -304,8 +303,8 @@ class TestSearch(Testopenmock):
                 index="index_for_search1",
                 doc_type=DOC_TYPE,
                 body={
-                    "data": "test_{0}".format(i) if i % 2 == 0 else None,
-                    "data2": "test_{0}".format(i) if (i + 1) % 2 == 0 else None,
+                    "data": f"test_{i}" if i % 2 == 0 else None,
+                    "data2": f"test_{i}" if (i + 1) % 2 == 0 else None,
                 },
             )
         for i in range(0, 10):
@@ -313,8 +312,8 @@ class TestSearch(Testopenmock):
                 index="index_for_search2",
                 doc_type=DOC_TYPE,
                 body={
-                    "data": "test_{0}".format(i) if i % 2 == 0 else None,
-                    "data2": "test_{0}".format(i) if (i + 1) % 2 == 0 else None,
+                    "data": f"test_{i}" if i % 2 == 0 else None,
+                    "data2": f"test_{i}" if (i + 1) % 2 == 0 else None,
                 },
             )
 
@@ -434,7 +433,7 @@ class TestSearch(Testopenmock):
 
         self.assertEqual(len(expected_ids), response["hits"]["total"]["value"])
         hits = response["hits"]["hits"]
-        self.assertEqual(set(expected_ids), set(hit["_source"]["id"] for hit in hits))
+        self.assertEqual(set(expected_ids), {hit["_source"]["id"] for hit in hits})
 
     @parameterized.expand(
         [

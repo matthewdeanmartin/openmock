@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import base64
 import random
 import string
@@ -11,7 +9,9 @@ DEFAULT_OPENSEARCH_SEARCHRESULTPHASE_COUNT = 6
 
 
 def get_random_id(size=DEFAULT_OPENSEARCH_ID_SIZE):
-    return "".join(random.choice(CHARSET_FOR_OPENSEARCH_ID) for _ in range(size))
+    return "".join(
+        random.choice(CHARSET_FOR_OPENSEARCH_ID) for _ in range(size)  # nosec
+    )
 
 
 def get_random_scroll_id(size=DEFAULT_OPENSEARCH_SEARCHRESULTPHASE_COUNT):

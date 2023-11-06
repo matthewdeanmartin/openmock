@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 def for_all_methods(decorators, apply_on_public_only=True):
     def decorate(cls):
         for attr in cls.__dict__:

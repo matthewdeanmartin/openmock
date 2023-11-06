@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 from openmock import behaviour
+from tests import BODY, DOC_TYPE, INDEX_NAME
 from tests.fake_opensearch.behaviour import TestopenmockBehaviour
-from tests import INDEX_NAME, DOC_TYPE, BODY
 
 
 class TestBehaviourServerFailure(TestopenmockBehaviour):
