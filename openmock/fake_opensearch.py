@@ -175,6 +175,8 @@ class FakeQueryCondition:
             return self._evaluate_for_must_not_query_type(document)
         if self.type == QueryType.EXISTS:
             return self._evaluate_for_exists_query_type(document)
+        if self.type == QueryType.MINIMUM_SHOULD_MATCH:
+            return self._evaluate_for_compound_query_type(document)
         raise NotImplementedError(
             f"Fake query evaluation not implemented for query type: {self.type}"
         )
