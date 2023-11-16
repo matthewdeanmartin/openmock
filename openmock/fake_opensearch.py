@@ -873,6 +873,7 @@ class FakeOpenSearch(OpenSearch):
         "ignore_unavailable",
         "lenient",
         "lowercase_expanded_terms",
+        "min_score",
         "preference",
         "q",
         "request_cache",
