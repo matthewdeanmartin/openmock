@@ -323,7 +323,7 @@ class FakeQueryCondition:
         field, *_ = field.split("*")
         # Remove ".keyword"
         exact_search = field.lower().endswith(".keyword")
-        field = field[:-len(".keyword")] if exact_search else field
+        field = field[: -len(".keyword")] if exact_search else field
         for k in field.split("."):
             if hasattr(doc_val, k):
                 doc_val = getattr(doc_val, k)
