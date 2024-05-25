@@ -7,7 +7,7 @@ class TestIndex(Testopenmock):
     def test_should_index_document(self):
         data = self.es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=BODY)
 
-        self.assertEqual(DOC_TYPE, data.get("_type"))
+        # self.assertEqual(DOC_TYPE, data.get("_type"))
         self.assertTrue(data.get("created"))
         self.assertEqual(1, data.get("_version"))
         self.assertEqual(INDEX_NAME, data.get("_index"))
@@ -21,23 +21,24 @@ class TestIndex(Testopenmock):
         self.assertEqual(1, data.get("_version"))
         self.assertEqual(INDEX_NAME, data.get("_index"))
 
-    def test_doc_type_can_be_list(self):
-        doc_types = ["1_idx", "2_idx", "3_idx"]
-        count_per_doc_type = 3
-
-        for doc_type in doc_types:
-            for _ in range(count_per_doc_type):
-                self.es.index(index=INDEX_NAME, doc_type=doc_type, body={})
-
-        result = self.es.search(doc_type=[doc_types[0]])
-        self.assertEqual(
-            count_per_doc_type, result.get("hits").get("total").get("value")
-        )
-
-        result = self.es.search(doc_type=doc_types[:2])
-        self.assertEqual(
-            count_per_doc_type * 2, result.get("hits").get("total").get("value")
-        )
+    # https://github.com/elastic/elasticsearch-py/issues/846
+    # def test_doc_type_can_be_list(self):
+    #     doc_types = ["1_idx", "2_idx", "3_idx"]
+    #     count_per_doc_type = 3
+    #
+    #     for doc_type in doc_types:
+    #         for _ in range(count_per_doc_type):
+    #             self.es.index(index=INDEX_NAME, doc_type=doc_type, body={})
+    #
+    #     result = self.es.search(doc_type=[doc_types[0]])
+    #     self.assertEqual(
+    #         count_per_doc_type, result.get("hits").get("total").get("value")
+    #     )
+    #
+    #     result = self.es.search(doc_type=doc_types[:2])
+    #     self.assertEqual(
+    #         count_per_doc_type * 2, result.get("hits").get("total").get("value")
+    #     )
 
     def test_update_existing_doc(self):
         data = self.es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=BODY)
@@ -48,7 +49,7 @@ class TestIndex(Testopenmock):
         target_doc = self.es.get(index=INDEX_NAME, id=document_id)
 
         expected = {
-            "_type": DOC_TYPE,
+            "_type": "_doc",
             "_source": UPDATED_BODY,
             "_index": INDEX_NAME,
             "_version": 2,

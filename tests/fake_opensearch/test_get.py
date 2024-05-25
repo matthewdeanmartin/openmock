@@ -27,7 +27,7 @@ class TestGet(Testopenmock):
         target_doc = self.es.get(index=INDEX_NAME, id=document_id)
 
         expected = {
-            "_type": DOC_TYPE,
+            "_type": "_doc",
             "_source": BODY,
             "_index": INDEX_NAME,
             "_version": 1,
@@ -44,7 +44,7 @@ class TestGet(Testopenmock):
         target_doc = self.es.get(index=INDEX_NAME, id=document_id, doc_type=DOC_TYPE)
 
         expected = {
-            "_type": DOC_TYPE,
+            "_type": "_doc",
             "_source": BODY,
             "_index": INDEX_NAME,
             "_version": 1,
@@ -59,7 +59,9 @@ class TestGet(Testopenmock):
 
         document_id = data.get("_id")
         target_doc_source = self.es.get_source(
-            index=INDEX_NAME, doc_type=DOC_TYPE, id=document_id
+            index=INDEX_NAME,
+            # doc_type=DOC_TYPE,
+            id=document_id,
         )
 
         self.assertEqual(target_doc_source, BODY)

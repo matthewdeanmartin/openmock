@@ -192,15 +192,7 @@ tox
 
 ## Changelog
 
-#### 2.1.0:
-
-- Update function (Thanks!)
-- tox runs against full matrix
-- Range queries (Thanks!)
-
-#### 2.0.0:
-
-- Fork from elasticmock
+See [CHANGELOG.md](https://github.com/matthewdeanmartin/openmock/blob/main/CHANGELOG.md)
 
 ## License
 

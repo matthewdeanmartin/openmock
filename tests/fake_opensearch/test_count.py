@@ -23,19 +23,40 @@ class TestCount(Testopenmock):
         self.assertEqual(2, result.get("count"))
 
     def test_should_count_with_empty_doc_types(self):
-        self.es.index(index="index", doc_type=DOC_TYPE, body={"data": "test"})
-        count = self.es.count(doc_type=[])
+        self.es.index(
+            index="index",
+            # doc_type=DOC_TYPE,
+            body={"data": "test"},
+        )
+        count = self.es.count(
+            # doc_type=[]
+        )
         self.assertEqual(1, count.get("count"))
 
     def test_should_return_skipped_shards(self):
-        self.es.index(index="index", doc_type=DOC_TYPE, body={"data": "test"})
-        count = self.es.count(doc_type=[])
+        self.es.index(
+            index="index",
+            # doc_type=DOC_TYPE,
+            body={"data": "test"},
+        )
+        count = self.es.count(
+            # doc_type=[]
+        )
         self.assertEqual(0, count.get("_shards").get("skipped"))
 
     def test_should_count_with_doc_types(self):
-        self.es.index(index="index", doc_type=DOC_TYPE, body={"data": "test1"})
         self.es.index(
-            index="index", doc_type="different-doc-type", body={"data": "test2"}
+            index="index",
+            # doc_type=DOC_TYPE,
+            body={"data": "test1"},
         )
-        count = self.es.count(doc_type=DOC_TYPE)
-        self.assertEqual(1, count.get("count"))
+        self.es.index(
+            index="index",
+            # doc_type="different-doc-type",
+            body={"data": "test2"},
+        )
+        count = self.es.count(
+            # doc_type=DOC_TYPE
+        )
+        # well not anymore, doc_type is deprecated I think
+        self.assertEqual(2, count.get("count"))

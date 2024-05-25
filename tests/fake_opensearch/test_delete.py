@@ -1,3 +1,5 @@
+from unittest.mock import ANY
+
 from opensearchpy.exceptions import NotFoundError
 
 from tests import BODY, DOC_TYPE, INDEX_NAME, Testopenmock
@@ -37,7 +39,7 @@ class TestDelete(Testopenmock):
         expected_doc_deleted = {
             "found": True,
             "_index": INDEX_NAME,
-            "_type": DOC_TYPE,
+            "_type": ANY,
             "_id": doc_id,
             "_version": 1,
         }

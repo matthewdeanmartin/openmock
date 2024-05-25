@@ -440,7 +440,7 @@ disable=raw-checker-failed,
         line-too-long, # no, black is right.
         fixme, # People will just rewrite it in esperanto
         too-many-public-methods, # wrong way to handle complexity
-
+        super-init-not-called
 
 
 # Enable the message, report, category or checker with the given id(s). You can

@@ -1,9 +1,11 @@
 """
 Simulate some range queries
 """
+
+from typing import Any, Optional
+
 import datetime
 import json
-import sys
 from collections import defaultdict
 
 import dateutil.parser
@@ -24,9 +26,6 @@ from openmock.utilities import (
 )
 from openmock.utilities.decorator import for_all_methods
 
-PY3 = sys.version_info[0] == 3
-if PY3:
-    unicode = str
 
 LT_KEYS = {"lt", "lte"}
 GT_KEYS = {"gt", "gte"}
@@ -353,10 +352,14 @@ class FakeQueryCondition:
 class FakeOpenSearch(OpenSearch):
     __documents_dict = None
 
+    # pylint: disable=super-init-not-called
     def __init__(self, hosts=None, transport_class=None, **kwargs):
         self.__documents_dict = {}
         self.__scrolls = {}
         self.transport = Transport(_normalize_hosts(hosts), **kwargs)
+
+        # This blows up if I call the real base.
+        # super(FakeOpenSearch, self).__init__()
 
     @property
     def indices(self):
@@ -399,7 +402,16 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
-    def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
+    # def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
+    def create(
+        self,
+        index: Any,
+        id: Any,
+        body: Any,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        doc_type = "_doc"
         if self.exists(index, id, doc_type=doc_type, params=params):
             raise ConflictError(
                 409,
@@ -445,7 +457,17 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
-    def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
+    # def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
+    def index(
+        self,
+        index: Any,
+        body: Any,
+        id: Any = None,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -> Any:
+        doc_type = "_doc"
         if index not in self.__documents_dict:
             self.__documents_dict[index] = []
 
@@ -493,7 +515,15 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
-    def bulk(self, body, index=None, doc_type=None, params=None, headers=None):
+    # def bulk(self, body, index=None, doc_type=None, params=None, headers=None):
+    def bulk(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        doc_type = None
         items = []
         errors = False
 
@@ -617,7 +647,16 @@ class FakeOpenSearch(OpenSearch):
         raise NotImplementedError(f"{action} behaviour hasn't been implemented")
 
     @query_params("parent", "preference", "realtime", "refresh", "routing")
-    def exists(self, index, id, doc_type=None, params=None, headers=None):
+    # def exists(self, index, id, doc_type=None, params=None, headers=None):
+    def exists(
+        self,
+        index: Any,
+        id: Any,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -> Any:
+        doc_type = None
         result = False
         if index in self.__documents_dict:
             for document in self.__documents_dict[index]:
@@ -641,7 +680,11 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
-    def get(self, index, id, doc_type="_all", params=None, headers=None):
+    # def get(self, index, id, doc_type="_all", params=None, headers=None):
+    def get(
+        self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
+    ) -> Any:
+        doc_type = "_all"
         ignore = extract_ignore_as_iterable(params)
         result = None
 
@@ -766,8 +809,16 @@ class FakeOpenSearch(OpenSearch):
         "wait_for_completion",
     )
     def update_by_query(
-        self, index, body=None, doc_type=None, params=None, headers=None
-    ):
+        self,
+        index: Any,
+        body: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        # def update_by_query(
+        #     self, index, body=None, doc_type=None, params=None, headers=None
+        # ):
+        doc_type = None
         # Actually it only supports script equal operations
         # TODO: Full support from painless language
         total_updated = 0
@@ -820,7 +871,15 @@ class FakeOpenSearch(OpenSearch):
         "routing",
         "stored_fields",
     )
-    def mget(self, body, index, doc_type="_all", params=None, headers=None):
+    def mget(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        # def mget(self, body, index, doc_type="_all", params=None, headers=None):
+        doc_type = "_all"
         docs = body.get("docs")
         ids = [doc["_id"] for doc in docs]
         results = []
@@ -854,7 +913,15 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
-    def get_source(self, index, doc_type, id, params=None, headers=None):
+    # def get_source(self, index, doc_type, id, params=None, headers=None):
+    def get_source(
+        self,
+        index: Any,
+        id: Any,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        doc_type = None
         document = self.get(index=index, doc_type=doc_type, id=id, params=params)
         return document.get("_source")
 
@@ -894,7 +961,15 @@ class FakeOpenSearch(OpenSearch):
         "track_scores",
         "version",
     )
-    def count(self, index=None, doc_type=None, body=None, params=None, headers=None):
+    # def count(self, index=None, doc_type=None, body=None, params=None, headers=None):
+    def count(
+        self,
+        body: Any = None,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        doc_type = None
         searchable_indexes = self._normalize_index_to_list(index)
 
         i = 0
@@ -922,7 +997,14 @@ class FakeOpenSearch(OpenSearch):
         "search_type",
         "typed_keys",
     )
-    def msearch(self, body, index=None, doc_type=None, params=None, headers=None):
+    # def msearch(self, body, index=None, doc_type=None, params=None, headers=None):
+    def msearch(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
         def grouped(iterable):
             if len(iterable) % 2 != 0:
                 # pylint: disable=broad-exception-raised
@@ -978,7 +1060,16 @@ class FakeOpenSearch(OpenSearch):
         "track_scores",
         "version",
     )
-    def search(self, index=None, doc_type=None, body=None, params=None, headers=None):
+    def search(
+        self,
+        body: Any = None,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -> Any:
+        # def search(self, index=None, doc_type=None, body=None, params=None, headers=None):
+        doc_type: Optional[list] = None
         searchable_indexes = self._normalize_index_to_list(index)
 
         matches = []
@@ -993,6 +1084,7 @@ class FakeOpenSearch(OpenSearch):
         for searchable_index in searchable_indexes:
             for document in self.__documents_dict[searchable_index]:
                 if doc_type:
+                    # pylint: disable=unsupported-membership-test
                     if (
                         isinstance(doc_type, list)
                         and document.get("_type") not in doc_type
@@ -1069,7 +1161,14 @@ class FakeOpenSearch(OpenSearch):
         return result
 
     @query_params("scroll")
-    def scroll(self, scroll_id, params=None, headers=None):
+    # def scroll(self, scroll_id, params=None, headers=None):
+    def scroll(
+        self,
+        body: Any = None,
+        scroll_id: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
         scroll = self.__scrolls.pop(scroll_id)
         result = self.search(
             index=scroll.get("index"),
@@ -1089,7 +1188,11 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
-    def delete(self, index, id, doc_type=None, params=None, headers=None):
+    # def delete(self, index, id, doc_type=None, params=None, headers=None):
+    def delete(
+        self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
+    ) -> Any:
+        doc_type = None
         found = False
         ignore = extract_ignore_as_iterable(params)
 
@@ -1148,7 +1251,7 @@ class FakeOpenSearch(OpenSearch):
         # Ensure to have a list of index
         if index is None:
             searchable_indexes = self.__documents_dict.keys()
-        elif isinstance(index, (str, unicode)):
+        elif isinstance(index, str):
             searchable_indexes = [index]
         elif isinstance(index, list):
             searchable_indexes = index

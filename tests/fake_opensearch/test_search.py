@@ -54,18 +54,19 @@ class TestSearch(Testopenmock):
         search = self.es.search(index=INDEX_NAME)
         self.assertEqual(index_quantity, search.get("hits").get("total").get("value"))
 
-    def test_should_return_only_indexed_documents_on_index_with_doc_type(self):
-        index_quantity = 2
-        for i in range(0, index_quantity):
-            self.es.index(
-                index=INDEX_NAME, doc_type=DOC_TYPE, body={"data": f"test_{i}"}
-            )
-        self.es.index(
-            index=INDEX_NAME, doc_type="another-Doctype", body={"data": "test"}
-        )
-
-        search = self.es.search(index=INDEX_NAME, doc_type=DOC_TYPE)
-        self.assertEqual(index_quantity, search.get("hits").get("total").get("value"))
+    # https://github.com/elastic/elasticsearch-py/issues/846
+    # def test_should_return_only_indexed_documents_on_index_with_doc_type(self):
+    #     index_quantity = 2
+    #     for i in range(0, index_quantity):
+    #         self.es.index(
+    #             index=INDEX_NAME, doc_type=DOC_TYPE, body={"data": f"test_{i}"}
+    #         )
+    #     self.es.index(
+    #         index=INDEX_NAME, doc_type="another-Doctype", body={"data": "test"}
+    #     )
+    #
+    #     search = self.es.search(index=INDEX_NAME, doc_type=DOC_TYPE)
+    #     self.assertEqual(index_quantity, search.get("hits").get("total").get("value"))
 
     def test_should_search_in_multiple_indexes(self):
         self.es.index(index="groups", doc_type="groups", body={"budget": 1000})
