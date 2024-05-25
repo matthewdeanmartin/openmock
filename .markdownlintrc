@@ -1,0 +1,36 @@
+{
+  // Enable all markdownlint rules
+  "default": true,
+
+  // Disable line length check
+  "MD013": false,
+
+  // Real English sometimes ends in punct
+  "MD026": false,
+
+  // Pelican doesn't require H1 at top
+  "MD041": false,
+
+  // Set Ordered list item prefix to "ordered" (use 1. 2. 3. not 1. 1. 1.)
+  "MD029": { "style": "ordered" },
+
+  ///list-marker-space - mdformat disagrees
+  "MD030": false,
+
+  // Set list indent level to 4 which Python-Markdown requires
+  "MD007": {
+    "indent": 2
+  },
+  "MD007/ul-indent":{
+    "indent": 2
+  },
+
+  // Code block style
+  "MD046": { "style": "fenced" },
+
+  // Multiple headings with the same title
+  "MD024": { "siblings_only": true }
+
+  // Allow inline HTML
+  //"MD033": false
+}

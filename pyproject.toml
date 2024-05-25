@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "openmock"
-version = "2.3.6"
+version = "2.3.7"
 description = "Python OpenSearch Mock for test purposes"
 authors = ["Marcos Cardoso",
     "Mathew Martin <matthewdeanmartin@gmail.com>"]
@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
@@ -32,7 +33,7 @@ include = [
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/matthewdeanmartin/openmock/issues"
-"Change Log" = "https://github.com/matthewdeanmartin/openmock/blob/main/CHANGES.md"
+"Change Log" = "https://github.com/matthewdeanmartin/openmock/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9, <4"
@@ -56,6 +57,17 @@ types-python-dateutil = "*"
 tox = ">=4.11.3"
 coverage = ">=7.3.2"
 pytest-cov = ">=4.1.0"
+
+pylint = ">=3.0.2"
+# docs
+metametameta  = "*"
+interrogate = ">=1.5.0"
+pydoctest = ">=0.1.22"
+pdoc3 = ">=0.10.0"
+mdformat = ">=0.7.17"
+linkcheckmd = ">=1.4.0"
+codespell = ">=2.2.6"
+pyenchant = ">=3.2.2"
 
 [tool.black]
 line-length = 88

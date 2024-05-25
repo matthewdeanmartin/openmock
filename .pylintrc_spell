@@ -1,0 +1,9 @@
+[SPELLING]
+# Spelling dictionary name. Available dictionaries: none. To make it working
+# install python-enchant package.
+spelling-dict=en_US
+# A path to a file that contains private dictionary; one word per line.
+spelling-private-dict-file=private_dictionary.txt
+
+[MESSAGES CONTROL]
+disable=all

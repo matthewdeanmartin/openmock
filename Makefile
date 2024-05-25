@@ -78,10 +78,31 @@ check: test pylint bandit pre-commit
 build: check
 	rm -rf dist && poetry build
 
-.PHONY: publish
-publish_test:
-	rm -rf dist && poetry version minor && poetry build && twine upload -r testpypi dist/*
+#.PHONY: publish
+#publish_test:
+#	rm -rf dist && poetry version minor && poetry build && twine upload -r testpypi dist/*
+#
+#.PHONY: publish
+#publish: test
+#	echo "rm -rf dist && poetry version minor && poetry build && twine upload dist/*"
 
-.PHONY: publish
-publish: test
-	echo "rm -rf dist && poetry version minor && poetry build && twine upload dist/*"
+check_docs:
+	$(VENV) interrogate openmock --verbose
+	$(VENV) pydoctest --config .pydoctest.json | grep -v "__init__" | grep -v "__main__" | grep -v "Unable to parse"
+
+make_docs:
+	pdoc openmock --html -o docs --force
+
+check_md:
+	$(VENV) mdformat README.md docs/*.md
+	# $(VENV) linkcheckMarkdown README.md # it is attempting to validate ssl certs
+	$(VENV) markdownlint README.md --config .markdownlintrc
+
+check_spelling:
+	$(VENV) pylint openmock --enable C0402 --rcfile=.pylintrc_spell
+	$(VENV) codespell README.md --ignore-words=private_dictionary.txt
+	$(VENV) codespell openmock --ignore-words=private_dictionary.txt
+
+check_changelog:
+	# pipx install keepachangelog-manager
+	$(VENV) changelogmanager validate

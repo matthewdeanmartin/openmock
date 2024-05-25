@@ -108,7 +108,7 @@ class FooServiceTest(TestCase):
         id = service.create(index, expected_document)
         self.assertIsNotNone(id)
 
-        # Retrive document from OpenSearch
+        # Retrieve document from OpenSearch
         document = service.read(index, id)
         self.assertEquals(expected_document, document)
 
