@@ -39,6 +39,8 @@ include = [
 python = ">=3.9, <4"
 opensearch-py = "*"
 python-dateutil = ">=2.8.2"
+# optional dependency of opensearch-py
+aiohttp = "*"
 
 # Old python had support up to 1.0.0
 # python-ranges  = "1.0.0" # nope!
