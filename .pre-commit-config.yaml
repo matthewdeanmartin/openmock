@@ -87,7 +87,8 @@ repos:
           - id: python-no-eval
           - id: python-no-log-warn
           - id: text-unicode-replacement-char
-    - repo: https://github.com/executablebooks/mdformat
-      rev: 0.7.17
-      hooks:
-          - id: mdformat
+# breaks change log validator
+#    - repo: https://github.com/executablebooks/mdformat
+#      rev: 0.7.17
+#      hooks:
+#          - id: mdformat
