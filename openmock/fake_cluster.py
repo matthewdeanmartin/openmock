@@ -18,6 +18,9 @@ class FakeClusterClient(ClusterClient):
         "wait_for_status",
     )
     def health(self, index=None, params=None, headers=None):
+        """
+        Fake cluster health
+        """
         return {
             "cluster_name": "testcluster",
             "status": "green",

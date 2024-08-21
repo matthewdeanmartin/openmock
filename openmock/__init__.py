@@ -5,8 +5,13 @@ Module initialization
 from functools import wraps
 from unittest.mock import patch
 
+from openmock.fake_asyncopensearch import AsyncFakeOpenSearch
+from openmock.fake_cluster import FakeClusterClient
+from openmock.fake_indices import FakeIndicesClient
 from openmock.fake_opensearch import FakeOpenSearch
 from openmock.normalize_hosts import _normalize_hosts
+
+__all__ = ["openmock", "FakeOpenSearch", "AsyncFakeOpenSearch", "FakeClusterClient", "FakeIndicesClient"]
 
 OPEN_INSTANCES = {}
 

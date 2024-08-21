@@ -184,7 +184,7 @@ Won't catch pytest tests.
 python -m unittest
 ```
 
-We are trying to support a full matrix of openmock versions and python versions 3.6+. This is slow.
+We are trying to support a full matrix of openmock versions and python versions 3.9+. This is slow.
 
 ```bash
 tox
@@ -196,4 +196,4 @@ See [CHANGELOG.md](https://github.com/matthewdeanmartin/openmock/blob/main/CHANG
 
 ## License
 
-MIT with normalize_host.py being Apache 2 from Elasticsearch.
+MIT with `normalize_host.py` being Apache 2 from Elasticsearch.

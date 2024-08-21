@@ -1,0 +1,2847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>openmock API documentation</title>
+<meta name="description" content="Module initialization">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>openmock</code></h1>
+</header>
+<section id="section-intro">
+<p>Module initialization</p>
+</section>
+<section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="openmock.behaviour" href="behaviour/index.html">openmock.behaviour</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="openmock.fake_asyncopensearch" href="fake_asyncopensearch.html">openmock.fake_asyncopensearch</a></code></dt>
+<dd>
+<div class="desc"><p>This module provides a fake implementation of the OpenSearch client that can be used for testing purposes.</p></div>
+</dd>
+<dt><code class="name"><a title="openmock.fake_cluster" href="fake_cluster.html">openmock.fake_cluster</a></code></dt>
+<dd>
+<div class="desc"><p>Fake cluster with static health</p></div>
+</dd>
+<dt><code class="name"><a title="openmock.fake_indices" href="fake_indices.html">openmock.fake_indices</a></code></dt>
+<dd>
+<div class="desc"><p>Fake Index state</p></div>
+</dd>
+<dt><code class="name"><a title="openmock.fake_opensearch" href="fake_opensearch.html">openmock.fake_opensearch</a></code></dt>
+<dd>
+<div class="desc"><p>Simulate some range queries</p></div>
+</dd>
+<dt><code class="name"><a title="openmock.normalize_hosts" href="normalize_hosts.html">openmock.normalize_hosts</a></code></dt>
+<dd>
+<div class="desc"><p>Vendorized</p></div>
+</dd>
+<dt><code class="name"><a title="openmock.utilities" href="utilities/index.html">openmock.utilities</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="openmock.openmock"><code class="name flex">
+<span>def <span class="ident">openmock</span></span>(<span>f)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="openmock.AsyncFakeOpenSearch"><code class="flex name class">
+<span>class <span class="ident">AsyncFakeOpenSearch</span></span>
+<span>(</span><span>hosts=None, transport_class=None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>OpenSearch client. Provides a straightforward mapping from
+Python to OpenSearch REST endpoints.</p>
+<p>The instance has attributes <code>cat</code>, <code>cluster</code>, <code>indices</code>, <code>ingest</code>,
+<code>nodes</code>, <code>snapshot</code> and <code>tasks</code> that provide access to instances of
+:class:<code>~opensearchpy.client.CatClient</code>,
+:class:<code>~opensearchpy.client.ClusterClient</code>,
+:class:<code>~opensearchpy.client.IndicesClient</code>,
+:class:<code>~opensearchpy.client.IngestClient</code>,
+:class:<code>~opensearchpy.client.NodesClient</code>,
+:class:<code>~opensearchpy.client.SnapshotClient</code> and
+:class:<code>~opensearchpy.client.TasksClient</code> respectively. This is the
+preferred (and only supported) way to get access to those classes and their
+methods.</p>
+<p>You can specify your own connection class which should be used by providing
+the <code>connection_class</code> parameter::</p>
+<pre><code># create connection to localhost using the ThriftConnection
+client = OpenSearch(connection_class=ThriftConnection)
+</code></pre>
+<p>If you want to turn on sniffing you have several options (described
+in :class:<code>~opensearchpy.Transport</code>)::</p>
+<pre><code># create connection that will automatically inspect the cluster to get
+# the list of active nodes. Start with nodes running on
+# 'opensearchnode1' and 'opensearchnode2'
+client = OpenSearch(
+    ['opensearchnode1', 'opensearchnode2'],
+    # sniff before doing anything
+    sniff_on_start=True,
+    # refresh nodes after a node fails to respond
+    sniff_on_connection_fail=True,
+    # and also every 60 seconds
+    sniffer_timeout=60
+)
+</code></pre>
+<p>Different hosts can have different parameters, use a dictionary per node to
+specify those::</p>
+<pre><code># connect to localhost directly and another node using SSL on port 443
+# and an url_prefix. Note that &lt;code&gt;port&lt;/code&gt; needs to be an int.
+client = OpenSearch([
+    {'host': 'localhost'},
+    {'host': 'othernode', 'port': 443, 'url_prefix': 'opensearch', 'use_ssl': True},
+])
+</code></pre>
+<p>If using SSL, there are several parameters that control how we deal with
+certificates (see :class:<code>~opensearchpy.Urllib3HttpConnection</code> for
+detailed description of the options)::</p>
+<pre><code>client = OpenSearch(
+    ['localhost:443', 'other_host:443'],
+    # turn on SSL
+    use_ssl=True,
+    # make sure we verify SSL certificates
+    verify_certs=True,
+    # provide a path to CA certs on disk
+    ca_certs='/path/to/CA_certs'
+)
+</code></pre>
+<p>If using SSL, but don't verify the certs, a warning message is showed
+optionally (see :class:<code>~opensearchpy.Urllib3HttpConnection</code> for
+detailed description of the options)::</p>
+<pre><code>client = OpenSearch(
+    ['localhost:443', 'other_host:443'],
+    # turn on SSL
+    use_ssl=True,
+    # no verify SSL certificates
+    verify_certs=False,
+    # don't show warnings about ssl certs verification
+    ssl_show_warn=False
+)
+</code></pre>
+<p>SSL client authentication is supported
+(see :class:<code>~opensearchpy.Urllib3HttpConnection</code> for
+detailed description of the options)::</p>
+<pre><code>client = OpenSearch(
+    ['localhost:443', 'other_host:443'],
+    # turn on SSL
+    use_ssl=True,
+    # make sure we verify SSL certificates
+    verify_certs=True,
+    # provide a path to CA certs on disk
+    ca_certs='/path/to/CA_certs',
+    # PEM formatted SSL client certificate
+    client_cert='/path/to/clientcert.pem',
+    # PEM formatted SSL client key
+    client_key='/path/to/clientkey.pem'
+)
+</code></pre>
+<p>Alternatively you can use RFC-1738 formatted URLs, as long as they are not
+in conflict with other options::</p>
+<pre><code>client = OpenSearch(
+    [
+        'http://user:secret@localhost:9200/',
+        'https://user:secret@other_host:443/production'
+    ],
+    verify_certs=True
+)
+</code></pre>
+<p>By default, <code>JSONSerializer
+&lt;https://github.com/opensearch-project/opensearch-py/blob/master/opensearch/serializer.py#L24&gt;</code>_
+is used to encode all outgoing requests.
+However, you can implement your own custom serializer::</p>
+<pre><code>from opensearchpy.serializer import JSONSerializer
+
+class SetEncoder(JSONSerializer):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        if isinstance(obj, Something):
+            return 'CustomSomethingRepresentation'
+        return JSONSerializer.default(self, obj)
+
+client = OpenSearch(serializer=SetEncoder())
+</code></pre>
+<p>:arg hosts: list of nodes, or a single node, we should connect to.
+Node should be a dictionary ({"host": "localhost", "port": 9200}),
+the entire dictionary will be passed to the :class:<code>~opensearchpy.Connection</code>
+class as kwargs, or a string in the format of <code>host[:port]</code> which will be
+translated to a dictionary automatically.
+If no value is given the
+:class:<code>~opensearchpy.Connection</code> class defaults will be used.</p>
+<p>:arg transport_class: :class:<code>~opensearchpy.Transport</code> subclass to use.</p>
+<p>:arg kwargs: any additional arguments will be passed on to the
+:class:<code>~opensearchpy.Transport</code> class and, subsequently, to the
+:class:<code>~opensearchpy.Connection</code> instances.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@for_all_methods([server_failure])
+class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
+    # __documents_dict = None
+
+    # pylint: disable=super-init-not-called
+    def __init__(self, hosts=None, transport_class=None, **kwargs):
+        # self.__documents_dict = {}
+        self._FakeIndicesClient__documents_dict = {}
+        self.__scrolls = {}
+        self.transport = Transport(_normalize_hosts(hosts), **kwargs)
+
+        # This blows up if I call the real base.
+        # super(FakeOpenSearch, self).__init__()
+
+    @property
+    def __documents_dict(self):
+        return self._FakeIndicesClient__documents_dict
+
+    @property
+    def indices(self):
+        return FakeIndicesClient(self)
+
+    @property
+    def cluster(self):
+        return FakeClusterClient(self)
+
+    @query_params()
+    async def ping(self, params=None, headers=None):
+        return True
+
+    @query_params()
+    async def info(self, params=None, headers=None):
+        return {
+            &#34;status&#34;: 200,
+            &#34;cluster_name&#34;: &#34;openmock&#34;,
+            &#34;version&#34;: {
+                &#34;lucene_version&#34;: &#34;4.10.4&#34;,
+                &#34;build_hash&#34;: &#34;00f95f4ffca6de89d68b7ccaf80d148f1f70e4d4&#34;,
+                &#34;number&#34;: &#34;1.7.5&#34;,
+                &#34;build_timestamp&#34;: &#34;2016-02-02T09:55:30Z&#34;,
+                &#34;build_snapshot&#34;: False,
+            },
+            &#34;name&#34;: &#34;Nightwatch&#34;,
+            &#34;tagline&#34;: &#34;You Know, for Search&#34;,
+        }
+
+    @query_params(
+        &#34;consistency&#34;,
+        &#34;op_type&#34;,
+        &#34;parent&#34;,
+        &#34;refresh&#34;,
+        &#34;replication&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;timestamp&#34;,
+        &#34;ttl&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def create(self, index, body, doc_type=&#34;_doc&#34;, id=None, params=None, headers=None):
+    async def create(
+        self,
+        index: Any,
+        id: Any,
+        body: Any,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        doc_type = &#34;_doc&#34;
+        if self.exists(index, id, doc_type=doc_type, params=params):
+            raise ConflictError(
+                409,
+                &#34;action_request_validation_exception&#34;,
+                &#34;Validation Failed: 1: no documents to get;&#34;,
+            )
+
+        if index not in self.__documents_dict:
+            self.__documents_dict[index] = []
+
+        if id is None:
+            id = get_random_id()
+
+        self.__documents_dict[index].append(
+            {
+                &#34;_type&#34;: doc_type,
+                &#34;_id&#34;: id,
+                &#34;_source&#34;: body,
+                &#34;_index&#34;: index,
+                &#34;_version&#34;: 1,
+            }
+        )
+
+        return {
+            &#34;_type&#34;: doc_type,
+            &#34;_id&#34;: id,
+            &#34;created&#34;: True,
+            &#34;_version&#34;: 1,
+            &#34;_index&#34;: index,
+            &#34;result&#34;: &#34;created&#34;,
+        }
+
+    @query_params(
+        &#34;consistency&#34;,
+        &#34;op_type&#34;,
+        &#34;parent&#34;,
+        &#34;refresh&#34;,
+        &#34;replication&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;timestamp&#34;,
+        &#34;ttl&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def index(self, index, body, doc_type=&#34;_doc&#34;, id=None, params=None, headers=None):
+    async def index(
+        self,
+        index: Any,
+        body: Any,
+        id: Any = None,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -&gt; Any:
+        doc_type = &#34;_doc&#34;
+        if index not in self.__documents_dict:
+            self.__documents_dict[index] = []
+
+        version = 1
+
+        result = &#34;created&#34;
+        if id is None:
+            id = get_random_id()
+
+        elif self.exists(index, id, doc_type=doc_type, params=params):
+            doc = self.get(index, id, doc_type=doc_type, params=params)
+            version = doc[&#34;_version&#34;] + 1
+            self.delete(index, id, doc_type=doc_type)
+            result = &#34;updated&#34;
+
+        self.__documents_dict[index].append(
+            {
+                &#34;_type&#34;: doc_type,
+                &#34;_id&#34;: id,
+                &#34;_source&#34;: body,
+                &#34;_index&#34;: index,
+                &#34;_version&#34;: version,
+            }
+        )
+
+        return {
+            &#34;_type&#34;: doc_type,
+            &#34;_id&#34;: id,
+            &#34;created&#34;: True,
+            &#34;_version&#34;: version,
+            &#34;_index&#34;: index,
+            &#34;result&#34;: result,
+        }
+
+    @query_params(
+        &#34;consistency&#34;,
+        &#34;op_type&#34;,
+        &#34;parent&#34;,
+        &#34;refresh&#34;,
+        &#34;replication&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;timestamp&#34;,
+        &#34;ttl&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def bulk(self, body, index=None, doc_type=None, params=None, headers=None):
+    async def bulk(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        doc_type = None
+        items = []
+        errors = False
+
+        for raw_line in body.splitlines():
+            if len(raw_line.strip()) &gt; 0:
+                line = json.loads(raw_line)
+
+                if any(
+                    action in line for action in [&#34;index&#34;, &#34;create&#34;, &#34;update&#34;, &#34;delete&#34;]
+                ):
+                    action = next(iter(line.keys()))
+
+                    version = 1
+                    index = line[action].get(&#34;_index&#34;) or index
+                    doc_type = line[action].get(
+                        &#34;_type&#34;, &#34;_doc&#34;
+                    )  # _type is deprecated in 7.x
+
+                    if action in [&#34;delete&#34;, &#34;update&#34;] and not line[action].get(&#34;_id&#34;):
+                        raise RequestError(
+                            400, &#34;action_request_validation_exception&#34;, &#34;missing id&#34;
+                        )
+
+                    document_id = line[action].get(&#34;_id&#34;, get_random_id())
+
+                    if action == &#34;delete&#34;:
+                        status, result, error = self._validate_action(
+                            action, index, document_id, doc_type, params=params
+                        )
+                        item = {
+                            action: {
+                                &#34;_type&#34;: doc_type,
+                                &#34;_id&#34;: document_id,
+                                &#34;_index&#34;: index,
+                                &#34;_version&#34;: version,
+                                &#34;status&#34;: status,
+                            }
+                        }
+                        if error:
+                            errors = True
+                            item[action][&#34;error&#34;] = result
+                        else:
+                            self.delete(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
+                            item[action][&#34;result&#34;] = result
+                        items.append(item)
+
+                    if index not in self.__documents_dict:
+                        self.__documents_dict[index] = []
+                else:
+                    if &#34;doc&#34; in line and action == &#34;update&#34;:
+                        source = line[&#34;doc&#34;]
+                    else:
+                        source = line
+                    status, result, error = self._validate_action(
+                        action, index, document_id, doc_type, params=params
+                    )
+                    item = {
+                        action: {
+                            &#34;_type&#34;: doc_type,
+                            &#34;_id&#34;: document_id,
+                            &#34;_index&#34;: index,
+                            &#34;_version&#34;: version,
+                            &#34;status&#34;: status,
+                        }
+                    }
+                    if not error:
+                        item[action][&#34;result&#34;] = result
+                        if self.exists(
+                            index, document_id, doc_type=doc_type, params=params
+                        ):
+                            doc = self.get(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
+                            version = doc[&#34;_version&#34;] + 1
+                            self.delete(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
+
+                        self.__documents_dict[index].append(
+                            {
+                                &#34;_type&#34;: doc_type,
+                                &#34;_id&#34;: document_id,
+                                &#34;_source&#34;: source,
+                                &#34;_index&#34;: index,
+                                &#34;_version&#34;: version,
+                            }
+                        )
+                    else:
+                        errors = True
+                        item[action][&#34;error&#34;] = result
+                    items.append(item)
+        return {&#34;errors&#34;: errors, &#34;items&#34;: items}
+
+    async def _validate_action(self, action, index, document_id, doc_type, params=None):
+        if action in [&#34;index&#34;, &#34;update&#34;] and self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 200, &#34;updated&#34;, False
+        if action == &#34;create&#34; and self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 409, &#34;version_conflict_engine_exception&#34;, True
+        if action in [&#34;index&#34;, &#34;create&#34;] and not self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 201, &#34;created&#34;, False
+        if action == &#34;delete&#34; and self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 200, &#34;deleted&#34;, False
+        if action == &#34;update&#34; and not self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 404, &#34;document_missing_exception&#34;, True
+        if action == &#34;delete&#34; and not self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 404, &#34;not_found&#34;, True
+        raise NotImplementedError(f&#34;{action} behaviour hasn&#39;t been implemented&#34;)
+
+    @query_params(&#34;parent&#34;, &#34;preference&#34;, &#34;realtime&#34;, &#34;refresh&#34;, &#34;routing&#34;)
+    # def exists(self, index, id, doc_type=None, params=None, headers=None):
+    async def exists(
+        self,
+        index: Any,
+        id: Any,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -&gt; Any:
+        doc_type = None
+        result = False
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get(&#34;_id&#34;) == id and (
+                    document.get(&#34;_type&#34;) == doc_type or doc_type is None
+                ):
+                    result = True
+                    break
+        return result
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;fields&#34;,
+        &#34;parent&#34;,
+        &#34;preference&#34;,
+        &#34;realtime&#34;,
+        &#34;refresh&#34;,
+        &#34;routing&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def get(self, index, id, doc_type=&#34;_all&#34;, params=None, headers=None):
+    async def get(
+        self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
+    ) -&gt; Any:
+        doc_type = &#34;_all&#34;
+        ignore = extract_ignore_as_iterable(params)
+        result = None
+
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get(&#34;_id&#34;) == id:
+                    if doc_type == &#34;_all&#34;:
+                        result = document
+                        break
+                    if document.get(&#34;_type&#34;) == doc_type:
+                        result = document
+                        break
+
+        if result:
+            result[&#34;found&#34;] = True
+            return result
+        if params and 404 in ignore:
+            return {&#34;found&#34;: False}
+        error_data = {&#34;_index&#34;: index, &#34;_type&#34;: doc_type, &#34;_id&#34;: id, &#34;found&#34;: False}
+        raise NotFoundError(404, json.dumps(error_data))
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_excludes&#34;,
+        &#34;_source_includes&#34;,
+        &#34;if_primary_term&#34;,
+        &#34;if_seq_no&#34;,
+        &#34;lang&#34;,
+        &#34;refresh&#34;,
+        &#34;require_alias&#34;,
+        &#34;retry_on_conflict&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;wait_for_active_shards&#34;,
+    )
+    async def update(self, index, id, body, params=None, headers=None):
+        if not body:
+            raise RequestError(
+                400,
+                &#34;action_request_validation_exception&#34;,
+                &#34;Validation Failed: 1: script or doc is missing;&#34;,
+            )
+        if &#34;doc&#34; not in body and &#34;script&#34; not in body:
+            field = list(body.keys())
+            raise RequestError(
+                400,
+                &#34;x_content_parse_exception&#34;,
+                f&#34;[1:2] [UpdateRequest] unknown field [{field[0]}]&#34;,
+            )
+        if &#34;doc&#34; in body and &#34;script&#34; in body:
+            raise RequestError(
+                400,
+                &#34;action_request_validation_exception&#34;,
+                &#34;Validation Failed: 1: can&#39;t provide both script and doc;&#34;,
+            )
+
+        result = None
+
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get(&#34;_id&#34;) == id:
+                    if &#34;doc&#34; in body:
+                        document[&#34;_source&#34;] = {**document[&#34;_source&#34;], **body[&#34;doc&#34;]}
+                        document[&#34;_version&#34;] += 1
+
+                        # TODO: Might be removed since it seems that latest open search doesn&#39;t respond the _type anymore.
+                        result = {
+                            &#34;_index&#34;: index,
+                            &#34;_id&#34;: id,
+                            &#34;_type&#34;: document.get(&#34;_type&#34;, &#34;_doc&#34;),
+                            &#34;_version&#34;: document[&#34;_version&#34;],
+                            &#34;result&#34;: &#34;updated&#34;,
+                            &#34;_shards&#34;: {&#34;total&#34;: 1, &#34;successful&#34;: 1, &#34;failed&#34;: 0},
+                        }
+                    elif &#34;script&#34; in body:
+                        # TODO: Add pain(ful)less language support
+                        raise NotImplementedError(
+                            &#34;Using script is currently not supported.&#34;
+                        )
+
+        if result:
+            return result
+        raise NotFoundError(
+            404, &#34;document_missing_exception&#34;, f&#34;[{id}]: document missing&#34;
+        )
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_excludes&#34;,
+        &#34;_source_includes&#34;,
+        &#34;allow_no_indices&#34;,
+        &#34;analyze_wildcard&#34;,
+        &#34;analyzer&#34;,
+        &#34;conflicts&#34;,
+        &#34;default_operator&#34;,
+        &#34;df&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;from_&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;lenient&#34;,
+        &#34;max_docs&#34;,
+        &#34;pipeline&#34;,
+        &#34;preference&#34;,
+        &#34;q&#34;,
+        &#34;refresh&#34;,
+        &#34;request_cache&#34;,
+        &#34;requests_per_second&#34;,
+        &#34;routing&#34;,
+        &#34;scroll&#34;,
+        &#34;scroll_size&#34;,
+        &#34;search_timeout&#34;,
+        &#34;search_type&#34;,
+        &#34;size&#34;,
+        &#34;slices&#34;,
+        &#34;sort&#34;,
+        &#34;stats&#34;,
+        &#34;terminate_after&#34;,
+        &#34;timeout&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+        &#34;wait_for_active_shards&#34;,
+        &#34;wait_for_completion&#34;,
+    )
+    async def update_by_query(
+        self,
+        index: Any,
+        body: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        # def update_by_query(
+        #     self, index, body=None, doc_type=None, params=None, headers=None
+        # ):
+        doc_type = None
+        # Actually it only supports script equal operations
+        # TODO: Full support from painless language
+        total_updated = 0
+        if isinstance(index, list):
+            (index,) = index
+        new_values = {}
+        script_params = body[&#34;script&#34;][&#34;params&#34;]
+        script_source = body[&#34;script&#34;][&#34;source&#34;].replace(&#34;ctx._source.&#34;, &#34;&#34;).split(&#34;;&#34;)
+        for sentence in script_source:
+            if sentence:
+                field, _, value = sentence.split()
+                if value.startswith(&#34;params.&#34;):
+                    _, key = value.split(&#34;.&#34;)
+                    value = script_params.get(key)
+                new_values[field] = value
+
+        matches = self.search(
+            index=index, doc_type=doc_type, body=body, params=params, headers=headers
+        )
+        if matches[&#34;hits&#34;][&#34;total&#34;]:
+            for hit in matches[&#34;hits&#34;][&#34;hits&#34;]:
+                body = hit[&#34;_source&#34;]
+                body.update(new_values)
+                self.index(index, body, doc_type=hit[&#34;_type&#34;], id=hit[&#34;_id&#34;])
+                total_updated += 1
+
+        return {
+            &#34;took&#34;: 1,
+            &#34;time_out&#34;: False,
+            &#34;total&#34;: matches[&#34;hits&#34;][&#34;total&#34;],
+            &#34;updated&#34;: total_updated,
+            &#34;deleted&#34;: 0,
+            &#34;batches&#34;: 1,
+            &#34;version_conflicts&#34;: 0,
+            &#34;noops&#34;: 0,
+            &#34;retries&#34;: 0,
+            &#34;throttled_millis&#34;: 100,
+            &#34;requests_per_second&#34;: 100,
+            &#34;throttled_until_millis&#34;: 0,
+            &#34;failures&#34;: [],
+        }
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;preference&#34;,
+        &#34;realtime&#34;,
+        &#34;refresh&#34;,
+        &#34;routing&#34;,
+        &#34;stored_fields&#34;,
+    )
+    async def mget(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        # def mget(self, body, index, doc_type=&#34;_all&#34;, params=None, headers=None):
+        doc_type = &#34;_all&#34;
+        docs = body.get(&#34;docs&#34;)
+        ids = [doc[&#34;_id&#34;] for doc in docs]
+        results = []
+        for id in ids:
+            # pylint: disable=bare-except
+            try:
+                results.append(
+                    self.get(
+                        index, id, doc_type=doc_type, params=params, headers=headers
+                    )
+                )
+            except:  # noqa
+                pass  # nosec
+        if not results:
+            raise RequestError(
+                400,
+                &#34;action_request_validation_exception&#34;,
+                &#34;Validation Failed: 1: no documents to get;&#34;,
+            )
+        return {&#34;docs&#34;: results}
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;parent&#34;,
+        &#34;preference&#34;,
+        &#34;realtime&#34;,
+        &#34;refresh&#34;,
+        &#34;routing&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def get_source(self, index, doc_type, id, params=None, headers=None):
+    async def get_source(
+        self,
+        index: Any,
+        id: Any,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        doc_type = None
+        document = self.get(index=index, doc_type=doc_type, id=id, params=params)
+        return document.get(&#34;_source&#34;)
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;allow_no_indices&#34;,
+        &#34;analyze_wildcard&#34;,
+        &#34;analyzer&#34;,
+        &#34;default_operator&#34;,
+        &#34;df&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;explain&#34;,
+        &#34;fielddata_fields&#34;,
+        &#34;fields&#34;,
+        &#34;from_&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;lenient&#34;,
+        &#34;lowercase_expanded_terms&#34;,
+        &#34;min_score&#34;,
+        &#34;preference&#34;,
+        &#34;q&#34;,
+        &#34;request_cache&#34;,
+        &#34;routing&#34;,
+        &#34;scroll&#34;,
+        &#34;search_type&#34;,
+        &#34;size&#34;,
+        &#34;sort&#34;,
+        &#34;stats&#34;,
+        &#34;suggest_field&#34;,
+        &#34;suggest_mode&#34;,
+        &#34;suggest_size&#34;,
+        &#34;suggest_text&#34;,
+        &#34;terminate_after&#34;,
+        &#34;timeout&#34;,
+        &#34;track_scores&#34;,
+        &#34;version&#34;,
+    )
+    # def count(self, index=None, doc_type=None, body=None, params=None, headers=None):
+    async def count(
+        self,
+        body: Any = None,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        doc_type = None
+        searchable_indexes = self._normalize_index_to_list(index)
+
+        i = 0
+        for searchable_index in searchable_indexes:
+            for document in self.__documents_dict[searchable_index]:
+                if doc_type and document.get(&#34;_type&#34;) != doc_type:
+                    continue
+                i += 1
+        result = {
+            &#34;count&#34;: i,
+            &#34;_shards&#34;: {&#34;successful&#34;: 1, &#34;skipped&#34;: 0, &#34;failed&#34;: 0, &#34;total&#34;: 1},
+        }
+
+        return result
+
+    def _get_fake_query_condition(self, query_type_str, condition):
+        return FakeQueryCondition(QueryType.get_query_type(query_type_str), condition)
+
+    @query_params(
+        &#34;ccs_minimize_roundtrips&#34;,
+        &#34;max_concurrent_searches&#34;,
+        &#34;max_concurrent_shard_requests&#34;,
+        &#34;pre_filter_shard_size&#34;,
+        &#34;rest_total_hits_as_int&#34;,
+        &#34;search_type&#34;,
+        &#34;typed_keys&#34;,
+    )
+    # def msearch(self, body, index=None, doc_type=None, params=None, headers=None):
+    async def msearch(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        def grouped(iterable):
+            if len(iterable) % 2 != 0:
+                # pylint: disable=broad-exception-raised
+                raise Exception(&#34;Malformed body&#34;)
+            iterator = iter(iterable)
+            while True:
+                try:
+                    yield (next(iterator)[&#34;index&#34;], next(iterator))
+                except StopIteration:
+                    break
+
+        responses = []
+        took = 0
+        for ind, query in grouped(body):
+            response = self.search(index=ind, body=query)
+            took += response[&#34;took&#34;]
+            responses.append(response)
+        result = {&#34;took&#34;: took, &#34;responses&#34;: responses}
+        return result
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;allow_no_indices&#34;,
+        &#34;analyze_wildcard&#34;,
+        &#34;analyzer&#34;,
+        &#34;default_operator&#34;,
+        &#34;df&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;explain&#34;,
+        &#34;fielddata_fields&#34;,
+        &#34;fields&#34;,
+        &#34;from_&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;lenient&#34;,
+        &#34;lowercase_expanded_terms&#34;,
+        &#34;preference&#34;,
+        &#34;q&#34;,
+        &#34;request_cache&#34;,
+        &#34;routing&#34;,
+        &#34;scroll&#34;,
+        &#34;search_type&#34;,
+        &#34;size&#34;,
+        &#34;sort&#34;,
+        &#34;stats&#34;,
+        &#34;suggest_field&#34;,
+        &#34;suggest_mode&#34;,
+        &#34;suggest_size&#34;,
+        &#34;suggest_text&#34;,
+        &#34;terminate_after&#34;,
+        &#34;timeout&#34;,
+        &#34;track_scores&#34;,
+        &#34;version&#34;,
+    )
+    async def search(
+        self,
+        body: Any = None,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -&gt; Any:
+        # def search(self, index=None, doc_type=None, body=None, params=None, headers=None):
+        doc_type: Optional[list] = None
+        searchable_indexes = self._normalize_index_to_list(index)
+
+        matches = []
+        conditions = []
+
+        if body and &#34;query&#34; in body:
+            query = body[&#34;query&#34;]
+            for query_type_str, condition in query.items():
+                conditions.append(
+                    self._get_fake_query_condition(query_type_str, condition)
+                )
+        for searchable_index in searchable_indexes:
+            for document in self.__documents_dict[searchable_index]:
+                if doc_type:
+                    # pylint: disable=unsupported-membership-test
+                    if (
+                        isinstance(doc_type, list)
+                        and document.get(&#34;_type&#34;) not in doc_type
+                    ):
+                        continue
+                    if isinstance(doc_type, str) and document.get(&#34;_type&#34;) != doc_type:
+                        continue
+                if conditions:
+                    for condition in conditions:
+                        if condition.evaluate(document):
+                            matches.append(document)
+                            break
+                else:
+                    matches.append(document)
+
+        for match in matches:
+            self._find_and_convert_data_types(match[&#34;_source&#34;])
+
+        result = {
+            &#34;hits&#34;: {
+                &#34;total&#34;: {&#34;value&#34;: len(matches), &#34;relation&#34;: &#34;eq&#34;},
+                &#34;max_score&#34;: 1.0,
+            },
+            &#34;_shards&#34;: {
+                # Simulate indexes with 1 shard each
+                &#34;successful&#34;: len(searchable_indexes),
+                &#34;skipped&#34;: 0,
+                &#34;failed&#34;: 0,
+                &#34;total&#34;: len(searchable_indexes),
+            },
+            &#34;took&#34;: 1,
+            &#34;timed_out&#34;: False,
+        }
+
+        hits = []
+        for match in matches:
+            match[&#34;_score&#34;] = 1.0
+            hits.append(match)
+
+        # build aggregations
+        if body is not None and &#34;aggs&#34; in body:
+            aggregations = {}
+
+            for aggregation, definition in body[&#34;aggs&#34;].items():
+                aggregations[aggregation] = {
+                    &#34;doc_count_error_upper_bound&#34;: 0,
+                    &#34;sum_other_doc_count&#34;: 0,
+                    &#34;buckets&#34;: self.make_aggregation_buckets(definition, matches),
+                }
+
+            if aggregations:
+                result[&#34;aggregations&#34;] = aggregations
+
+        if &#34;scroll&#34; in params:
+            result[&#34;_scroll_id&#34;] = str(get_random_scroll_id())
+            params[&#34;size&#34;] = int(params.get(&#34;size&#34;, 10))
+            params[&#34;from&#34;] = int(
+                params.get(&#34;from&#34;) + params.get(&#34;size&#34;) if &#34;from&#34; in params else 0
+            )
+            self.__scrolls[result.get(&#34;_scroll_id&#34;)] = {
+                &#34;index&#34;: index,
+                &#34;doc_type&#34;: doc_type,
+                &#34;body&#34;: body,
+                &#34;params&#34;: params,
+            }
+            hits = hits[params.get(&#34;from&#34;) : params.get(&#34;from&#34;) + params.get(&#34;size&#34;)]
+        elif &#34;size&#34; in params:
+            hits = hits[: int(params[&#34;size&#34;])]
+        elif body and &#34;size&#34; in body:
+            hits = hits[: int(body[&#34;size&#34;])]
+
+        result[&#34;hits&#34;][&#34;hits&#34;] = hits
+
+        return result
+
+    @query_params(&#34;scroll&#34;)
+    # def scroll(self, scroll_id, params=None, headers=None):
+    async def scroll(
+        self,
+        body: Any = None,
+        scroll_id: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        scroll = self.__scrolls.pop(scroll_id)
+        result = self.search(
+            index=scroll.get(&#34;index&#34;),
+            doc_type=scroll.get(&#34;doc_type&#34;),
+            body=scroll.get(&#34;body&#34;),
+            params=scroll.get(&#34;params&#34;),
+        )
+        return result
+
+    @query_params(
+        &#34;consistency&#34;,
+        &#34;parent&#34;,
+        &#34;refresh&#34;,
+        &#34;replication&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def delete(self, index, id, doc_type=None, params=None, headers=None):
+    async def delete(
+        self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
+    ) -&gt; Any:
+        doc_type = None
+        found = False
+        ignore = extract_ignore_as_iterable(params)
+
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get(&#34;_id&#34;) == id:
+                    found = True
+                    if doc_type and document.get(&#34;_type&#34;) != doc_type:
+                        found = False
+                    if found:
+                        self.__documents_dict[index].remove(document)
+                        break
+
+        result_dict = {
+            &#34;found&#34;: found,
+            &#34;_index&#34;: index,
+            &#34;_type&#34;: doc_type,
+            &#34;_id&#34;: id,
+            &#34;_version&#34;: 1,
+        }
+
+        if found:
+            return result_dict
+        if params and 404 in ignore:
+            return {&#34;found&#34;: False}
+        raise NotFoundError(404, json.dumps(result_dict))
+
+    @query_params(
+        &#34;allow_no_indices&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;preference&#34;,
+        &#34;routing&#34;,
+    )
+    def suggest(self, body, index=None, params=None, headers=None):
+        if index is not None and index not in self.__documents_dict:
+            raise NotFoundError(404, f&#34;IndexMissingException[[{index}] missing]&#34;)
+
+        result_dict = {}
+        for key, value in body.items():
+            text = value.get(&#34;text&#34;)
+            suggestion = (
+                int(text) + 1 if isinstance(text, int) else f&#34;{text}_suggestion&#34;
+            )
+            result_dict[key] = [
+                {
+                    &#34;text&#34;: text,
+                    &#34;length&#34;: 1,
+                    &#34;options&#34;: [{&#34;text&#34;: suggestion, &#34;freq&#34;: 1, &#34;score&#34;: 1.0}],
+                    &#34;offset&#34;: 0,
+                }
+            ]
+        return result_dict
+
+    def _normalize_index_to_list(self, index):
+        # Ensure to have a list of index
+        if index is None:
+            searchable_indexes = self.__documents_dict.keys()
+        elif isinstance(index, str):
+            searchable_indexes = [index]
+        elif isinstance(index, list):
+            searchable_indexes = index
+        else:
+            # Is it the correct exception to use ?
+            raise ValueError(&#34;Invalid param &#39;index&#39;&#34;)
+
+        # Check index(es) exists
+        for searchable_index in searchable_indexes:
+            if (
+                searchable_index not in self.__documents_dict
+                and searchable_index not in self._FakeIndicesClient__documents_dict
+            ):
+                raise NotFoundError(
+                    404, f&#34;IndexMissingException[[{searchable_index}] missing]&#34;
+                )
+
+        return searchable_indexes
+
+    @classmethod
+    def _find_and_convert_data_types(cls, document):
+        for key, value in document.items():
+            if isinstance(value, dict):
+                cls._find_and_convert_data_types(value)
+            elif isinstance(value, datetime.datetime):
+                document[key] = value.isoformat()
+
+    def make_aggregation_buckets(self, aggregation, documents):
+        if &#34;composite&#34; in aggregation:
+            return self.make_composite_aggregation_buckets(aggregation, documents)
+        return []
+
+    def make_composite_aggregation_buckets(self, aggregation, documents):
+        def make_key(doc_source, agg_source):
+            attr = list(agg_source.values())[0][&#34;terms&#34;][&#34;field&#34;]
+            return doc_source[attr]
+
+        def make_bucket(bucket_key, bucket):
+            out = {
+                &#34;key&#34;: dict(zip(bucket_key_fields, bucket_key)),
+                &#34;doc_count&#34;: len(bucket),
+            }
+
+            for metric_key, metric_definition in aggregation[&#34;aggs&#34;].items():
+                metric_type_str = list(metric_definition)[0]
+                metric_type = MetricType.get_metric_type(metric_type_str)
+                attr = metric_definition[metric_type_str][&#34;field&#34;]
+                data = [doc[attr] for doc in bucket]
+
+                if metric_type == MetricType.CARDINALITY:
+                    value = len(set(data))
+                else:
+                    raise NotImplementedError(
+                        f&#34;Metric type &#39;{metric_type}&#39; not implemented&#34;
+                    )
+
+                out[metric_key] = {&#34;value&#34;: value}
+            return out
+
+        agg_sources = aggregation[&#34;composite&#34;][&#34;sources&#34;]
+        buckets = defaultdict(list)
+        bucket_key_fields = [list(src)[0] for src in agg_sources]
+        for document in documents:
+            doc_src = document[&#34;_source&#34;]
+            key = tuple(
+                make_key(doc_src, agg_src)
+                for agg_src in aggregation[&#34;composite&#34;][&#34;sources&#34;]
+            )
+            buckets[key].append(doc_src)
+
+        buckets = sorted(((k, v) for k, v in buckets.items()), key=lambda x: x[0])
+        buckets = [make_bucket(bucket_key, bucket) for bucket_key, bucket in buckets]
+        return buckets</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>opensearchpy._async.client.AsyncOpenSearch</li>
+<li>opensearchpy._async.client.client.Client</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="openmock.AsyncFakeOpenSearch.cluster"><code class="name">prop <span class="ident">cluster</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cluster(self):
+    return FakeClusterClient(self)</code></pre>
+</details>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.indices"><code class="name">prop <span class="ident">indices</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def indices(self):
+    return FakeIndicesClient(self)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="openmock.AsyncFakeOpenSearch.bulk"><code class="name flex">
+<span>async def <span class="ident">bulk</span></span>(<span>self, body: Any, index: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.count"><code class="name flex">
+<span>async def <span class="ident">count</span></span>(<span>self, body: Any = None, index: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.create"><code class="name flex">
+<span>async def <span class="ident">create</span></span>(<span>self, index: Any, id: Any, body: Any, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.delete"><code class="name flex">
+<span>async def <span class="ident">delete</span></span>(<span>self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.exists"><code class="name flex">
+<span>async def <span class="ident">exists</span></span>(<span>self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.get"><code class="name flex">
+<span>async def <span class="ident">get</span></span>(<span>self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.get_source"><code class="name flex">
+<span>async def <span class="ident">get_source</span></span>(<span>self, index: Any, id: Any, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.index"><code class="name flex">
+<span>async def <span class="ident">index</span></span>(<span>self, index: Any, body: Any, id: Any = None, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.info"><code class="name flex">
+<span>async def <span class="ident">info</span></span>(<span>self, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.make_aggregation_buckets"><code class="name flex">
+<span>def <span class="ident">make_aggregation_buckets</span></span>(<span>self, aggregation, documents)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.make_composite_aggregation_buckets"><code class="name flex">
+<span>def <span class="ident">make_composite_aggregation_buckets</span></span>(<span>self, aggregation, documents)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.mget"><code class="name flex">
+<span>async def <span class="ident">mget</span></span>(<span>self, body: Any, index: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.msearch"><code class="name flex">
+<span>async def <span class="ident">msearch</span></span>(<span>self, body: Any, index: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.ping"><code class="name flex">
+<span>async def <span class="ident">ping</span></span>(<span>self, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.scroll"><code class="name flex">
+<span>async def <span class="ident">scroll</span></span>(<span>self, body: Any = None, scroll_id: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.search"><code class="name flex">
+<span>async def <span class="ident">search</span></span>(<span>self, body: Any = None, index: Any = None, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.suggest"><code class="name flex">
+<span>def <span class="ident">suggest</span></span>(<span>self, body, index=None, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.update"><code class="name flex">
+<span>async def <span class="ident">update</span></span>(<span>self, index, id, body, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.AsyncFakeOpenSearch.update_by_query"><code class="name flex">
+<span>async def <span class="ident">update_by_query</span></span>(<span>self, index: Any, body: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="openmock.FakeClusterClient"><code class="flex name class">
+<span>class <span class="ident">FakeClusterClient</span></span>
+<span>(</span><span>client: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FakeClusterClient(ClusterClient):
+    @query_params(
+        &#34;level&#34;,
+        &#34;local&#34;,
+        &#34;master_timeout&#34;,
+        &#34;timeout&#34;,
+        &#34;wait_for_active_shards&#34;,
+        &#34;wait_for_nodes&#34;,
+        &#34;wait_for_relocating_shards&#34;,
+        &#34;wait_for_status&#34;,
+    )
+    def health(self, index=None, params=None, headers=None):
+        &#34;&#34;&#34;
+        Fake cluster health
+        &#34;&#34;&#34;
+        return {
+            &#34;cluster_name&#34;: &#34;testcluster&#34;,
+            &#34;status&#34;: &#34;green&#34;,
+            &#34;timed_out&#34;: False,
+            &#34;number_of_nodes&#34;: 1,
+            &#34;number_of_data_nodes&#34;: 1,
+            &#34;active_primary_shards&#34;: 1,
+            &#34;active_shards&#34;: 1,
+            &#34;relocating_shards&#34;: 0,
+            &#34;initializing_shards&#34;: 0,
+            &#34;unassigned_shards&#34;: 1,
+            &#34;delayed_unassigned_shards&#34;: 0,
+            &#34;number_of_pending_tasks&#34;: 0,
+            &#34;number_of_in_flight_fetch&#34;: 0,
+            &#34;task_max_waiting_in_queue_millis&#34;: 0,
+            &#34;active_shards_percent_as_number&#34;: 50.0,
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>opensearchpy.client.cluster.ClusterClient</li>
+<li>opensearchpy.client.utils.NamespacedClient</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="openmock.FakeClusterClient.health"><code class="name flex">
+<span>def <span class="ident">health</span></span>(<span>self, index=None, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fake cluster health</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="openmock.FakeIndicesClient"><code class="flex name class">
+<span>class <span class="ident">FakeIndicesClient</span></span>
+<span>(</span><span>client: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FakeIndicesClient(IndicesClient):
+    @query_params(&#34;master_timeout&#34;, &#34;timeout&#34;)
+    def create(self, index, body=None, params=None, headers=None):
+        &#34;&#34;&#34;
+        Fake index creation
+        &#34;&#34;&#34;
+        documents_dict = self.__get_documents_dict()
+        if index not in documents_dict:
+            documents_dict[index] = []
+
+    @query_params(&#34;allow_no_indices&#34;, &#34;expand_wildcards&#34;, &#34;ignore_unavailable&#34;, &#34;local&#34;)
+    def exists(self, index, params=None, headers=None):
+        &#34;&#34;&#34;
+        Fake index exists
+        &#34;&#34;&#34;
+        return index in self.__get_documents_dict()
+
+    @query_params(
+        &#34;allow_no_indices&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;force&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;operation_threading&#34;,
+    )
+    def refresh(self, index=None, params=None, headers=None):
+        &#34;&#34;&#34;
+        Fake index refresh (no implementation)
+        &#34;&#34;&#34;
+
+    @query_params(&#34;master_timeout&#34;, &#34;timeout&#34;)
+    def delete(self, index, params=None, headers=None):
+        &#34;&#34;&#34;Fake index deletion&#34;&#34;&#34;
+        documents_dict = self.__get_documents_dict()
+        if index in documents_dict:
+            del documents_dict[index]
+
+    def __get_documents_dict(self):
+        &#34;&#34;&#34;Get the documents dictionary&#34;&#34;&#34;
+        return self.client.__documents_dict</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>opensearchpy.client.indices.IndicesClient</li>
+<li>opensearchpy.client.utils.NamespacedClient</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="openmock.FakeIndicesClient.create"><code class="name flex">
+<span>def <span class="ident">create</span></span>(<span>self, index, body=None, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fake index creation</p></div>
+</dd>
+<dt id="openmock.FakeIndicesClient.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>self, index, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fake index deletion</p></div>
+</dd>
+<dt id="openmock.FakeIndicesClient.exists"><code class="name flex">
+<span>def <span class="ident">exists</span></span>(<span>self, index, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fake index exists</p></div>
+</dd>
+<dt id="openmock.FakeIndicesClient.refresh"><code class="name flex">
+<span>def <span class="ident">refresh</span></span>(<span>self, index=None, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fake index refresh (no implementation)</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="openmock.FakeOpenSearch"><code class="flex name class">
+<span>class <span class="ident">FakeOpenSearch</span></span>
+<span>(</span><span>hosts=None, transport_class=None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>OpenSearch client. Provides a straightforward mapping from
+Python to OpenSearch REST endpoints.</p>
+<p>The instance has attributes <code>cat</code>, <code>cluster</code>, <code>indices</code>, <code>ingest</code>,
+<code>nodes</code>, <code>snapshot</code> and <code>tasks</code> that provide access to instances of
+:class:<code>~opensearchpy.client.CatClient</code>,
+:class:<code>~opensearchpy.client.ClusterClient</code>,
+:class:<code>~opensearchpy.client.IndicesClient</code>,
+:class:<code>~opensearchpy.client.IngestClient</code>,
+:class:<code>~opensearchpy.client.NodesClient</code>,
+:class:<code>~opensearchpy.client.SnapshotClient</code> and
+:class:<code>~opensearchpy.client.TasksClient</code> respectively. This is the
+preferred (and only supported) way to get access to those classes and their
+methods.</p>
+<p>You can specify your own connection class which should be used by providing
+the <code>connection_class</code> parameter::</p>
+<pre><code># create connection to localhost using the ThriftConnection
+client = OpenSearch(connection_class=ThriftConnection)
+</code></pre>
+<p>If you want to turn on sniffing you have several options (described
+in :class:<code>~opensearchpy.Transport</code>)::</p>
+<pre><code># create connection that will automatically inspect the cluster to get
+# the list of active nodes. Start with nodes running on
+# 'opensearchnode1' and 'opensearchnode2'
+client = OpenSearch(
+    ['opensearchnode1', 'opensearchnode2'],
+    # sniff before doing anything
+    sniff_on_start=True,
+    # refresh nodes after a node fails to respond
+    sniff_on_connection_fail=True,
+    # and also every 60 seconds
+    sniffer_timeout=60
+)
+</code></pre>
+<p>Different hosts can have different parameters, use a dictionary per node to
+specify those::</p>
+<pre><code># connect to localhost directly and another node using SSL on port 443
+# and an url_prefix. Note that &lt;code&gt;port&lt;/code&gt; needs to be an int.
+client = OpenSearch([
+    {'host': 'localhost'},
+    {'host': 'othernode', 'port': 443, 'url_prefix': 'opensearch', 'use_ssl': True},
+])
+</code></pre>
+<p>If using SSL, there are several parameters that control how we deal with
+certificates (see :class:<code>~opensearchpy.Urllib3HttpConnection</code> for
+detailed description of the options)::</p>
+<pre><code>client = OpenSearch(
+    ['localhost:443', 'other_host:443'],
+    # turn on SSL
+    use_ssl=True,
+    # make sure we verify SSL certificates
+    verify_certs=True,
+    # provide a path to CA certs on disk
+    ca_certs='/path/to/CA_certs'
+)
+</code></pre>
+<p>If using SSL, but don't verify the certs, a warning message is showed
+optionally (see :class:<code>~opensearchpy.Urllib3HttpConnection</code> for
+detailed description of the options)::</p>
+<pre><code>client = OpenSearch(
+    ['localhost:443', 'other_host:443'],
+    # turn on SSL
+    use_ssl=True,
+    # no verify SSL certificates
+    verify_certs=False,
+    # don't show warnings about ssl certs verification
+    ssl_show_warn=False
+)
+</code></pre>
+<p>SSL client authentication is supported
+(see :class:<code>~opensearchpy.Urllib3HttpConnection</code> for
+detailed description of the options)::</p>
+<pre><code>client = OpenSearch(
+    ['localhost:443', 'other_host:443'],
+    # turn on SSL
+    use_ssl=True,
+    # make sure we verify SSL certificates
+    verify_certs=True,
+    # provide a path to CA certs on disk
+    ca_certs='/path/to/CA_certs',
+    # PEM formatted SSL client certificate
+    client_cert='/path/to/clientcert.pem',
+    # PEM formatted SSL client key
+    client_key='/path/to/clientkey.pem'
+)
+</code></pre>
+<p>Alternatively you can use RFC-1738 formatted URLs, as long as they are not
+in conflict with other options::</p>
+<pre><code>client = OpenSearch(
+    [
+        'http://user:secret@localhost:9200/',
+        'https://user:secret@other_host:443/production'
+    ],
+    verify_certs=True
+)
+</code></pre>
+<p>By default, <code>JSONSerializer
+&lt;https://github.com/opensearch-project/opensearch-py/blob/master/opensearch/serializer.py#L24&gt;</code>_
+is used to encode all outgoing requests.
+However, you can implement your own custom serializer::</p>
+<pre><code>from opensearchpy.serializer import JSONSerializer
+
+class SetEncoder(JSONSerializer):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        if isinstance(obj, Something):
+            return 'CustomSomethingRepresentation'
+        return JSONSerializer.default(self, obj)
+
+client = OpenSearch(serializer=SetEncoder())
+</code></pre>
+<p>:arg hosts: list of nodes, or a single node, we should connect to.
+Node should be a dictionary ({"host": "localhost", "port": 9200}),
+the entire dictionary will be passed to the :class:<code>~opensearchpy.Connection</code>
+class as kwargs, or a string in the format of <code>host[:port]</code> which will be
+translated to a dictionary automatically.
+If no value is given the
+:class:<code>~opensearchpy.Connection</code> class defaults will be used.</p>
+<p>:arg transport_class: :class:<code>~opensearchpy.Transport</code> subclass to use.</p>
+<p>:arg kwargs: any additional arguments will be passed on to the
+:class:<code>~opensearchpy.Transport</code> class and, subsequently, to the
+:class:<code>~opensearchpy.Connection</code> instances.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@for_all_methods([server_failure])
+class FakeOpenSearch(OpenSearch):
+    # __documents_dict = None
+
+    # pylint: disable=super-init-not-called
+    def __init__(self, hosts=None, transport_class=None, **kwargs):
+        # self.__documents_dict = {}
+        self._FakeIndicesClient__documents_dict = {}
+        self.__scrolls = {}
+        self.transport = Transport(_normalize_hosts(hosts), **kwargs)
+
+        # This blows up if I call the real base.
+        # super(FakeOpenSearch, self).__init__()
+
+    @property
+    def __documents_dict(self):
+        return self._FakeIndicesClient__documents_dict
+
+    @property
+    def indices(self):
+        return FakeIndicesClient(self)
+
+    @property
+    def cluster(self):
+        return FakeClusterClient(self)
+
+    @query_params()
+    def ping(self, params=None, headers=None):
+        return True
+
+    @query_params()
+    def info(self, params=None, headers=None):
+        return {
+            &#34;status&#34;: 200,
+            &#34;cluster_name&#34;: &#34;openmock&#34;,
+            &#34;version&#34;: {
+                &#34;lucene_version&#34;: &#34;4.10.4&#34;,
+                &#34;build_hash&#34;: &#34;00f95f4ffca6de89d68b7ccaf80d148f1f70e4d4&#34;,
+                &#34;number&#34;: &#34;1.7.5&#34;,
+                &#34;build_timestamp&#34;: &#34;2016-02-02T09:55:30Z&#34;,
+                &#34;build_snapshot&#34;: False,
+            },
+            &#34;name&#34;: &#34;Nightwatch&#34;,
+            &#34;tagline&#34;: &#34;You Know, for Search&#34;,
+        }
+
+    @query_params(
+        &#34;consistency&#34;,
+        &#34;op_type&#34;,
+        &#34;parent&#34;,
+        &#34;refresh&#34;,
+        &#34;replication&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;timestamp&#34;,
+        &#34;ttl&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def create(self, index, body, doc_type=&#34;_doc&#34;, id=None, params=None, headers=None):
+    def create(
+        self,
+        index: Any,
+        id: Any,
+        body: Any,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        doc_type = &#34;_doc&#34;
+        if self.exists(index, id, doc_type=doc_type, params=params):
+            raise ConflictError(
+                409,
+                &#34;action_request_validation_exception&#34;,
+                &#34;Validation Failed: 1: no documents to get;&#34;,
+            )
+
+        if index not in self.__documents_dict:
+            self.__documents_dict[index] = []
+
+        if id is None:
+            id = get_random_id()
+
+        self.__documents_dict[index].append(
+            {
+                &#34;_type&#34;: doc_type,
+                &#34;_id&#34;: id,
+                &#34;_source&#34;: body,
+                &#34;_index&#34;: index,
+                &#34;_version&#34;: 1,
+            }
+        )
+
+        return {
+            &#34;_type&#34;: doc_type,
+            &#34;_id&#34;: id,
+            &#34;created&#34;: True,
+            &#34;_version&#34;: 1,
+            &#34;_index&#34;: index,
+            &#34;result&#34;: &#34;created&#34;,
+        }
+
+    @query_params(
+        &#34;consistency&#34;,
+        &#34;op_type&#34;,
+        &#34;parent&#34;,
+        &#34;refresh&#34;,
+        &#34;replication&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;timestamp&#34;,
+        &#34;ttl&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def index(self, index, body, doc_type=&#34;_doc&#34;, id=None, params=None, headers=None):
+    def index(
+        self,
+        index: Any,
+        body: Any,
+        id: Any = None,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -&gt; Any:
+        doc_type = &#34;_doc&#34;
+        if index not in self.__documents_dict:
+            self.__documents_dict[index] = []
+
+        version = 1
+
+        result = &#34;created&#34;
+        if id is None:
+            id = get_random_id()
+
+        elif self.exists(index, id, doc_type=doc_type, params=params):
+            doc = self.get(index, id, doc_type=doc_type, params=params)
+            version = doc[&#34;_version&#34;] + 1
+            self.delete(index, id, doc_type=doc_type)
+            result = &#34;updated&#34;
+
+        self.__documents_dict[index].append(
+            {
+                &#34;_type&#34;: doc_type,
+                &#34;_id&#34;: id,
+                &#34;_source&#34;: body,
+                &#34;_index&#34;: index,
+                &#34;_version&#34;: version,
+            }
+        )
+
+        return {
+            &#34;_type&#34;: doc_type,
+            &#34;_id&#34;: id,
+            &#34;created&#34;: True,
+            &#34;_version&#34;: version,
+            &#34;_index&#34;: index,
+            &#34;result&#34;: result,
+        }
+
+    @query_params(
+        &#34;consistency&#34;,
+        &#34;op_type&#34;,
+        &#34;parent&#34;,
+        &#34;refresh&#34;,
+        &#34;replication&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;timestamp&#34;,
+        &#34;ttl&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def bulk(self, body, index=None, doc_type=None, params=None, headers=None):
+    def bulk(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        doc_type = None
+        items = []
+        errors = False
+
+        for raw_line in body.splitlines():
+            if len(raw_line.strip()) &gt; 0:
+                line = json.loads(raw_line)
+
+                if any(
+                    action in line for action in [&#34;index&#34;, &#34;create&#34;, &#34;update&#34;, &#34;delete&#34;]
+                ):
+                    action = next(iter(line.keys()))
+
+                    version = 1
+                    index = line[action].get(&#34;_index&#34;) or index
+                    doc_type = line[action].get(
+                        &#34;_type&#34;, &#34;_doc&#34;
+                    )  # _type is deprecated in 7.x
+
+                    if action in [&#34;delete&#34;, &#34;update&#34;] and not line[action].get(&#34;_id&#34;):
+                        raise RequestError(
+                            400, &#34;action_request_validation_exception&#34;, &#34;missing id&#34;
+                        )
+
+                    document_id = line[action].get(&#34;_id&#34;, get_random_id())
+
+                    if action == &#34;delete&#34;:
+                        status, result, error = self._validate_action(
+                            action, index, document_id, doc_type, params=params
+                        )
+                        item = {
+                            action: {
+                                &#34;_type&#34;: doc_type,
+                                &#34;_id&#34;: document_id,
+                                &#34;_index&#34;: index,
+                                &#34;_version&#34;: version,
+                                &#34;status&#34;: status,
+                            }
+                        }
+                        if error:
+                            errors = True
+                            item[action][&#34;error&#34;] = result
+                        else:
+                            self.delete(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
+                            item[action][&#34;result&#34;] = result
+                        items.append(item)
+
+                    if index not in self.__documents_dict:
+                        self.__documents_dict[index] = []
+                else:
+                    if &#34;doc&#34; in line and action == &#34;update&#34;:
+                        source = line[&#34;doc&#34;]
+                    else:
+                        source = line
+                    status, result, error = self._validate_action(
+                        action, index, document_id, doc_type, params=params
+                    )
+                    item = {
+                        action: {
+                            &#34;_type&#34;: doc_type,
+                            &#34;_id&#34;: document_id,
+                            &#34;_index&#34;: index,
+                            &#34;_version&#34;: version,
+                            &#34;status&#34;: status,
+                        }
+                    }
+                    if not error:
+                        item[action][&#34;result&#34;] = result
+                        if self.exists(
+                            index, document_id, doc_type=doc_type, params=params
+                        ):
+                            doc = self.get(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
+                            version = doc[&#34;_version&#34;] + 1
+                            self.delete(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
+
+                        self.__documents_dict[index].append(
+                            {
+                                &#34;_type&#34;: doc_type,
+                                &#34;_id&#34;: document_id,
+                                &#34;_source&#34;: source,
+                                &#34;_index&#34;: index,
+                                &#34;_version&#34;: version,
+                            }
+                        )
+                    else:
+                        errors = True
+                        item[action][&#34;error&#34;] = result
+                    items.append(item)
+        return {&#34;errors&#34;: errors, &#34;items&#34;: items}
+
+    def _validate_action(self, action, index, document_id, doc_type, params=None):
+        if action in [&#34;index&#34;, &#34;update&#34;] and self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 200, &#34;updated&#34;, False
+        if action == &#34;create&#34; and self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 409, &#34;version_conflict_engine_exception&#34;, True
+        if action in [&#34;index&#34;, &#34;create&#34;] and not self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 201, &#34;created&#34;, False
+        if action == &#34;delete&#34; and self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 200, &#34;deleted&#34;, False
+        if action == &#34;update&#34; and not self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 404, &#34;document_missing_exception&#34;, True
+        if action == &#34;delete&#34; and not self.exists(
+            index, id=document_id, doc_type=doc_type, params=params
+        ):
+            return 404, &#34;not_found&#34;, True
+        raise NotImplementedError(f&#34;{action} behaviour hasn&#39;t been implemented&#34;)
+
+    @query_params(&#34;parent&#34;, &#34;preference&#34;, &#34;realtime&#34;, &#34;refresh&#34;, &#34;routing&#34;)
+    # def exists(self, index, id, doc_type=None, params=None, headers=None):
+    def exists(
+        self,
+        index: Any,
+        id: Any,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -&gt; Any:
+        doc_type = None
+        result = False
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get(&#34;_id&#34;) == id and (
+                    document.get(&#34;_type&#34;) == doc_type or doc_type is None
+                ):
+                    result = True
+                    break
+        return result
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;fields&#34;,
+        &#34;parent&#34;,
+        &#34;preference&#34;,
+        &#34;realtime&#34;,
+        &#34;refresh&#34;,
+        &#34;routing&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def get(self, index, id, doc_type=&#34;_all&#34;, params=None, headers=None):
+    def get(
+        self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
+    ) -&gt; Any:
+        doc_type = &#34;_all&#34;
+        ignore = extract_ignore_as_iterable(params)
+        result = None
+
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get(&#34;_id&#34;) == id:
+                    if doc_type == &#34;_all&#34;:
+                        result = document
+                        break
+                    if document.get(&#34;_type&#34;) == doc_type:
+                        result = document
+                        break
+
+        if result:
+            result[&#34;found&#34;] = True
+            return result
+        if params and 404 in ignore:
+            return {&#34;found&#34;: False}
+        error_data = {&#34;_index&#34;: index, &#34;_type&#34;: doc_type, &#34;_id&#34;: id, &#34;found&#34;: False}
+        raise NotFoundError(404, json.dumps(error_data))
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_excludes&#34;,
+        &#34;_source_includes&#34;,
+        &#34;if_primary_term&#34;,
+        &#34;if_seq_no&#34;,
+        &#34;lang&#34;,
+        &#34;refresh&#34;,
+        &#34;require_alias&#34;,
+        &#34;retry_on_conflict&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;wait_for_active_shards&#34;,
+    )
+    def update(self, index, id, body, params=None, headers=None):
+        if not body:
+            raise RequestError(
+                400,
+                &#34;action_request_validation_exception&#34;,
+                &#34;Validation Failed: 1: script or doc is missing;&#34;,
+            )
+        if &#34;doc&#34; not in body and &#34;script&#34; not in body:
+            field = list(body.keys())
+            raise RequestError(
+                400,
+                &#34;x_content_parse_exception&#34;,
+                f&#34;[1:2] [UpdateRequest] unknown field [{field[0]}]&#34;,
+            )
+        if &#34;doc&#34; in body and &#34;script&#34; in body:
+            raise RequestError(
+                400,
+                &#34;action_request_validation_exception&#34;,
+                &#34;Validation Failed: 1: can&#39;t provide both script and doc;&#34;,
+            )
+
+        result = None
+
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get(&#34;_id&#34;) == id:
+                    if &#34;doc&#34; in body:
+                        document[&#34;_source&#34;] = {**document[&#34;_source&#34;], **body[&#34;doc&#34;]}
+                        document[&#34;_version&#34;] += 1
+
+                        # TODO: Might be removed since it seems that latest open search doesn&#39;t respond the _type anymore.
+                        result = {
+                            &#34;_index&#34;: index,
+                            &#34;_id&#34;: id,
+                            &#34;_type&#34;: document.get(&#34;_type&#34;, &#34;_doc&#34;),
+                            &#34;_version&#34;: document[&#34;_version&#34;],
+                            &#34;result&#34;: &#34;updated&#34;,
+                            &#34;_shards&#34;: {&#34;total&#34;: 1, &#34;successful&#34;: 1, &#34;failed&#34;: 0},
+                        }
+                    elif &#34;script&#34; in body:
+                        # TODO: Add pain(ful)less language support
+                        raise NotImplementedError(
+                            &#34;Using script is currently not supported.&#34;
+                        )
+
+        if result:
+            return result
+        raise NotFoundError(
+            404, &#34;document_missing_exception&#34;, f&#34;[{id}]: document missing&#34;
+        )
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_excludes&#34;,
+        &#34;_source_includes&#34;,
+        &#34;allow_no_indices&#34;,
+        &#34;analyze_wildcard&#34;,
+        &#34;analyzer&#34;,
+        &#34;conflicts&#34;,
+        &#34;default_operator&#34;,
+        &#34;df&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;from_&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;lenient&#34;,
+        &#34;max_docs&#34;,
+        &#34;pipeline&#34;,
+        &#34;preference&#34;,
+        &#34;q&#34;,
+        &#34;refresh&#34;,
+        &#34;request_cache&#34;,
+        &#34;requests_per_second&#34;,
+        &#34;routing&#34;,
+        &#34;scroll&#34;,
+        &#34;scroll_size&#34;,
+        &#34;search_timeout&#34;,
+        &#34;search_type&#34;,
+        &#34;size&#34;,
+        &#34;slices&#34;,
+        &#34;sort&#34;,
+        &#34;stats&#34;,
+        &#34;terminate_after&#34;,
+        &#34;timeout&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+        &#34;wait_for_active_shards&#34;,
+        &#34;wait_for_completion&#34;,
+    )
+    def update_by_query(
+        self,
+        index: Any,
+        body: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        # def update_by_query(
+        #     self, index, body=None, doc_type=None, params=None, headers=None
+        # ):
+        doc_type = None
+        # Actually it only supports script equal operations
+        # TODO: Full support from painless language
+        total_updated = 0
+        if isinstance(index, list):
+            (index,) = index
+        new_values = {}
+        script_params = body[&#34;script&#34;][&#34;params&#34;]
+        script_source = body[&#34;script&#34;][&#34;source&#34;].replace(&#34;ctx._source.&#34;, &#34;&#34;).split(&#34;;&#34;)
+        for sentence in script_source:
+            if sentence:
+                field, _, value = sentence.split()
+                if value.startswith(&#34;params.&#34;):
+                    _, key = value.split(&#34;.&#34;)
+                    value = script_params.get(key)
+                new_values[field] = value
+
+        matches = self.search(
+            index=index, doc_type=doc_type, body=body, params=params, headers=headers
+        )
+        if matches[&#34;hits&#34;][&#34;total&#34;]:
+            for hit in matches[&#34;hits&#34;][&#34;hits&#34;]:
+                body = hit[&#34;_source&#34;]
+                body.update(new_values)
+                self.index(index, body, doc_type=hit[&#34;_type&#34;], id=hit[&#34;_id&#34;])
+                total_updated += 1
+
+        return {
+            &#34;took&#34;: 1,
+            &#34;time_out&#34;: False,
+            &#34;total&#34;: matches[&#34;hits&#34;][&#34;total&#34;],
+            &#34;updated&#34;: total_updated,
+            &#34;deleted&#34;: 0,
+            &#34;batches&#34;: 1,
+            &#34;version_conflicts&#34;: 0,
+            &#34;noops&#34;: 0,
+            &#34;retries&#34;: 0,
+            &#34;throttled_millis&#34;: 100,
+            &#34;requests_per_second&#34;: 100,
+            &#34;throttled_until_millis&#34;: 0,
+            &#34;failures&#34;: [],
+        }
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;preference&#34;,
+        &#34;realtime&#34;,
+        &#34;refresh&#34;,
+        &#34;routing&#34;,
+        &#34;stored_fields&#34;,
+    )
+    def mget(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        # def mget(self, body, index, doc_type=&#34;_all&#34;, params=None, headers=None):
+        doc_type = &#34;_all&#34;
+        docs = body.get(&#34;docs&#34;)
+        ids = [doc[&#34;_id&#34;] for doc in docs]
+        results = []
+        for id in ids:
+            # pylint: disable=bare-except
+            try:
+                results.append(
+                    self.get(
+                        index, id, doc_type=doc_type, params=params, headers=headers
+                    )
+                )
+            except:  # noqa
+                pass  # nosec
+        if not results:
+            raise RequestError(
+                400,
+                &#34;action_request_validation_exception&#34;,
+                &#34;Validation Failed: 1: no documents to get;&#34;,
+            )
+        return {&#34;docs&#34;: results}
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;parent&#34;,
+        &#34;preference&#34;,
+        &#34;realtime&#34;,
+        &#34;refresh&#34;,
+        &#34;routing&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def get_source(self, index, doc_type, id, params=None, headers=None):
+    def get_source(
+        self,
+        index: Any,
+        id: Any,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        doc_type = None
+        document = self.get(index=index, doc_type=doc_type, id=id, params=params)
+        return document.get(&#34;_source&#34;)
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;allow_no_indices&#34;,
+        &#34;analyze_wildcard&#34;,
+        &#34;analyzer&#34;,
+        &#34;default_operator&#34;,
+        &#34;df&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;explain&#34;,
+        &#34;fielddata_fields&#34;,
+        &#34;fields&#34;,
+        &#34;from_&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;lenient&#34;,
+        &#34;lowercase_expanded_terms&#34;,
+        &#34;min_score&#34;,
+        &#34;preference&#34;,
+        &#34;q&#34;,
+        &#34;request_cache&#34;,
+        &#34;routing&#34;,
+        &#34;scroll&#34;,
+        &#34;search_type&#34;,
+        &#34;size&#34;,
+        &#34;sort&#34;,
+        &#34;stats&#34;,
+        &#34;suggest_field&#34;,
+        &#34;suggest_mode&#34;,
+        &#34;suggest_size&#34;,
+        &#34;suggest_text&#34;,
+        &#34;terminate_after&#34;,
+        &#34;timeout&#34;,
+        &#34;track_scores&#34;,
+        &#34;version&#34;,
+    )
+    # def count(self, index=None, doc_type=None, body=None, params=None, headers=None):
+    def count(
+        self,
+        body: Any = None,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        doc_type = None
+        searchable_indexes = self._normalize_index_to_list(index)
+
+        i = 0
+        for searchable_index in searchable_indexes:
+            for document in self.__documents_dict[searchable_index]:
+                if doc_type and document.get(&#34;_type&#34;) != doc_type:
+                    continue
+                i += 1
+        result = {
+            &#34;count&#34;: i,
+            &#34;_shards&#34;: {&#34;successful&#34;: 1, &#34;skipped&#34;: 0, &#34;failed&#34;: 0, &#34;total&#34;: 1},
+        }
+
+        return result
+
+    def _get_fake_query_condition(self, query_type_str, condition):
+        return FakeQueryCondition(QueryType.get_query_type(query_type_str), condition)
+
+    @query_params(
+        &#34;ccs_minimize_roundtrips&#34;,
+        &#34;max_concurrent_searches&#34;,
+        &#34;max_concurrent_shard_requests&#34;,
+        &#34;pre_filter_shard_size&#34;,
+        &#34;rest_total_hits_as_int&#34;,
+        &#34;search_type&#34;,
+        &#34;typed_keys&#34;,
+    )
+    # def msearch(self, body, index=None, doc_type=None, params=None, headers=None):
+    def msearch(
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        def grouped(iterable):
+            if len(iterable) % 2 != 0:
+                # pylint: disable=broad-exception-raised
+                raise Exception(&#34;Malformed body&#34;)
+            iterator = iter(iterable)
+            while True:
+                try:
+                    yield (next(iterator)[&#34;index&#34;], next(iterator))
+                except StopIteration:
+                    break
+
+        responses = []
+        took = 0
+        for ind, query in grouped(body):
+            response = self.search(index=ind, body=query)
+            took += response[&#34;took&#34;]
+            responses.append(response)
+        result = {&#34;took&#34;: took, &#34;responses&#34;: responses}
+        return result
+
+    @query_params(
+        &#34;_source&#34;,
+        &#34;_source_exclude&#34;,
+        &#34;_source_include&#34;,
+        &#34;allow_no_indices&#34;,
+        &#34;analyze_wildcard&#34;,
+        &#34;analyzer&#34;,
+        &#34;default_operator&#34;,
+        &#34;df&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;explain&#34;,
+        &#34;fielddata_fields&#34;,
+        &#34;fields&#34;,
+        &#34;from_&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;lenient&#34;,
+        &#34;lowercase_expanded_terms&#34;,
+        &#34;preference&#34;,
+        &#34;q&#34;,
+        &#34;request_cache&#34;,
+        &#34;routing&#34;,
+        &#34;scroll&#34;,
+        &#34;search_type&#34;,
+        &#34;size&#34;,
+        &#34;sort&#34;,
+        &#34;stats&#34;,
+        &#34;suggest_field&#34;,
+        &#34;suggest_mode&#34;,
+        &#34;suggest_size&#34;,
+        &#34;suggest_text&#34;,
+        &#34;terminate_after&#34;,
+        &#34;timeout&#34;,
+        &#34;track_scores&#34;,
+        &#34;version&#34;,
+    )
+    def search(
+        self,
+        body: Any = None,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
+    ) -&gt; Any:
+        # def search(self, index=None, doc_type=None, body=None, params=None, headers=None):
+        doc_type: Optional[list] = None
+        searchable_indexes = self._normalize_index_to_list(index)
+
+        matches = []
+        conditions = []
+
+        if body and &#34;query&#34; in body:
+            query = body[&#34;query&#34;]
+            for query_type_str, condition in query.items():
+                conditions.append(
+                    self._get_fake_query_condition(query_type_str, condition)
+                )
+        for searchable_index in searchable_indexes:
+            for document in self.__documents_dict[searchable_index]:
+                if doc_type:
+                    # pylint: disable=unsupported-membership-test
+                    if (
+                        isinstance(doc_type, list)
+                        and document.get(&#34;_type&#34;) not in doc_type
+                    ):
+                        continue
+                    if isinstance(doc_type, str) and document.get(&#34;_type&#34;) != doc_type:
+                        continue
+                if conditions:
+                    for condition in conditions:
+                        if condition.evaluate(document):
+                            matches.append(document)
+                            break
+                else:
+                    matches.append(document)
+
+        for match in matches:
+            self._find_and_convert_data_types(match[&#34;_source&#34;])
+
+        result = {
+            &#34;hits&#34;: {
+                &#34;total&#34;: {&#34;value&#34;: len(matches), &#34;relation&#34;: &#34;eq&#34;},
+                &#34;max_score&#34;: 1.0,
+            },
+            &#34;_shards&#34;: {
+                # Simulate indexes with 1 shard each
+                &#34;successful&#34;: len(searchable_indexes),
+                &#34;skipped&#34;: 0,
+                &#34;failed&#34;: 0,
+                &#34;total&#34;: len(searchable_indexes),
+            },
+            &#34;took&#34;: 1,
+            &#34;timed_out&#34;: False,
+        }
+
+        hits = []
+        for match in matches:
+            match[&#34;_score&#34;] = 1.0
+            hits.append(match)
+
+        # build aggregations
+        if body is not None and &#34;aggs&#34; in body:
+            aggregations = {}
+
+            for aggregation, definition in body[&#34;aggs&#34;].items():
+                aggregations[aggregation] = {
+                    &#34;doc_count_error_upper_bound&#34;: 0,
+                    &#34;sum_other_doc_count&#34;: 0,
+                    &#34;buckets&#34;: self.make_aggregation_buckets(definition, matches),
+                }
+
+            if aggregations:
+                result[&#34;aggregations&#34;] = aggregations
+
+        if &#34;scroll&#34; in params:
+            result[&#34;_scroll_id&#34;] = str(get_random_scroll_id())
+            params[&#34;size&#34;] = int(params.get(&#34;size&#34;, 10))
+            params[&#34;from&#34;] = int(
+                params.get(&#34;from&#34;) + params.get(&#34;size&#34;) if &#34;from&#34; in params else 0
+            )
+            self.__scrolls[result.get(&#34;_scroll_id&#34;)] = {
+                &#34;index&#34;: index,
+                &#34;doc_type&#34;: doc_type,
+                &#34;body&#34;: body,
+                &#34;params&#34;: params,
+            }
+            hits = hits[params.get(&#34;from&#34;) : params.get(&#34;from&#34;) + params.get(&#34;size&#34;)]
+        elif &#34;size&#34; in params:
+            hits = hits[: int(params[&#34;size&#34;])]
+        elif body and &#34;size&#34; in body:
+            hits = hits[: int(body[&#34;size&#34;])]
+
+        result[&#34;hits&#34;][&#34;hits&#34;] = hits
+
+        return result
+
+    @query_params(&#34;scroll&#34;)
+    # def scroll(self, scroll_id, params=None, headers=None):
+    def scroll(
+        self,
+        body: Any = None,
+        scroll_id: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -&gt; Any:
+        scroll = self.__scrolls.pop(scroll_id)
+        result = self.search(
+            index=scroll.get(&#34;index&#34;),
+            doc_type=scroll.get(&#34;doc_type&#34;),
+            body=scroll.get(&#34;body&#34;),
+            params=scroll.get(&#34;params&#34;),
+        )
+        return result
+
+    @query_params(
+        &#34;consistency&#34;,
+        &#34;parent&#34;,
+        &#34;refresh&#34;,
+        &#34;replication&#34;,
+        &#34;routing&#34;,
+        &#34;timeout&#34;,
+        &#34;version&#34;,
+        &#34;version_type&#34;,
+    )
+    # def delete(self, index, id, doc_type=None, params=None, headers=None):
+    def delete(
+        self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
+    ) -&gt; Any:
+        doc_type = None
+        found = False
+        ignore = extract_ignore_as_iterable(params)
+
+        if index in self.__documents_dict:
+            for document in self.__documents_dict[index]:
+                if document.get(&#34;_id&#34;) == id:
+                    found = True
+                    if doc_type and document.get(&#34;_type&#34;) != doc_type:
+                        found = False
+                    if found:
+                        self.__documents_dict[index].remove(document)
+                        break
+
+        result_dict = {
+            &#34;found&#34;: found,
+            &#34;_index&#34;: index,
+            &#34;_type&#34;: doc_type,
+            &#34;_id&#34;: id,
+            &#34;_version&#34;: 1,
+        }
+
+        if found:
+            return result_dict
+        if params and 404 in ignore:
+            return {&#34;found&#34;: False}
+        raise NotFoundError(404, json.dumps(result_dict))
+
+    @query_params(
+        &#34;allow_no_indices&#34;,
+        &#34;expand_wildcards&#34;,
+        &#34;ignore_unavailable&#34;,
+        &#34;preference&#34;,
+        &#34;routing&#34;,
+    )
+    def suggest(self, body, index=None, params=None, headers=None):
+        if index is not None and index not in self.__documents_dict:
+            raise NotFoundError(404, f&#34;IndexMissingException[[{index}] missing]&#34;)
+
+        result_dict = {}
+        for key, value in body.items():
+            text = value.get(&#34;text&#34;)
+            suggestion = (
+                int(text) + 1 if isinstance(text, int) else f&#34;{text}_suggestion&#34;
+            )
+            result_dict[key] = [
+                {
+                    &#34;text&#34;: text,
+                    &#34;length&#34;: 1,
+                    &#34;options&#34;: [{&#34;text&#34;: suggestion, &#34;freq&#34;: 1, &#34;score&#34;: 1.0}],
+                    &#34;offset&#34;: 0,
+                }
+            ]
+        return result_dict
+
+    def _normalize_index_to_list(self, index):
+        # Ensure to have a list of index
+        if index is None:
+            searchable_indexes = self.__documents_dict.keys()
+        elif isinstance(index, str):
+            searchable_indexes = [index]
+        elif isinstance(index, list):
+            searchable_indexes = index
+        else:
+            # Is it the correct exception to use ?
+            raise ValueError(&#34;Invalid param &#39;index&#39;&#34;)
+
+        # Check index(es) exists
+        for searchable_index in searchable_indexes:
+            if searchable_index not in self.__documents_dict:
+                raise NotFoundError(
+                    404, f&#34;IndexMissingException[[{searchable_index}] missing]&#34;
+                )
+
+        return searchable_indexes
+
+    @classmethod
+    def _find_and_convert_data_types(cls, document):
+        for key, value in document.items():
+            if isinstance(value, dict):
+                cls._find_and_convert_data_types(value)
+            elif isinstance(value, datetime.datetime):
+                document[key] = value.isoformat()
+
+    def make_aggregation_buckets(self, aggregation, documents):
+        if &#34;composite&#34; in aggregation:
+            return self.make_composite_aggregation_buckets(aggregation, documents)
+        return []
+
+    def make_composite_aggregation_buckets(self, aggregation, documents):
+        def make_key(doc_source, agg_source):
+            attr = list(agg_source.values())[0][&#34;terms&#34;][&#34;field&#34;]
+            return doc_source[attr]
+
+        def make_bucket(bucket_key, bucket):
+            out = {
+                &#34;key&#34;: dict(zip(bucket_key_fields, bucket_key)),
+                &#34;doc_count&#34;: len(bucket),
+            }
+
+            for metric_key, metric_definition in aggregation[&#34;aggs&#34;].items():
+                metric_type_str = list(metric_definition)[0]
+                metric_type = MetricType.get_metric_type(metric_type_str)
+                attr = metric_definition[metric_type_str][&#34;field&#34;]
+                data = [doc[attr] for doc in bucket]
+
+                if metric_type == MetricType.CARDINALITY:
+                    value = len(set(data))
+                else:
+                    raise NotImplementedError(
+                        f&#34;Metric type &#39;{metric_type}&#39; not implemented&#34;
+                    )
+
+                out[metric_key] = {&#34;value&#34;: value}
+            return out
+
+        agg_sources = aggregation[&#34;composite&#34;][&#34;sources&#34;]
+        buckets = defaultdict(list)
+        bucket_key_fields = [list(src)[0] for src in agg_sources]
+        for document in documents:
+            doc_src = document[&#34;_source&#34;]
+            key = tuple(
+                make_key(doc_src, agg_src)
+                for agg_src in aggregation[&#34;composite&#34;][&#34;sources&#34;]
+            )
+            buckets[key].append(doc_src)
+
+        buckets = sorted(((k, v) for k, v in buckets.items()), key=lambda x: x[0])
+        buckets = [make_bucket(bucket_key, bucket) for bucket_key, bucket in buckets]
+        return buckets</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>opensearchpy.client.OpenSearch</li>
+<li>opensearchpy.client.client.Client</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="openmock.FakeOpenSearch.cluster"><code class="name">prop <span class="ident">cluster</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cluster(self):
+    return FakeClusterClient(self)</code></pre>
+</details>
+</dd>
+<dt id="openmock.FakeOpenSearch.indices"><code class="name">prop <span class="ident">indices</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def indices(self):
+    return FakeIndicesClient(self)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="openmock.FakeOpenSearch.bulk"><code class="name flex">
+<span>def <span class="ident">bulk</span></span>(<span>self, body: Any, index: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.count"><code class="name flex">
+<span>def <span class="ident">count</span></span>(<span>self, body: Any = None, index: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.create"><code class="name flex">
+<span>def <span class="ident">create</span></span>(<span>self, index: Any, id: Any, body: Any, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.exists"><code class="name flex">
+<span>def <span class="ident">exists</span></span>(<span>self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.get_source"><code class="name flex">
+<span>def <span class="ident">get_source</span></span>(<span>self, index: Any, id: Any, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.index"><code class="name flex">
+<span>def <span class="ident">index</span></span>(<span>self, index: Any, body: Any, id: Any = None, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.info"><code class="name flex">
+<span>def <span class="ident">info</span></span>(<span>self, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.make_aggregation_buckets"><code class="name flex">
+<span>def <span class="ident">make_aggregation_buckets</span></span>(<span>self, aggregation, documents)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.make_composite_aggregation_buckets"><code class="name flex">
+<span>def <span class="ident">make_composite_aggregation_buckets</span></span>(<span>self, aggregation, documents)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.mget"><code class="name flex">
+<span>def <span class="ident">mget</span></span>(<span>self, body: Any, index: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.msearch"><code class="name flex">
+<span>def <span class="ident">msearch</span></span>(<span>self, body: Any, index: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.ping"><code class="name flex">
+<span>def <span class="ident">ping</span></span>(<span>self, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.scroll"><code class="name flex">
+<span>def <span class="ident">scroll</span></span>(<span>self, body: Any = None, scroll_id: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.search"><code class="name flex">
+<span>def <span class="ident">search</span></span>(<span>self, body: Any = None, index: Any = None, params: Any = None, headers: Any = None, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.suggest"><code class="name flex">
+<span>def <span class="ident">suggest</span></span>(<span>self, body, index=None, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, index, id, body, params=None, headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="openmock.FakeOpenSearch.update_by_query"><code class="name flex">
+<span>def <span class="ident">update_by_query</span></span>(<span>self, index: Any, body: Any = None, params: Any = None, headers: Any = None) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="openmock.behaviour" href="behaviour/index.html">openmock.behaviour</a></code></li>
+<li><code><a title="openmock.fake_asyncopensearch" href="fake_asyncopensearch.html">openmock.fake_asyncopensearch</a></code></li>
+<li><code><a title="openmock.fake_cluster" href="fake_cluster.html">openmock.fake_cluster</a></code></li>
+<li><code><a title="openmock.fake_indices" href="fake_indices.html">openmock.fake_indices</a></code></li>
+<li><code><a title="openmock.fake_opensearch" href="fake_opensearch.html">openmock.fake_opensearch</a></code></li>
+<li><code><a title="openmock.normalize_hosts" href="normalize_hosts.html">openmock.normalize_hosts</a></code></li>
+<li><code><a title="openmock.utilities" href="utilities/index.html">openmock.utilities</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="openmock.openmock" href="#openmock.openmock">openmock</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="openmock.AsyncFakeOpenSearch" href="#openmock.AsyncFakeOpenSearch">AsyncFakeOpenSearch</a></code></h4>
+<ul class="">
+<li><code><a title="openmock.AsyncFakeOpenSearch.bulk" href="#openmock.AsyncFakeOpenSearch.bulk">bulk</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.cluster" href="#openmock.AsyncFakeOpenSearch.cluster">cluster</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.count" href="#openmock.AsyncFakeOpenSearch.count">count</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.create" href="#openmock.AsyncFakeOpenSearch.create">create</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.delete" href="#openmock.AsyncFakeOpenSearch.delete">delete</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.exists" href="#openmock.AsyncFakeOpenSearch.exists">exists</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.get" href="#openmock.AsyncFakeOpenSearch.get">get</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.get_source" href="#openmock.AsyncFakeOpenSearch.get_source">get_source</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.index" href="#openmock.AsyncFakeOpenSearch.index">index</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.indices" href="#openmock.AsyncFakeOpenSearch.indices">indices</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.info" href="#openmock.AsyncFakeOpenSearch.info">info</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.make_aggregation_buckets" href="#openmock.AsyncFakeOpenSearch.make_aggregation_buckets">make_aggregation_buckets</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.make_composite_aggregation_buckets" href="#openmock.AsyncFakeOpenSearch.make_composite_aggregation_buckets">make_composite_aggregation_buckets</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.mget" href="#openmock.AsyncFakeOpenSearch.mget">mget</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.msearch" href="#openmock.AsyncFakeOpenSearch.msearch">msearch</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.ping" href="#openmock.AsyncFakeOpenSearch.ping">ping</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.scroll" href="#openmock.AsyncFakeOpenSearch.scroll">scroll</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.search" href="#openmock.AsyncFakeOpenSearch.search">search</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.suggest" href="#openmock.AsyncFakeOpenSearch.suggest">suggest</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.update" href="#openmock.AsyncFakeOpenSearch.update">update</a></code></li>
+<li><code><a title="openmock.AsyncFakeOpenSearch.update_by_query" href="#openmock.AsyncFakeOpenSearch.update_by_query">update_by_query</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="openmock.FakeClusterClient" href="#openmock.FakeClusterClient">FakeClusterClient</a></code></h4>
+<ul class="">
+<li><code><a title="openmock.FakeClusterClient.health" href="#openmock.FakeClusterClient.health">health</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="openmock.FakeIndicesClient" href="#openmock.FakeIndicesClient">FakeIndicesClient</a></code></h4>
+<ul class="">
+<li><code><a title="openmock.FakeIndicesClient.create" href="#openmock.FakeIndicesClient.create">create</a></code></li>
+<li><code><a title="openmock.FakeIndicesClient.delete" href="#openmock.FakeIndicesClient.delete">delete</a></code></li>
+<li><code><a title="openmock.FakeIndicesClient.exists" href="#openmock.FakeIndicesClient.exists">exists</a></code></li>
+<li><code><a title="openmock.FakeIndicesClient.refresh" href="#openmock.FakeIndicesClient.refresh">refresh</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="openmock.FakeOpenSearch" href="#openmock.FakeOpenSearch">FakeOpenSearch</a></code></h4>
+<ul class="">
+<li><code><a title="openmock.FakeOpenSearch.bulk" href="#openmock.FakeOpenSearch.bulk">bulk</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.cluster" href="#openmock.FakeOpenSearch.cluster">cluster</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.count" href="#openmock.FakeOpenSearch.count">count</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.create" href="#openmock.FakeOpenSearch.create">create</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.delete" href="#openmock.FakeOpenSearch.delete">delete</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.exists" href="#openmock.FakeOpenSearch.exists">exists</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.get" href="#openmock.FakeOpenSearch.get">get</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.get_source" href="#openmock.FakeOpenSearch.get_source">get_source</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.index" href="#openmock.FakeOpenSearch.index">index</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.indices" href="#openmock.FakeOpenSearch.indices">indices</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.info" href="#openmock.FakeOpenSearch.info">info</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.make_aggregation_buckets" href="#openmock.FakeOpenSearch.make_aggregation_buckets">make_aggregation_buckets</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.make_composite_aggregation_buckets" href="#openmock.FakeOpenSearch.make_composite_aggregation_buckets">make_composite_aggregation_buckets</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.mget" href="#openmock.FakeOpenSearch.mget">mget</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.msearch" href="#openmock.FakeOpenSearch.msearch">msearch</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.ping" href="#openmock.FakeOpenSearch.ping">ping</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.scroll" href="#openmock.FakeOpenSearch.scroll">scroll</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.search" href="#openmock.FakeOpenSearch.search">search</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.suggest" href="#openmock.FakeOpenSearch.suggest">suggest</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.update" href="#openmock.FakeOpenSearch.update">update</a></code></li>
+<li><code><a title="openmock.FakeOpenSearch.update_by_query" href="#openmock.FakeOpenSearch.update_by_query">update_by_query</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

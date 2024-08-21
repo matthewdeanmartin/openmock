@@ -1,15 +1,15 @@
 """
-Simulate some range queries
+This module provides a fake implementation of the OpenSearch client that can be used for testing purposes.
 """
+
+# pylint: disable=duplicate-code
 
 import datetime
 import json
 from collections import defaultdict
 from typing import Any, Optional
 
-import dateutil.parser
-import ranges
-from opensearchpy import OpenSearch
+import opensearchpy
 from opensearchpy.client.utils import query_params
 from opensearchpy.exceptions import ConflictError, NotFoundError, RequestError
 from opensearchpy.transport import Transport
@@ -17,6 +17,7 @@ from opensearchpy.transport import Transport
 from openmock.behaviour.server_failure import server_failure
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_indices import FakeIndicesClient
+from openmock.fake_opensearch import FakeQueryCondition, QueryType, MetricType
 from openmock.normalize_hosts import _normalize_hosts
 from openmock.utilities import (
     extract_ignore_as_iterable,
@@ -25,329 +26,9 @@ from openmock.utilities import (
 )
 from openmock.utilities.decorator import for_all_methods
 
-LT_KEYS = {"lt", "lte"}
-GT_KEYS = {"gt", "gte"}
-
-
-def _create_range(field):
-    if not any(x in field.keys() for x in LT_KEYS) or not any(
-        x in field.keys() for x in GT_KEYS
-    ):
-        raise ValueError(
-            f"Range queries on maps must contain one of {LT_KEYS} and one of {GT_KEYS}"
-        )
-    interval_notation = ""
-    if "gte" in field:
-        interval_notation += f"[{field['gte']}"
-    elif "gt" in field:
-        interval_notation += f"({field['gt']}"
-
-    if "lte" in field:
-        interval_notation += f",{field['lte']}]"
-    elif "lt" in field:
-        interval_notation += f",{field['lt']})"
-
-    return ranges.Range(interval_notation)
-
-
-def _compare_sign(sign, lhs, rhs):
-    """Convert text to symbol and evaluate"""
-    if sign == "gte":
-        if lhs < rhs:
-            return False
-    elif sign == "gt":
-        if lhs <= rhs:
-            return False
-    elif sign == "lte":
-        if lhs > rhs:
-            return False
-    elif sign == "lt":
-        if lhs >= rhs:
-            return False
-    else:
-        raise ValueError(f"Invalid comparison type {sign}")
-    return True
-
-
-def _compare_point(comparisons, point):
-    for sign, value in comparisons.items():
-        if isinstance(point, datetime.datetime):
-            value = dateutil.parser.isoparse(value)
-        if not _compare_sign(sign, point, value):
-            return False
-    return True
-
-
-class QueryType:
-    BOOL = "BOOL"
-    FILTER = "FILTER"
-    MATCH = "MATCH"
-    MATCH_ALL = "MATCH_ALL"
-    TERM = "TERM"
-    TERMS = "TERMS"
-    MUST = "MUST"
-    RANGE = "RANGE"
-    SHOULD = "SHOULD"
-    MINIMUM_SHOULD_MATCH = "MINIMUM_SHOULD_MATCH"
-    MULTI_MATCH = "MULTI_MATCH"
-    MUST_NOT = "MUST_NOT"
-    EXISTS = "EXISTS"
-
-    @staticmethod
-    def get_query_type(type_str):
-        if type_str == "bool":
-            return QueryType.BOOL
-        if type_str == "filter":
-            return QueryType.FILTER
-        if type_str == "match":
-            return QueryType.MATCH
-        if type_str == "match_all":
-            return QueryType.MATCH_ALL
-        if type_str == "term":
-            return QueryType.TERM
-        if type_str == "terms":
-            return QueryType.TERMS
-        if type_str == "must":
-            return QueryType.MUST
-        if type_str == "range":
-            return QueryType.RANGE
-        if type_str == "should":
-            return QueryType.SHOULD
-        if type_str == "minimum_should_match":
-            return QueryType.MINIMUM_SHOULD_MATCH
-        if type_str == "multi_match":
-            return QueryType.MULTI_MATCH
-        if type_str == "must_not":
-            return QueryType.MUST_NOT
-        if type_str == "exists":
-            return QueryType.EXISTS
-
-        raise NotImplementedError(f"type {type_str} is not implemented for QueryType")
-
-
-class MetricType:
-    CARDINALITY = "CARDINALITY"
-
-    @staticmethod
-    def get_metric_type(type_str):
-        if type_str == "cardinality":
-            return MetricType.CARDINALITY
-
-        raise NotImplementedError(f"type {type_str} is not implemented for MetricType")
-
-
-class FakeQueryCondition:
-    type = None
-    condition = None
-
-    def __init__(self, type, condition):
-        self.type = type
-        self.condition = condition
-
-    def evaluate(self, document):
-        return self._evaluate_for_query_type(document)
-
-    def _evaluate_for_query_type(self, document):
-        if self.type == QueryType.MATCH:
-            return self._evaluate_for_match_query_type(document)
-        if self.type == QueryType.MATCH_ALL:
-            return True
-        if self.type == QueryType.TERM:
-            return self._evaluate_for_term_query_type(document)
-        if self.type == QueryType.TERMS:
-            return self._evaluate_for_terms_query_type(document)
-        if self.type == QueryType.RANGE:
-            return self._evaluate_for_range_query_type(document)
-        if self.type == QueryType.BOOL:
-            return self._evaluate_for_compound_query_type(document)
-        if self.type == QueryType.FILTER:
-            return self._evaluate_for_compound_query_type(document)
-        if self.type == QueryType.MUST:
-            return self._evaluate_for_compound_query_type(document)
-        if self.type == QueryType.SHOULD:
-            return self._evaluate_for_should_query_type(document)
-        if self.type == QueryType.MULTI_MATCH:
-            return self._evaluate_for_multi_match_query_type(document)
-        if self.type == QueryType.MUST_NOT:
-            return self._evaluate_for_must_not_query_type(document)
-        if self.type == QueryType.EXISTS:
-            return self._evaluate_for_exists_query_type(document)
-        if self.type == QueryType.MINIMUM_SHOULD_MATCH:
-            return self._evaluate_for_compound_query_type(document)
-        raise NotImplementedError(
-            f"Fake query evaluation not implemented for query type: {self.type}"
-        )
-
-    def _evaluate_for_match_query_type(self, document):
-        return self._evaluate_for_field(document, True)
-
-    def _evaluate_for_term_query_type(self, document):
-        return self._evaluate_for_field(document, False)
-
-    def _evaluate_for_terms_query_type(self, document):
-        for field in self.condition:
-            for term in self.condition[field]:
-                if FakeQueryCondition(QueryType.TERM, {field: term}).evaluate(document):
-                    return True
-        return False
-
-    def _evaluate_for_field(self, document, ignore_case):
-        doc_source = document["_source"]
-        return_val = False
-        for field, value in self.condition.items():
-            return_val = self._compare_value_for_field(
-                doc_source, field, value, ignore_case
-            )
-            if return_val:
-                break
-        return return_val
-
-    def _evaluate_for_fields(self, document):
-        doc_source = document["_source"]
-        return_val = False
-        value = self.condition.get("query")
-        if not value:
-            return return_val
-        fields = self.condition.get("fields", [])
-        for field in fields:
-            return_val = self._compare_value_for_field(doc_source, field, value, True)
-            if return_val:
-                break
-
-        return return_val
-
-    def _evaluate_for_range_query_type(self, document):
-        for field, comparisons in self.condition.items():
-            doc_val = document["_source"]
-            for k in field.split("."):
-                if hasattr(doc_val, k):
-                    doc_val = getattr(doc_val, k)
-                elif k in doc_val:
-                    doc_val = doc_val[k]
-                else:
-                    return False
-
-            if isinstance(doc_val, list):
-                return False
-
-            lt_keys = {"lt", "lte"}
-            gt_keys = {"gt", "gte"}
-            if isinstance(doc_val, dict):
-                if not any(x in doc_val.keys() for x in lt_keys) or not any(
-                    x in doc_val.keys() for x in gt_keys
-                ):
-                    raise ValueError(
-                        f"Range queries on maps must contain one of {lt_keys} and one of {gt_keys}"
-                    )
-                document_range = _create_range(doc_val)
-                query_range = _create_range(comparisons)
-                relation = comparisons.get("relation", "intersects")
-
-                if relation == "within":
-                    return document_range in query_range
-                if relation == "contains":
-                    return query_range in document_range
-                return document_range.intersection(query_range) is not None
-
-            return _compare_point(comparisons, doc_val)
-
-    def _evaluate_for_compound_query_type(self, document):
-        return_val = False
-        if isinstance(self.condition, dict):
-            for query_type, sub_query in self.condition.items():
-                return_val = FakeQueryCondition(
-                    QueryType.get_query_type(query_type), sub_query
-                ).evaluate(document)
-                if not return_val:
-                    return False
-        elif isinstance(self.condition, list):
-            for sub_condition in self.condition:
-                for sub_condition_key in sub_condition:
-                    return_val = FakeQueryCondition(
-                        QueryType.get_query_type(sub_condition_key),
-                        sub_condition[sub_condition_key],
-                    ).evaluate(document)
-                    if not return_val:
-                        return False
-
-        return return_val
-
-    def _evaluate_for_must_not_query_type(self, document):
-        if isinstance(self.condition, dict):
-            for query_type, sub_query in self.condition.items():
-                return_val = FakeQueryCondition(
-                    QueryType.get_query_type(query_type), sub_query
-                ).evaluate(document)
-                if return_val:
-                    return False
-        elif isinstance(self.condition, list):
-            for sub_condition in self.condition:
-                for sub_condition_key in sub_condition:
-                    return_val = FakeQueryCondition(
-                        QueryType.get_query_type(sub_condition_key),
-                        sub_condition[sub_condition_key],
-                    ).evaluate(document)
-                    if return_val:
-                        return False
-        return True
-
-    def _evaluate_for_should_query_type(self, document):
-        return_val = False
-        for sub_condition in self.condition:
-            for sub_condition_key in sub_condition:
-                return_val = FakeQueryCondition(
-                    QueryType.get_query_type(sub_condition_key),
-                    sub_condition[sub_condition_key],
-                ).evaluate(document)
-                if return_val:
-                    return True
-        return return_val
-
-    def _evaluate_for_multi_match_query_type(self, document):
-        return self._evaluate_for_fields(document)
-
-    def _evaluate_for_exists_query_type(self, document):
-        doc_source = document["_source"]
-        field = self.condition.get("field")
-        return not self._compare_value_for_field(doc_source, field, None, False)
-
-    def _compare_value_for_field(self, doc_source, field, value, ignore_case):
-        if ignore_case and isinstance(value, str):
-            value = value.lower()
-
-        doc_val = doc_source
-        # Remove boosting
-        field, *_ = field.split("*")
-        # Remove ".keyword"
-        exact_search = field.lower().endswith(".keyword")
-        field = field[: -len(".keyword")] if exact_search else field
-        for k in field.split("."):
-            if hasattr(doc_val, k):
-                doc_val = getattr(doc_val, k)
-            elif k in doc_val:
-                doc_val = doc_val[k]
-            else:
-                return False
-
-        if not isinstance(doc_val, list):
-            doc_val = [doc_val]
-
-        for val in doc_val:
-            if not isinstance(val, (int, float, complex)) or val is None:
-                val = str(val)
-                if ignore_case:
-                    val = val.lower()
-
-            if value == val:
-                return True
-            if isinstance(val, str) and str(value) in val and not exact_search:
-                return True
-
-        return False
-
 
 @for_all_methods([server_failure])
-class FakeOpenSearch(OpenSearch):
+class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     # __documents_dict = None
 
     # pylint: disable=super-init-not-called
@@ -373,11 +54,11 @@ class FakeOpenSearch(OpenSearch):
         return FakeClusterClient(self)
 
     @query_params()
-    def ping(self, params=None, headers=None):
+    async def ping(self, params=None, headers=None):
         return True
 
     @query_params()
-    def info(self, params=None, headers=None):
+    async def info(self, params=None, headers=None):
         return {
             "status": 200,
             "cluster_name": "openmock",
@@ -406,7 +87,7 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     # def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
-    def create(
+    async def create(
         self,
         index: Any,
         id: Any,
@@ -461,7 +142,7 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     # def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
-    def index(
+    async def index(
         self,
         index: Any,
         body: Any,
@@ -519,7 +200,7 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     # def bulk(self, body, index=None, doc_type=None, params=None, headers=None):
-    def bulk(
+    async def bulk(
         self,
         body: Any,
         index: Any = None,
@@ -622,7 +303,7 @@ class FakeOpenSearch(OpenSearch):
                     items.append(item)
         return {"errors": errors, "items": items}
 
-    def _validate_action(self, action, index, document_id, doc_type, params=None):
+    async def _validate_action(self, action, index, document_id, doc_type, params=None):
         if action in ["index", "update"] and self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
@@ -651,7 +332,7 @@ class FakeOpenSearch(OpenSearch):
 
     @query_params("parent", "preference", "realtime", "refresh", "routing")
     # def exists(self, index, id, doc_type=None, params=None, headers=None):
-    def exists(
+    async def exists(
         self,
         index: Any,
         id: Any,
@@ -684,7 +365,7 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     # def get(self, index, id, doc_type="_all", params=None, headers=None):
-    def get(
+    async def get(
         self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
     ) -> Any:
         doc_type = "_all"
@@ -723,7 +404,7 @@ class FakeOpenSearch(OpenSearch):
         "timeout",
         "wait_for_active_shards",
     )
-    def update(self, index, id, body, params=None, headers=None):
+    async def update(self, index, id, body, params=None, headers=None):
         if not body:
             raise RequestError(
                 400,
@@ -811,7 +492,7 @@ class FakeOpenSearch(OpenSearch):
         "wait_for_active_shards",
         "wait_for_completion",
     )
-    def update_by_query(
+    async def update_by_query(
         self,
         index: Any,
         body: Any = None,
@@ -874,7 +555,7 @@ class FakeOpenSearch(OpenSearch):
         "routing",
         "stored_fields",
     )
-    def mget(
+    async def mget(
         self,
         body: Any,
         index: Any = None,
@@ -917,7 +598,7 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     # def get_source(self, index, doc_type, id, params=None, headers=None):
-    def get_source(
+    async def get_source(
         self,
         index: Any,
         id: Any,
@@ -965,7 +646,7 @@ class FakeOpenSearch(OpenSearch):
         "version",
     )
     # def count(self, index=None, doc_type=None, body=None, params=None, headers=None):
-    def count(
+    async def count(
         self,
         body: Any = None,
         index: Any = None,
@@ -1001,7 +682,7 @@ class FakeOpenSearch(OpenSearch):
         "typed_keys",
     )
     # def msearch(self, body, index=None, doc_type=None, params=None, headers=None):
-    def msearch(
+    async def msearch(
         self,
         body: Any,
         index: Any = None,
@@ -1063,7 +744,7 @@ class FakeOpenSearch(OpenSearch):
         "track_scores",
         "version",
     )
-    def search(
+    async def search(
         self,
         body: Any = None,
         index: Any = None,
@@ -1165,7 +846,7 @@ class FakeOpenSearch(OpenSearch):
 
     @query_params("scroll")
     # def scroll(self, scroll_id, params=None, headers=None):
-    def scroll(
+    async def scroll(
         self,
         body: Any = None,
         scroll_id: Any = None,
@@ -1192,7 +873,7 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     # def delete(self, index, id, doc_type=None, params=None, headers=None):
-    def delete(
+    async def delete(
         self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
     ) -> Any:
         doc_type = None
@@ -1264,7 +945,10 @@ class FakeOpenSearch(OpenSearch):
 
         # Check index(es) exists
         for searchable_index in searchable_indexes:
-            if searchable_index not in self.__documents_dict:
+            if (
+                searchable_index not in self.__documents_dict
+                and searchable_index not in self._FakeIndicesClient__documents_dict
+            ):
                 raise NotFoundError(
                     404, f"IndexMissingException[[{searchable_index}] missing]"
                 )
