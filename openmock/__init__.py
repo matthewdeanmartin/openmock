@@ -2,16 +2,25 @@
 Module initialization
 """
 
+from asyncio import iscoroutinefunction
 from functools import wraps
 from unittest.mock import patch
 
+from openmock.behaviour.server_failure import server_failure
 from openmock.fake_asyncopensearch import AsyncFakeOpenSearch
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_indices import FakeIndicesClient
 from openmock.fake_opensearch import FakeOpenSearch
 from openmock.normalize_hosts import _normalize_hosts
 
-__all__ = ["openmock", "FakeOpenSearch", "AsyncFakeOpenSearch", "FakeClusterClient", "FakeIndicesClient"]
+__all__ = [
+    "openmock",
+    "server_failure",
+    "FakeOpenSearch",
+    "AsyncFakeOpenSearch",
+    "FakeClusterClient",
+    "FakeIndicesClient",
+]
 
 OPEN_INSTANCES = {}
 
@@ -30,10 +39,15 @@ def _get_openmock(*args, hosts=None, **kwargs):
 
 def openmock(f):
     @wraps(f)
-    def decorated(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         OPEN_INSTANCES.clear()
         with patch("opensearchpy.OpenSearch", _get_openmock):
-            result = f(*args, **kwargs)
-        return result
+            return f(*args, **kwargs)
 
-    return decorated
+    @wraps(f)
+    async def async_wrapper(*args, **kwargs):
+        OPEN_INSTANCES.clear()
+        with patch("opensearchpy.OpenSearch", _get_openmock):
+            return await f(*args, **kwargs)
+
+    return async_wrapper if iscoroutinefunction(f) else wrapper

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0] - 2023-08-21
 
+### Fixed
+
+- Both `@openmock` and  `@server_failure` decorators now work with async functions.
+
+## [3.0.0] - 2023-08-21
+
 ### Added
 
 - Async support
