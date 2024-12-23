@@ -15,9 +15,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
     - uses: actions/checkout@v4.1.7
+      with:
+        persist-credentials: false
     - name: Using Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5.1.1
       with:

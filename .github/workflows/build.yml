@@ -8,6 +8,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4.1.7
+      with:
+        persist-credentials: false
     - name: Install poetry and pipx
       run: |
         pip install poetry && pip install pipx
