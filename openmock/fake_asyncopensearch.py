@@ -12,7 +12,7 @@ from typing import Any, Optional
 import opensearchpy
 from opensearchpy.client.utils import query_params
 from opensearchpy.exceptions import ConflictError, NotFoundError, RequestError
-from opensearchpy.transport import Transport
+from opensearchpy import AsyncTransport
 
 from openmock.behaviour.server_failure import server_failure
 from openmock.fake_cluster import FakeClusterClient
@@ -36,7 +36,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         # self.__documents_dict = {}
         self._FakeIndicesClient__documents_dict = {}
         self.__scrolls = {}
-        self.transport = Transport(_normalize_hosts(hosts), **kwargs)
+        self.transport = AsyncTransport(_normalize_hosts(hosts), **kwargs)
 
         # This blows up if I call the real base.
         # super(FakeOpenSearch, self).__init__()
@@ -234,7 +234,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     document_id = line[action].get("_id", get_random_id())
 
                     if action == "delete":
-                        status, result, error = self._validate_action(
+                        status, result, error = await self._validate_action(
                             action, index, document_id, doc_type, params=params
                         )
                         item = {
@@ -250,7 +250,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                             errors = True
                             item[action]["error"] = result
                         else:
-                            self.delete(
+                            await self.delete(
                                 index, document_id, doc_type=doc_type, params=params
                             )
                             item[action]["result"] = result
@@ -263,7 +263,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                         source = line["doc"]
                     else:
                         source = line
-                    status, result, error = self._validate_action(
+                    status, result, error = await self._validate_action(
                         action, index, document_id, doc_type, params=params
                     )
                     item = {
@@ -277,14 +277,14 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     }
                     if not error:
                         item[action]["result"] = result
-                        if self.exists(
+                        if await self.exists(
                             index, document_id, doc_type=doc_type, params=params
                         ):
-                            doc = self.get(
+                            doc = await self.get(
                                 index, document_id, doc_type=doc_type, params=params
                             )
                             version = doc["_version"] + 1
-                            self.delete(
+                            await self.delete(
                                 index, document_id, doc_type=doc_type, params=params
                             )
 
