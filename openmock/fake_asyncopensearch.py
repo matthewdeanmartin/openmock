@@ -87,7 +87,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         "version_type",
     )
     # def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
-    async def create(  # pylint: disable=too-many-positional-arguments
+    async def create(
         self,
         index: Any,
         id: Any,
@@ -142,7 +142,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         "version_type",
     )
     # def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
-    async def index(  # pylint: disable=too-many-positional-arguments
+    async def index(
         self,
         index: Any,
         body: Any,
@@ -305,7 +305,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
 
     async def _validate_action(
         self, action, index, document_id, doc_type, params=None
-    ):  # pylint: disable=too-many-positional-arguments
+    ):
         if action in ["index", "update"] and self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
@@ -408,7 +408,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     async def update(
         self, index, id, body, params=None, headers=None
-    ):  # pylint: disable=too-many-positional-arguments
+    ):
         if not body:
             raise RequestError(
                 400,
