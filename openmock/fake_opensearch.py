@@ -406,7 +406,7 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     # def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
-    def create(
+    def create(  # pylint: disable=too-many-positional-arguments
         self,
         index: Any,
         id: Any,
@@ -461,7 +461,7 @@ class FakeOpenSearch(OpenSearch):
         "version_type",
     )
     # def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
-    def index(
+    def index(  # pylint: disable=too-many-positional-arguments
         self,
         index: Any,
         body: Any,
@@ -622,7 +622,9 @@ class FakeOpenSearch(OpenSearch):
                     items.append(item)
         return {"errors": errors, "items": items}
 
-    def _validate_action(self, action, index, document_id, doc_type, params=None):
+    def _validate_action(
+        self, action, index, document_id, doc_type, params=None
+    ):  # pylint: disable=too-many-positional-arguments
         if action in ["index", "update"] and self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
@@ -723,7 +725,9 @@ class FakeOpenSearch(OpenSearch):
         "timeout",
         "wait_for_active_shards",
     )
-    def update(self, index, id, body, params=None, headers=None):
+    def update(
+        self, index, id, body, params=None, headers=None
+    ):  # pylint: disable=too-many-positional-arguments
         if not body:
             raise RequestError(
                 400,
