@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "openmock"
-version = "3.0.2"
+version = "3.1.2"
 description = "Python OpenSearch Mock for test purposes"
 authors = ["Marcos Cardoso",
     "Mathew Martin <matthewdeanmartin@gmail.com>"]
@@ -108,4 +108,3 @@ priority = "primary"
 [[tool.poetry.source]]
 name = "PyPI"
 priority = "primary"
-
