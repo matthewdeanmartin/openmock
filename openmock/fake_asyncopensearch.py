@@ -657,21 +657,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         params: Any = None,
         headers: Any = None,
     ) -> Any:
-        doc_type = None
-        searchable_indexes = self._normalize_index_to_list(index)
-
-        i = 0
-        for searchable_index in searchable_indexes:
-            for document in self.__documents_dict[searchable_index]:
-                if doc_type and document.get("_type") != doc_type:
-                    continue
-                i += 1
-        result = {
-            "count": i,
-            "_shards": {"successful": 1, "skipped": 0, "failed": 0, "total": 1},
+        contents = await self.search(index=index, body=body, params=params, headers=headers)
+        return {
+            'count': len(contents['hits']['hits']),
+            '_shards': contents['_shards']
         }
-
-        return result
 
     def _get_fake_query_condition(self, query_type_str, condition):
         return FakeQueryCondition(QueryType.get_query_type(query_type_str), condition)
