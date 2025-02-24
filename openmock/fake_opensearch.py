@@ -1298,21 +1298,21 @@ class FakeOpenSearch(OpenSearch):
                 "key": dict(zip(bucket_key_fields, bucket_key)),
                 "doc_count": len(bucket),
             }
+            if "aggs" in aggregation:
+                for metric_key, metric_definition in aggregation["aggs"].items():
+                    metric_type_str = list(metric_definition)[0]
+                    metric_type = MetricType.get_metric_type(metric_type_str)
+                    attr = metric_definition[metric_type_str]["field"]
+                    data = [doc[attr] for doc in bucket]
 
-            for metric_key, metric_definition in aggregation["aggs"].items():
-                metric_type_str = list(metric_definition)[0]
-                metric_type = MetricType.get_metric_type(metric_type_str)
-                attr = metric_definition[metric_type_str]["field"]
-                data = [doc[attr] for doc in bucket]
+                    if metric_type == MetricType.CARDINALITY:
+                        value = len(set(data))
+                    else:
+                        raise NotImplementedError(
+                            f"Metric type '{metric_type}' not implemented"
+                        )
 
-                if metric_type == MetricType.CARDINALITY:
-                    value = len(set(data))
-                else:
-                    raise NotImplementedError(
-                        f"Metric type '{metric_type}' not implemented"
-                    )
-
-                out[metric_key] = {"value": value}
+                    out[metric_key] = {"value": value}
             return out
 
         agg_sources = aggregation["composite"]["sources"]
@@ -1320,10 +1320,13 @@ class FakeOpenSearch(OpenSearch):
         bucket_key_fields = [list(src)[0] for src in agg_sources]
         for document in documents:
             doc_src = document["_source"]
-            key = tuple(
-                make_key(doc_src, agg_src)
-                for agg_src in aggregation["composite"]["sources"]
-            )
+            key = ()
+            for agg_src in aggregation["composite"]["sources"]:
+                k = make_key(doc_src, agg_src)
+                if isinstance(k, list):
+                    key += tuple(k)
+                else:
+                    key += tuple([k])
             buckets[key].append(doc_src)
 
         buckets = sorted(((k, v) for k, v in buckets.items()), key=lambda x: x[0])
