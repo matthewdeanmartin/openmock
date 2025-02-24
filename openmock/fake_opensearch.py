@@ -1142,6 +1142,9 @@ class FakeOpenSearch(OpenSearch):
                 else:
                     hits = sorted(hits, key=lambda k, key=key: k["_source"][key])
 
+        if body is not None and 'from' in body and 'size' in body and body['from'] + body['size'] > 0:
+            hits = hits[body['from']:body['from'] + body['size']]
+
         if "scroll" in params:
             result["_scroll_id"] = str(get_random_scroll_id())
             params["size"] = int(params.get("size", 10))
