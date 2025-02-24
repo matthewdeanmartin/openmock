@@ -1135,6 +1135,13 @@ class FakeOpenSearch(OpenSearch):
             if aggregations:
                 result["aggregations"] = aggregations
 
+        if body is not None and "sort" in body:
+            for key in body["sort"][0]:
+                if body["sort"][0][key]["order"] == "desc":
+                    hits = sorted(hits, key=lambda k, key=key: k["_source"][key], reverse=True)
+                else:
+                    hits = sorted(hits, key=lambda k, key=key: k["_source"][key])
+
         if "scroll" in params:
             result["_scroll_id"] = str(get_random_scroll_id())
             params["size"] = int(params.get("size", 10))
