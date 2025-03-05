@@ -173,7 +173,7 @@ class FakeQueryCondition:
         if self.type == QueryType.EXISTS:
             return self._evaluate_for_exists_query_type(document)
         if self.type == QueryType.MINIMUM_SHOULD_MATCH:
-            return self._evaluate_for_compound_query_type(document)
+            return True
         raise NotImplementedError(
             f"Fake query evaluation not implemented for query type: {self.type}"
         )
@@ -976,21 +976,11 @@ class FakeOpenSearch(OpenSearch):
         params: Any = None,
         headers: Any = None,
     ) -> Any:
-        doc_type = None
-        searchable_indexes = self._normalize_index_to_list(index)
-
-        i = 0
-        for searchable_index in searchable_indexes:
-            for document in self.__documents_dict[searchable_index]:
-                if doc_type and document.get("_type") != doc_type:
-                    continue
-                i += 1
-        result = {
-            "count": i,
-            "_shards": {"successful": 1, "skipped": 0, "failed": 0, "total": 1},
+        contents = self.search(index=index, body=body, params=params, headers=headers)
+        return {
+            'count': len(contents['hits']['hits']),
+            '_shards': contents['_shards']
         }
-
-        return result
 
     def _get_fake_query_condition(self, query_type_str, condition):
         return FakeQueryCondition(QueryType.get_query_type(query_type_str), condition)
@@ -1145,6 +1135,16 @@ class FakeOpenSearch(OpenSearch):
             if aggregations:
                 result["aggregations"] = aggregations
 
+        if body is not None and "sort" in body:
+            for key in body["sort"][0]:
+                if body["sort"][0][key]["order"] == "desc":
+                    hits = sorted(hits, key=lambda k, key=key: k["_source"][key], reverse=True)
+                else:
+                    hits = sorted(hits, key=lambda k, key=key: k["_source"][key])
+
+        if body is not None and 'from' in body and 'size' in body and body['from'] + body['size'] > 0:
+            hits = hits[body['from']:body['from'] + body['size']]
+
         if "scroll" in params:
             result["_scroll_id"] = str(get_random_scroll_id())
             params["size"] = int(params.get("size", 10))
@@ -1298,21 +1298,21 @@ class FakeOpenSearch(OpenSearch):
                 "key": dict(zip(bucket_key_fields, bucket_key)),
                 "doc_count": len(bucket),
             }
+            if "aggs" in aggregation:
+                for metric_key, metric_definition in aggregation["aggs"].items():
+                    metric_type_str = list(metric_definition)[0]
+                    metric_type = MetricType.get_metric_type(metric_type_str)
+                    attr = metric_definition[metric_type_str]["field"]
+                    data = [doc[attr] for doc in bucket]
 
-            for metric_key, metric_definition in aggregation["aggs"].items():
-                metric_type_str = list(metric_definition)[0]
-                metric_type = MetricType.get_metric_type(metric_type_str)
-                attr = metric_definition[metric_type_str]["field"]
-                data = [doc[attr] for doc in bucket]
+                    if metric_type == MetricType.CARDINALITY:
+                        value = len(set(data))
+                    else:
+                        raise NotImplementedError(
+                            f"Metric type '{metric_type}' not implemented"
+                        )
 
-                if metric_type == MetricType.CARDINALITY:
-                    value = len(set(data))
-                else:
-                    raise NotImplementedError(
-                        f"Metric type '{metric_type}' not implemented"
-                    )
-
-                out[metric_key] = {"value": value}
+                    out[metric_key] = {"value": value}
             return out
 
         agg_sources = aggregation["composite"]["sources"]
@@ -1320,10 +1320,13 @@ class FakeOpenSearch(OpenSearch):
         bucket_key_fields = [list(src)[0] for src in agg_sources]
         for document in documents:
             doc_src = document["_source"]
-            key = tuple(
-                make_key(doc_src, agg_src)
-                for agg_src in aggregation["composite"]["sources"]
-            )
+            key = ()
+            for agg_src in aggregation["composite"]["sources"]:
+                k = make_key(doc_src, agg_src)
+                if isinstance(k, list):
+                    key += tuple(k)
+                else:
+                    key += tuple([k])
             buckets[key].append(doc_src)
 
         buckets = sorted(((k, v) for k, v in buckets.items()), key=lambda x: x[0])
