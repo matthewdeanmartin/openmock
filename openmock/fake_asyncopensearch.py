@@ -96,7 +96,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         headers: Any = None,
     ) -> Any:
         doc_type = "_doc"
-        if self.exists(index, id, doc_type=doc_type, params=params):
+        if await self.exists(index, id, doc_type=doc_type, params=params):
             raise ConflictError(
                 409,
                 "action_request_validation_exception",
@@ -161,10 +161,10 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         if id is None:
             id = get_random_id()
 
-        elif self.exists(index, id, doc_type=doc_type, params=params):
-            doc = self.get(index, id, doc_type=doc_type, params=params)
+        if await self.exists(index, id, doc_type=doc_type, params=params):
+            doc = await self.get(index, id, doc_type=doc_type, params=params)
             version = doc["_version"] + 1
-            self.delete(index, id, doc_type=doc_type)
+            await self.delete(index, id, doc_type=doc_type)
             result = "updated"
 
         self.__documents_dict[index].append(
@@ -250,9 +250,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                             errors = True
                             item[action]["error"] = result
                         else:
-                            await self.delete(
-                                index, document_id, doc_type=doc_type, params=params
-                            )
+                            await self.delete(index, document_id, doc_type=doc_type, params=params)
                             item[action]["result"] = result
                         items.append(item)
 
@@ -277,16 +275,12 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     }
                     if not error:
                         item[action]["result"] = result
-                        if await self.exists(
-                            index, document_id, doc_type=doc_type, params=params
-                        ):
+                        if await self.exists(index, document_id, doc_type=doc_type, params=params):
                             doc = await self.get(
                                 index, document_id, doc_type=doc_type, params=params
                             )
                             version = doc["_version"] + 1
-                            await self.delete(
-                                index, document_id, doc_type=doc_type, params=params
-                            )
+                            await self.delete(index, document_id, doc_type=doc_type, params=params)
 
                         self.__documents_dict[index].append(
                             {
@@ -306,27 +300,27 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     async def _validate_action(
         self, action, index, document_id, doc_type, params=None
     ):
-        if action in ["index", "update"] and self.exists(
+        if action in ["index", "update"] and await self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 200, "updated", False
-        if action == "create" and self.exists(
+        if action == "create" and await self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 409, "version_conflict_engine_exception", True
-        if action in ["index", "create"] and not self.exists(
+        if action in ["index", "create"] and not await self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 201, "created", False
-        if action == "delete" and self.exists(
+        if action == "delete" and await self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 200, "deleted", False
-        if action == "update" and not self.exists(
+        if action == "update" and not await self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 404, "document_missing_exception", True
-        if action == "delete" and not self.exists(
+        if action == "delete" and not await self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
             return 404, "not_found", True
@@ -523,14 +517,14 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     value = script_params.get(key)
                 new_values[field] = value
 
-        matches = self.search(
+        matches = await self.search(
             index=index, doc_type=doc_type, body=body, params=params, headers=headers
         )
         if matches["hits"]["total"]:
             for hit in matches["hits"]["hits"]:
                 body = hit["_source"]
                 body.update(new_values)
-                self.index(index, body, doc_type=hit["_type"], id=hit["_id"])
+                await self.index(index, body, doc_type=hit["_type"], id=hit["_id"])
                 total_updated += 1
 
         return {
@@ -575,7 +569,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
             # pylint: disable=bare-except
             try:
                 results.append(
-                    self.get(
+                    await self.get(
                         index, id, doc_type=doc_type, params=params, headers=headers
                     )
                 )
@@ -610,7 +604,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         headers: Any = None,
     ) -> Any:
         doc_type = None
-        document = self.get(index=index, doc_type=doc_type, id=id, params=params)
+        document = await self.get(index=index, doc_type=doc_type, id=id, params=params)
         return document.get("_source")
 
     @query_params(
@@ -697,7 +691,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         responses = []
         took = 0
         for ind, query in grouped(body):
-            response = self.search(index=ind, body=query)
+            response = await self.search(index=ind, body=query)
             took += response["took"]
             responses.append(response)
         result = {"took": took, "responses": responses}
@@ -858,7 +852,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         headers: Any = None,
     ) -> Any:
         scroll = self.__scrolls.pop(scroll_id)
-        result = self.search(
+        result = await self.search(
             index=scroll.get("index"),
             doc_type=scroll.get("doc_type"),
             body=scroll.get("body"),
