@@ -324,7 +324,7 @@ class FakeQueryCondition:
         for k in field.split("."):
             if hasattr(doc_val, k):
                 doc_val = getattr(doc_val, k)
-            elif k in doc_val:
+            elif doc_val is not None and k in doc_val:
                 doc_val = doc_val[k]
             else:
                 return False
