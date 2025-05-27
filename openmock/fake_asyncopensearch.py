@@ -10,13 +10,13 @@ from collections import defaultdict
 from typing import Any, Optional
 
 import opensearchpy
+from opensearchpy import AsyncTransport
 from opensearchpy.client.utils import query_params
 from opensearchpy.exceptions import ConflictError, NotFoundError, RequestError
-from opensearchpy import AsyncTransport
 
 from openmock.behaviour.server_failure import server_failure
+from openmock.fake_asyncindices import FakeAsyncIndicesClient
 from openmock.fake_cluster import FakeClusterClient
-from openmock.fake_indices import FakeIndicesClient
 from openmock.fake_opensearch import FakeQueryCondition, QueryType, MetricType
 from openmock.normalize_hosts import _normalize_hosts
 from openmock.utilities import (
@@ -34,7 +34,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     # pylint: disable=super-init-not-called
     def __init__(self, hosts=None, transport_class=None, **kwargs):
         # self.__documents_dict = {}
-        self._FakeIndicesClient__documents_dict = {}
+        self._FakeAsyncIndicesClient__documents_dict = {}
         self.__scrolls = {}
         self.transport = AsyncTransport(_normalize_hosts(hosts), **kwargs)
 
@@ -43,11 +43,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
 
     @property
     def __documents_dict(self):
-        return self._FakeIndicesClient__documents_dict
+        return self._FakeAsyncIndicesClient__documents_dict
 
     @property
     def indices(self):
-        return FakeIndicesClient(self)
+        return FakeAsyncIndicesClient(self)
 
     @property
     def cluster(self):
@@ -250,7 +250,9 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                             errors = True
                             item[action]["error"] = result
                         else:
-                            await self.delete(index, document_id, doc_type=doc_type, params=params)
+                            await self.delete(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
                             item[action]["result"] = result
                         items.append(item)
 
@@ -275,12 +277,16 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     }
                     if not error:
                         item[action]["result"] = result
-                        if await self.exists(index, document_id, doc_type=doc_type, params=params):
+                        if await self.exists(
+                            index, document_id, doc_type=doc_type, params=params
+                        ):
                             doc = await self.get(
                                 index, document_id, doc_type=doc_type, params=params
                             )
                             version = doc["_version"] + 1
-                            await self.delete(index, document_id, doc_type=doc_type, params=params)
+                            await self.delete(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
 
                         self.__documents_dict[index].append(
                             {
@@ -297,9 +303,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     items.append(item)
         return {"errors": errors, "items": items}
 
-    async def _validate_action(
-        self, action, index, document_id, doc_type, params=None
-    ):
+    async def _validate_action(self, action, index, document_id, doc_type, params=None):
         if action in ["index", "update"] and await self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
@@ -400,9 +404,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         "timeout",
         "wait_for_active_shards",
     )
-    async def update(
-        self, index, id, body, params=None, headers=None
-    ):
+    async def update(self, index, id, body, params=None, headers=None):
         if not body:
             raise RequestError(
                 400,
@@ -651,11 +653,10 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         params: Any = None,
         headers: Any = None,
     ) -> Any:
-        contents = await self.search(index=index, body=body, params=params, headers=headers)
-        return {
-            'count': len(contents['hits']['hits']),
-            '_shards': contents['_shards']
-        }
+        contents = await self.search(
+            index=index, body=body, params=params, headers=headers
+        )
+        return {"count": len(contents["hits"]["hits"]), "_shards": contents["_shards"]}
 
     def _get_fake_query_condition(self, query_type_str, condition):
         return FakeQueryCondition(QueryType.get_query_type(query_type_str), condition)
@@ -813,12 +814,19 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         if body is not None and "sort" in body:
             for key in body["sort"][0]:
                 if body["sort"][0][key]["order"] == "desc":
-                    hits = sorted(hits, key=lambda k, key=key: k["_source"][key], reverse=True)
+                    hits = sorted(
+                        hits, key=lambda k, key=key: k["_source"][key], reverse=True
+                    )
                 else:
                     hits = sorted(hits, key=lambda k, key=key: k["_source"][key])
 
-        if body is not None and 'from' in body and 'size' in body and body['from'] + body['size'] > 0:
-            hits = hits[body['from']:body['from'] + body['size']]
+        if (
+            body is not None
+            and "from" in body
+            and "size" in body
+            and body["from"] + body["size"] > 0
+        ):
+            hits = hits[body["from"] : body["from"] + body["size"]]
 
         if "scroll" in params:
             result["_scroll_id"] = str(get_random_scroll_id())
@@ -945,7 +953,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         for searchable_index in searchable_indexes:
             if (
                 searchable_index not in self.__documents_dict
-                and searchable_index not in self._FakeIndicesClient__documents_dict
+                and searchable_index not in self._FakeAsyncIndicesClient__documents_dict
             ):
                 raise NotFoundError(
                     404, f"IndexMissingException[[{searchable_index}] missing]"

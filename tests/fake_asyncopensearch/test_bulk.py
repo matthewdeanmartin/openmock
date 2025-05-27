@@ -1,10 +1,10 @@
 import json
 
-from tests import BODY, DOC_ID, DOC_TYPE, INDEX_NAME, Testopenmock
+from tests import BODY, DOC_ID, DOC_TYPE, INDEX_NAME, Testasyncopenmock
 
 
-class TestBulk(Testopenmock):
-    def test_should_bulk_index_documents_index_creates(self):
+class TestBulk(Testasyncopenmock):
+    async def test_should_bulk_index_documents_index_creates(self):
         action = {"index": {"_index": INDEX_NAME, "_type": DOC_TYPE}}
         action_json = json.dumps(action)
         body_json = json.dumps(BODY, default=str)
@@ -16,7 +16,7 @@ class TestBulk(Testopenmock):
             lines.append(body_json)
         body = "\n".join(lines)
 
-        data = self.es.bulk(body=body)
+        data = await self.es.bulk(body=body)
         items = data.get("items")
 
         self.assertFalse(data.get("errors"))
@@ -29,7 +29,7 @@ class TestBulk(Testopenmock):
             self.assertEqual("created", index.get("result"))
             self.assertEqual(201, index.get("status"))
 
-    def test_should_bulk_index_documents_create_creates(self):
+    async def test_should_bulk_index_documents_create_creates(self):
         create_action = {"create": {"_index": INDEX_NAME, "_type": DOC_TYPE}}
         create_with_id = {
             "create": {"_index": INDEX_NAME, "_type": DOC_TYPE, "_id": DOC_ID}
@@ -47,7 +47,7 @@ class TestBulk(Testopenmock):
         ]
         body = "\n".join(actions)
 
-        data = self.es.bulk(body=body)
+        data = await self.es.bulk(body=body)
 
         items = data.get("items")
 
@@ -66,7 +66,7 @@ class TestBulk(Testopenmock):
             self.assertEqual("created", index.get("result"))
             self.assertEqual(201, index.get("status"))
 
-    def test_should_bulk_index_documents_index_updates(self):
+    async def test_should_bulk_index_documents_index_updates(self):
         action = {"index": {"_index": INDEX_NAME, "_id": DOC_ID, "_type": DOC_TYPE}}
         action_json = json.dumps(action)
         body_json = json.dumps(BODY, default=str)
@@ -78,7 +78,7 @@ class TestBulk(Testopenmock):
             lines.append(body_json)
         body = "\n".join(lines)
 
-        data = self.es.bulk(body=body)
+        data = await self.es.bulk(body=body)
         items = data.get("items")
 
         self.assertFalse(data.get("errors"))
@@ -95,7 +95,7 @@ class TestBulk(Testopenmock):
             self.assertEqual("updated", index.get("result"))
             self.assertEqual(200, index.get("status"))
 
-    def test_should_bulk_index_documents_update_updates(self):
+    async def test_should_bulk_index_documents_update_updates(self):
         action = {"update": {"_index": INDEX_NAME, "_id": DOC_ID, "_type": DOC_TYPE}}
         action_json = json.dumps(action)
         create_action_json = json.dumps(
@@ -110,7 +110,7 @@ class TestBulk(Testopenmock):
             lines.append(body_json)
         body = "\n".join(lines)
 
-        data = self.es.bulk(body=body)
+        data = await self.es.bulk(body=body)
         items = data.get("items")
 
         self.assertFalse(data.get("errors"))
@@ -127,7 +127,7 @@ class TestBulk(Testopenmock):
             self.assertEqual("updated", index.get("result"))
             self.assertEqual(200, index.get("status"))
 
-    def test_should_bulk_index_documents_delete_deletes(self):
+    async def test_should_bulk_index_documents_delete_deletes(self):
         delete_action = {
             "delete": {"_index": INDEX_NAME, "_id": DOC_ID, "_type": DOC_TYPE}
         }
@@ -143,7 +143,7 @@ class TestBulk(Testopenmock):
         ]
         body = "\n".join(lines)
 
-        data = self.es.bulk(body=body)
+        data = await self.es.bulk(body=body)
         items = data.get("items")
 
         self.assertFalse(data.get("errors"))
@@ -161,7 +161,7 @@ class TestBulk(Testopenmock):
         self.assertEqual(second_item["delete"]["_type"], DOC_TYPE)
         self.assertEqual(second_item["delete"]["_id"], DOC_ID)
 
-    def test_should_bulk_index_documents_mixed_actions(self):
+    async def test_should_bulk_index_documents_mixed_actions(self):
         doc_body = json.dumps(BODY, default=str)
 
         doc_id_1 = 1
@@ -202,7 +202,7 @@ class TestBulk(Testopenmock):
         ]
         body = "\n".join(actions)
 
-        data = self.es.bulk(body=body)
+        data = await self.es.bulk(body=body)
 
         expected = [
             {

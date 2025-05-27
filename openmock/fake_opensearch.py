@@ -622,9 +622,7 @@ class FakeOpenSearch(OpenSearch):
                     items.append(item)
         return {"errors": errors, "items": items}
 
-    def _validate_action(
-        self, action, index, document_id, doc_type, params=None
-    ):
+    def _validate_action(self, action, index, document_id, doc_type, params=None):
         if action in ["index", "update"] and self.exists(
             index, id=document_id, doc_type=doc_type, params=params
         ):
@@ -725,9 +723,7 @@ class FakeOpenSearch(OpenSearch):
         "timeout",
         "wait_for_active_shards",
     )
-    def update(
-        self, index, id, body, params=None, headers=None
-    ):
+    def update(self, index, id, body, params=None, headers=None):
         if not body:
             raise RequestError(
                 400,
@@ -977,10 +973,7 @@ class FakeOpenSearch(OpenSearch):
         headers: Any = None,
     ) -> Any:
         contents = self.search(index=index, body=body, params=params, headers=headers)
-        return {
-            'count': len(contents['hits']['hits']),
-            '_shards': contents['_shards']
-        }
+        return {"count": len(contents["hits"]["hits"]), "_shards": contents["_shards"]}
 
     def _get_fake_query_condition(self, query_type_str, condition):
         return FakeQueryCondition(QueryType.get_query_type(query_type_str), condition)
@@ -1138,12 +1131,19 @@ class FakeOpenSearch(OpenSearch):
         if body is not None and "sort" in body:
             for key in body["sort"][0]:
                 if body["sort"][0][key]["order"] == "desc":
-                    hits = sorted(hits, key=lambda k, key=key: k["_source"][key], reverse=True)
+                    hits = sorted(
+                        hits, key=lambda k, key=key: k["_source"][key], reverse=True
+                    )
                 else:
                     hits = sorted(hits, key=lambda k, key=key: k["_source"][key])
 
-        if body is not None and 'from' in body and 'size' in body and body['from'] + body['size'] > 0:
-            hits = hits[body['from']:body['from'] + body['size']]
+        if (
+            body is not None
+            and "from" in body
+            and "size" in body
+            and body["from"] + body["size"] > 0
+        ):
+            hits = hits[body["from"] : body["from"] + body["size"]]
 
         if "scroll" in params:
             result["_scroll_id"] = str(get_random_scroll_id())
