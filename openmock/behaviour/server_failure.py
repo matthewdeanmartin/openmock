@@ -2,9 +2,8 @@
 Simulate server failure
 """
 
-from functools import wraps
 from asyncio import iscoroutinefunction
-
+from functools import wraps
 
 __ENABLED = False
 

@@ -23,6 +23,7 @@ __all__ = [
 ]
 
 OPEN_INSTANCES = {}
+OPEN_ASYNC_INSTANCES = {}
 
 
 def _get_openmock(*args, hosts=None, **kwargs):
@@ -37,17 +38,35 @@ def _get_openmock(*args, hosts=None, **kwargs):
     return connection
 
 
+def _get_async_openmock(*args, hosts=None, **kwargs):
+    host = _normalize_hosts(hosts)[0]
+    open_key = f'{host.get("host", "localhost")}:{host.get("port", 9200)}'
+
+    if open_key in OPEN_ASYNC_INSTANCES:
+        connection = OPEN_ASYNC_INSTANCES.get(open_key)
+    else:
+        connection = AsyncFakeOpenSearch()
+        OPEN_ASYNC_INSTANCES[open_key] = connection
+    return connection
+
+
 def openmock(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         OPEN_INSTANCES.clear()
-        with patch("opensearchpy.OpenSearch", _get_openmock):
+        OPEN_ASYNC_INSTANCES.clear()
+        with patch("opensearchpy.OpenSearch", _get_openmock), patch(
+            "opensearchpy.AsyncOpenSearch", _get_async_openmock
+        ):
             return f(*args, **kwargs)
 
     @wraps(f)
     async def async_wrapper(*args, **kwargs):
         OPEN_INSTANCES.clear()
-        with patch("opensearchpy.OpenSearch", _get_openmock):
+        OPEN_ASYNC_INSTANCES.clear()
+        with patch("opensearchpy.OpenSearch", _get_openmock), patch(
+            "opensearchpy.AsyncOpenSearch", _get_async_openmock
+        ):
             return await f(*args, **kwargs)
 
     return async_wrapper if iscoroutinefunction(f) else wrapper

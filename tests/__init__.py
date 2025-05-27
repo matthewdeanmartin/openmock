@@ -1,6 +1,7 @@
 import unittest
 from datetime import datetime
 
+import aiounittest
 import opensearchpy
 
 from openmock import openmock
@@ -19,3 +20,11 @@ class Testopenmock(unittest.TestCase):
     @openmock
     def setUp(self):
         self.es = opensearchpy.OpenSearch(hosts=[{"host": "localhost", "port": 9200}])
+
+
+class Testasyncopenmock(aiounittest.AsyncTestCase):
+    @openmock
+    def setUp(self):
+        self.es = opensearchpy.AsyncOpenSearch(
+            hosts=[{"host": "localhost", "port": 9200}]
+        )
