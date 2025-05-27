@@ -125,7 +125,7 @@ class TestSearch(Testopenmock):
             self.es.index(
                 index="index_for_search",
                 doc_type=DOC_TYPE,
-                body={"data": "test_{0}".format(i)},
+                body={"data": f"test_{i}"},
             )
 
         response = self.es.search(
