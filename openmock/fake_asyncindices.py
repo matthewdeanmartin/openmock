@@ -56,12 +56,12 @@ class FakeAsyncIndicesClient(IndicesClient):
         "wait_for_completion",
     )
     async def clone(
-            self,
-            index,
-            target,
-            body=None,
-            params=None,
-            headers=None,
+        self,
+        index,
+        target,
+        body=None,
+        params=None,
+        headers=None,
     ):
         if await self.exists(target):
             msg = "Target already exists"

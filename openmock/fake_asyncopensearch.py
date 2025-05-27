@@ -88,12 +88,12 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     # def create(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
     async def create(
-            self,
-            index: Any,
-            id: Any,
-            body: Any,
-            params: Any = None,
-            headers: Any = None,
+        self,
+        index: Any,
+        id: Any,
+        body: Any,
+        params: Any = None,
+        headers: Any = None,
     ) -> Any:
         doc_type = "_doc"
         if await self.exists(index, id, doc_type=doc_type, params=params):
@@ -143,13 +143,13 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     # def index(self, index, body, doc_type="_doc", id=None, params=None, headers=None):
     async def index(
-            self,
-            index: Any,
-            body: Any,
-            id: Any = None,
-            params: Any = None,
-            headers: Any = None,
-            **kwargs,
+        self,
+        index: Any,
+        body: Any,
+        id: Any = None,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
     ) -> Any:
         doc_type = "_doc"
         if index not in self.__documents_dict:
@@ -201,11 +201,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     # def bulk(self, body, index=None, doc_type=None, params=None, headers=None):
     async def bulk(
-            self,
-            body: Any,
-            index: Any = None,
-            params: Any = None,
-            headers: Any = None,
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
     ) -> Any:
         doc_type = None
         items = []
@@ -216,7 +216,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                 line = json.loads(raw_line)
 
                 if any(
-                        action in line for action in ["index", "create", "update", "delete"]
+                    action in line for action in ["index", "create", "update", "delete"]
                 ):
                     action = next(iter(line.keys()))
 
@@ -278,7 +278,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     if not error:
                         item[action]["result"] = result
                         if await self.exists(
-                                index, document_id, doc_type=doc_type, params=params
+                            index, document_id, doc_type=doc_type, params=params
                         ):
                             doc = await self.get(
                                 index, document_id, doc_type=doc_type, params=params
@@ -305,27 +305,27 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
 
     async def _validate_action(self, action, index, document_id, doc_type, params=None):
         if action in ["index", "update"] and await self.exists(
-                index, id=document_id, doc_type=doc_type, params=params
+            index, id=document_id, doc_type=doc_type, params=params
         ):
             return 200, "updated", False
         if action == "create" and await self.exists(
-                index, id=document_id, doc_type=doc_type, params=params
+            index, id=document_id, doc_type=doc_type, params=params
         ):
             return 409, "version_conflict_engine_exception", True
         if action in ["index", "create"] and not await self.exists(
-                index, id=document_id, doc_type=doc_type, params=params
+            index, id=document_id, doc_type=doc_type, params=params
         ):
             return 201, "created", False
         if action == "delete" and await self.exists(
-                index, id=document_id, doc_type=doc_type, params=params
+            index, id=document_id, doc_type=doc_type, params=params
         ):
             return 200, "deleted", False
         if action == "update" and not await self.exists(
-                index, id=document_id, doc_type=doc_type, params=params
+            index, id=document_id, doc_type=doc_type, params=params
         ):
             return 404, "document_missing_exception", True
         if action == "delete" and not await self.exists(
-                index, id=document_id, doc_type=doc_type, params=params
+            index, id=document_id, doc_type=doc_type, params=params
         ):
             return 404, "not_found", True
         raise NotImplementedError(f"{action} behaviour hasn't been implemented")
@@ -333,19 +333,19 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     @query_params("parent", "preference", "realtime", "refresh", "routing")
     # def exists(self, index, id, doc_type=None, params=None, headers=None):
     async def exists(
-            self,
-            index: Any,
-            id: Any,
-            params: Any = None,
-            headers: Any = None,
-            **kwargs,
+        self,
+        index: Any,
+        id: Any,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
     ) -> Any:
         doc_type = None
         result = False
         if index in self.__documents_dict:
             for document in self.__documents_dict[index]:
                 if document.get("_id") == id and (
-                        document.get("_type") == doc_type or doc_type is None
+                    document.get("_type") == doc_type or doc_type is None
                 ):
                     result = True
                     break
@@ -366,7 +366,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     # def get(self, index, id, doc_type="_all", params=None, headers=None):
     async def get(
-            self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
+        self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
     ) -> Any:
         doc_type = "_all"
         ignore = extract_ignore_as_iterable(params)
@@ -493,11 +493,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         "wait_for_completion",
     )
     async def update_by_query(
-            self,
-            index: Any,
-            body: Any = None,
-            params: Any = None,
-            headers: Any = None,
+        self,
+        index: Any,
+        body: Any = None,
+        params: Any = None,
+        headers: Any = None,
     ) -> Any:
         # def update_by_query(
         #     self, index, body=None, doc_type=None, params=None, headers=None
@@ -556,11 +556,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         "stored_fields",
     )
     async def mget(
-            self,
-            body: Any,
-            index: Any = None,
-            params: Any = None,
-            headers: Any = None,
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
     ) -> Any:
         # def mget(self, body, index, doc_type="_all", params=None, headers=None):
         doc_type = "_all"
@@ -599,11 +599,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     # def get_source(self, index, doc_type, id, params=None, headers=None):
     async def get_source(
-            self,
-            index: Any,
-            id: Any,
-            params: Any = None,
-            headers: Any = None,
+        self,
+        index: Any,
+        id: Any,
+        params: Any = None,
+        headers: Any = None,
     ) -> Any:
         doc_type = None
         document = await self.get(index=index, doc_type=doc_type, id=id, params=params)
@@ -647,11 +647,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     # def count(self, index=None, doc_type=None, body=None, params=None, headers=None):
     async def count(
-            self,
-            body: Any = None,
-            index: Any = None,
-            params: Any = None,
-            headers: Any = None,
+        self,
+        body: Any = None,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
     ) -> Any:
         contents = await self.search(
             index=index, body=body, params=params, headers=headers
@@ -672,11 +672,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     # def msearch(self, body, index=None, doc_type=None, params=None, headers=None):
     async def msearch(
-            self,
-            body: Any,
-            index: Any = None,
-            params: Any = None,
-            headers: Any = None,
+        self,
+        body: Any,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
     ) -> Any:
         def grouped(iterable):
             if len(iterable) % 2 != 0:
@@ -734,12 +734,12 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         "version",
     )
     async def search(
-            self,
-            body: Any = None,
-            index: Any = None,
-            params: Any = None,
-            headers: Any = None,
-            **kwargs,
+        self,
+        body: Any = None,
+        index: Any = None,
+        params: Any = None,
+        headers: Any = None,
+        **kwargs,
     ) -> Any:
         # def search(self, index=None, doc_type=None, body=None, params=None, headers=None):
         doc_type: Optional[list] = None
@@ -759,8 +759,8 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                 if doc_type:
                     # pylint: disable=unsupported-membership-test
                     if (
-                            isinstance(doc_type, list)
-                            and document.get("_type") not in doc_type
+                        isinstance(doc_type, list)
+                        and document.get("_type") not in doc_type
                     ):
                         continue
                     if isinstance(doc_type, str) and document.get("_type") != doc_type:
@@ -821,12 +821,12 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     hits = sorted(hits, key=lambda k, key=key: k["_source"][key])
 
         if (
-                body is not None
-                and "from" in body
-                and "size" in body
-                and body["from"] + body["size"] > 0
+            body is not None
+            and "from" in body
+            and "size" in body
+            and body["from"] + body["size"] > 0
         ):
-            hits = hits[body["from"]: body["from"] + body["size"]]
+            hits = hits[body["from"] : body["from"] + body["size"]]
 
         if "scroll" in params:
             result["_scroll_id"] = str(get_random_scroll_id())
@@ -840,7 +840,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                 "body": body,
                 "params": params,
             }
-            hits = hits[params.get("from"): params.get("from") + params.get("size")]
+            hits = hits[params.get("from") : params.get("from") + params.get("size")]
         elif "size" in params:
             hits = hits[: int(params["size"])]
         elif body and "size" in body:
@@ -853,11 +853,11 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     @query_params("scroll")
     # def scroll(self, scroll_id, params=None, headers=None):
     async def scroll(
-            self,
-            body: Any = None,
-            scroll_id: Any = None,
-            params: Any = None,
-            headers: Any = None,
+        self,
+        body: Any = None,
+        scroll_id: Any = None,
+        params: Any = None,
+        headers: Any = None,
     ) -> Any:
         scroll = self.__scrolls.pop(scroll_id)
         result = await self.search(
@@ -880,7 +880,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
     )
     # def delete(self, index, id, doc_type=None, params=None, headers=None):
     async def delete(
-            self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
+        self, index: Any, id: Any, params: Any = None, headers: Any = None, **kwargs
     ) -> Any:
         doc_type = None
         found = False
@@ -952,8 +952,8 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         # Check index(es) exists
         for searchable_index in searchable_indexes:
             if (
-                    searchable_index not in self.__documents_dict
-                    and searchable_index not in self._FakeAsyncIndicesClient__documents_dict
+                searchable_index not in self.__documents_dict
+                and searchable_index not in self._FakeAsyncIndicesClient__documents_dict
             ):
                 raise NotFoundError(
                     404, f"IndexMissingException[[{searchable_index}] missing]"
