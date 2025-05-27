@@ -11,7 +11,7 @@ class TestBulk(Testasyncopenmock):
         num_of_documents = 10
 
         lines = []
-        for count in range(0, num_of_documents):
+        for _ in range(0, num_of_documents):
             lines.append(action_json)
             lines.append(body_json)
         body = "\n".join(lines)
@@ -73,7 +73,7 @@ class TestBulk(Testasyncopenmock):
         num_of_documents = 10
 
         lines = []
-        for count in range(0, num_of_documents):
+        for _ in range(0, num_of_documents):
             lines.append(action_json)
             lines.append(body_json)
         body = "\n".join(lines)
@@ -105,7 +105,7 @@ class TestBulk(Testasyncopenmock):
         num_of_documents = 4
 
         lines = [create_action_json, json.dumps(BODY, default=str)]
-        for count in range(0, num_of_documents):
+        for _ in range(0, num_of_documents):
             lines.append(action_json)
             lines.append(body_json)
         body = "\n".join(lines)

@@ -129,7 +129,7 @@ class TestSearch(Testasyncopenmock):
             await self.es.index(
                 index="index_for_search",
                 doc_type=DOC_TYPE,
-                body={"data": "test_{0}".format(i)},
+                body={"data": f"test_{i}"},
             )
 
         response = await self.es.search(
@@ -382,75 +382,75 @@ class TestSearch(Testasyncopenmock):
     @parameterized.expand(
         [
             (
-                "timestamp gt",
-                {
-                    "timestamp": {
-                        "gt": datetime.datetime(2009, 1, 1, 10, 20, 0).isoformat()
-                    }
-                },
-                range(5, 12),
+                    "timestamp gt",
+                    {
+                        "timestamp": {
+                            "gt": datetime.datetime(2009, 1, 1, 10, 20, 0).isoformat()
+                        }
+                    },
+                    range(5, 12),
             ),
             (
-                "timestamp gte",
-                {
-                    "timestamp": {
-                        "gte": datetime.datetime(2009, 1, 1, 10, 20, 0).isoformat()
-                    }
-                },
-                range(4, 12),
+                    "timestamp gte",
+                    {
+                        "timestamp": {
+                            "gte": datetime.datetime(2009, 1, 1, 10, 20, 0).isoformat()
+                        }
+                    },
+                    range(4, 12),
             ),
             (
-                "timestamp lt",
-                {
-                    "timestamp": {
-                        "lt": datetime.datetime(2009, 1, 1, 10, 35, 0).isoformat()
-                    }
-                },
-                range(7),
+                    "timestamp lt",
+                    {
+                        "timestamp": {
+                            "lt": datetime.datetime(2009, 1, 1, 10, 35, 0).isoformat()
+                        }
+                    },
+                    range(7),
             ),
             (
-                "timestamp lte",
-                {
-                    "timestamp": {
-                        "lte": datetime.datetime(2009, 1, 1, 10, 35, 0).isoformat()
-                    }
-                },
-                range(8),
+                    "timestamp lte",
+                    {
+                        "timestamp": {
+                            "lte": datetime.datetime(2009, 1, 1, 10, 35, 0).isoformat()
+                        }
+                    },
+                    range(8),
             ),
             (
-                "timestamp combination",
-                {
-                    "timestamp": {
-                        "gt": datetime.datetime(2009, 1, 1, 10, 15, 0).isoformat(),
-                        "lte": datetime.datetime(2009, 1, 1, 10, 35, 0).isoformat(),
-                    }
-                },
-                range(4, 8),
+                    "timestamp combination",
+                    {
+                        "timestamp": {
+                            "gt": datetime.datetime(2009, 1, 1, 10, 15, 0).isoformat(),
+                            "lte": datetime.datetime(2009, 1, 1, 10, 35, 0).isoformat(),
+                        }
+                    },
+                    range(4, 8),
             ),
             (
-                "data_int gt",
-                {"data_int": {"gt": 40}},
-                range(5, 12),
+                    "data_int gt",
+                    {"data_int": {"gt": 40}},
+                    range(5, 12),
             ),
             (
-                "data_int gte",
-                {"data_int": {"gte": 40}},
-                range(4, 12),
+                    "data_int gte",
+                    {"data_int": {"gte": 40}},
+                    range(4, 12),
             ),
             (
-                "data_int lt",
-                {"data_int": {"lt": 70}},
-                range(7),
+                    "data_int lt",
+                    {"data_int": {"lt": 70}},
+                    range(7),
             ),
             (
-                "data_int lte",
-                {"data_int": {"lte": 70}},
-                range(8),
+                    "data_int lte",
+                    {"data_int": {"lte": 70}},
+                    range(8),
             ),
             (
-                "data_int combination",
-                {"data_int": {"gt": 30, "lte": 70}},
-                range(4, 8),
+                    "data_int combination",
+                    {"data_int": {"gt": 30, "lte": 70}},
+                    range(4, 8),
             ),
         ]
     )
@@ -476,44 +476,44 @@ class TestSearch(Testasyncopenmock):
     @parameterized.expand(
         [
             (
-                "data_int (100, 200) no overlap",
-                {"data_int": {"gt": 100, "lt": 200}},
-                {"intersects": [], "within": [], "contains": []},
+                    "data_int (100, 200) no overlap",
+                    {"data_int": {"gt": 100, "lt": 200}},
+                    {"intersects": [], "within": [], "contains": []},
             ),
             (
-                "data_int (1,3)",
-                {"data_int": {"gt": 1, "lt": 3}},
-                {"intersects": [0], "within": [], "contains": [0]},
+                    "data_int (1,3)",
+                    {"data_int": {"gt": 1, "lt": 3}},
+                    {"intersects": [0], "within": [], "contains": [0]},
             ),
             (
-                "data_int (5,10) exclusive",
-                {"data_int": {"gt": 5, "lt": 10}},
-                {"intersects": [], "within": [], "contains": []},
+                    "data_int (5,10) exclusive",
+                    {"data_int": {"gt": 5, "lt": 10}},
+                    {"intersects": [], "within": [], "contains": []},
             ),
             (
-                "data_int (5,10] inclusive",
-                {"data_int": {"gt": 5, "lte": 10}},
-                {"intersects": [1], "within": [], "contains": []},
+                    "data_int (5,10] inclusive",
+                    {"data_int": {"gt": 5, "lte": 10}},
+                    {"intersects": [1], "within": [], "contains": []},
             ),
             (
-                "data_int (3,6) overlapping",
-                {"data_int": {"gt": 3, "lt": 6}},
-                {"intersects": [0], "within": [], "contains": []},
+                    "data_int (3,6) overlapping",
+                    {"data_int": {"gt": 3, "lt": 6}},
+                    {"intersects": [0], "within": [], "contains": []},
             ),
             (
-                "data_int [0,25] inclusive covers both ranges",
-                {"data_int": {"gte": 0, "lte": 25}},
-                {"intersects": [0, 1], "within": [0, 1], "contains": []},
+                    "data_int [0,25] inclusive covers both ranges",
+                    {"data_int": {"gte": 0, "lte": 25}},
+                    {"intersects": [0, 1], "within": [0, 1], "contains": []},
             ),
             (
-                "data_int (0,25) exclusive covers both ranges",
-                {"data_int": {"gt": 0, "lt": 25}},
-                {"intersects": [0, 1], "within": [1], "contains": []},
+                    "data_int (0,25) exclusive covers both ranges",
+                    {"data_int": {"gt": 0, "lt": 25}},
+                    {"intersects": [0, 1], "within": [1], "contains": []},
             ),
         ]
     )
     async def test_range_search_with_range_query(
-        self, _, query_range, expected_ids_by_relationship
+            self, _, query_range, expected_ids_by_relationship
     ):
         for i in range(0, 2):
             body = {
