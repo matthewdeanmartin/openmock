@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "openmock"
-version = "3.1.2"
+version = "3.1.3"
 description = "Python OpenSearch Mock for test purposes"
 authors = ["Marcos Cardoso",
     "Mathew Martin <matthewdeanmartin@gmail.com>"]
@@ -71,7 +71,6 @@ linkcheckmd = ">=1.4.0"
 codespell = ">=2.2.6"
 pyenchant = ">=3.2.2"
 
-[tool.poetry.group.dev.dependencies]
 aiounittest = "^1.5.0"
 
 [tool.black]

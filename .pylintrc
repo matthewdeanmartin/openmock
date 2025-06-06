@@ -442,6 +442,7 @@ disable=raw-checker-failed,
         too-many-public-methods, # wrong way to handle complexity
         super-init-not-called,
         too-many-positional-arguments, # signatures governed by what we are mocking
+        duplicate-code, # sync async are too similar
 
 
 # Enable the message, report, category or checker with the given id(s). You can
