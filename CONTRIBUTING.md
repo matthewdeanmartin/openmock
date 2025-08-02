@@ -25,6 +25,6 @@ pylint openmock
 pytest tests
 ```
 
-On gitlab, it will run tox and check against python 3.6 thru 3.11 all versions of openmock.
+On gitlab, it will run tox and check against python 3.9 thru 3.14 for all versions of openmock.
 
 See [build.yaml](.github/workflows/build.yaml) and [tox.yaml](.github/workflows/tox.yaml)
