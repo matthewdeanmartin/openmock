@@ -63,7 +63,7 @@ repos:
                 - --remove-duplicate-keys
                 - --remove-unused-variables
     - repo: https://github.com/psf/black-pre-commit-mirror
-      rev: 25.9.0
+      rev: 25.11.0
       hooks:
           - id: black
             language_version: python3.9
@@ -75,7 +75,7 @@ repos:
 #            args:
 #                - --profile black
     - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: v0.14.3
+      rev: v0.14.4
       hooks:
           - id: ruff
             exclude: ^dead_code/
