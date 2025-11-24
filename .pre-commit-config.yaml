@@ -73,7 +73,7 @@ repos:
 #            args:
 #                - --profile black
     - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: v0.14.4
+      rev: v0.14.6
       hooks:
           - id: ruff
             exclude: ^dead_code/
