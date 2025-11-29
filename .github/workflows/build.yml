@@ -26,4 +26,4 @@ jobs:
       run: uv sync --all-extras
 
     - name: Run just check
-      run: chmod +x scripts/*.sh && uv run make check
+      run: uv run make check

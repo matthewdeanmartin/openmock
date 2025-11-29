@@ -30,7 +30,7 @@ jobs:
         run: uv sync --all-extras
 
       - name: Run just check
-        run: chmod +x scripts/*.sh && uv run just check
+        run: uv run just check
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
