@@ -1,92 +1,89 @@
 ---
-#
-# Over all strategy
-# Mutators here... eg black, pypugrade  and other things
-# that change code.
-#
-# ci probably only applies to Github Actions?
-ci:
-    autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
-    autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate
-default_language_version:
-    python: python3
-exclude: ^(dead_code|vendor|whitelist.py|pymarc|edtf_plus)
 repos:
-    -   repo: https://github.com/python-poetry/poetry
-        rev: '2.2.1'
-        hooks:
-            -   id: poetry-check
-            # -   id: poetry-lock
-            # - id: poetry-export
-            # -   id: poetry-install
-    - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v6.0.0
-      hooks:
-          # each hook takes about 1s to run. These are expensive-ish checks
-          - id: check-added-large-files
-          - id: check-yaml
-          - id: check-builtin-literals
-          - id: fix-byte-order-marker
-          - id: check-case-conflict
-          - id: check-merge-conflict
-          - id: check-symlinks
-          - id: check-toml
-          - id: debug-statements
-          - id: detect-private-key
-          - id: forbid-new-submodules
-# passes on workstation, fails on github actions
-#    - repo: https://github.com/asottile/pyupgrade
-#      rev: v3.15.0
-#      hooks:
-#          - id: pyupgrade
-#            args: [--py37-plus]
-    # Buggy? Reports no files change, "FAILURE"
-    #    -   repo: https://github.com/tox-dev/pyproject-fmt
-    #        rev: "0.4.1"
-    #        hooks:
-    #            -   id: pyproject-fmt
-    - repo: https://github.com/abravalheri/validate-pyproject
-      rev: v0.24.1
-      hooks:
-          - id: validate-pyproject
-    - repo: https://github.com/PyCQA/autoflake
-      rev: v2.3.1
-      hooks:
-          - id: autoflake
-            args:
-                - --in-place
-                - --recursive
-                - --expand-star-imports
-                - --remove-all-unused-imports
-                - --remove-duplicate-keys
-                - --remove-unused-variables
-    - repo: https://github.com/psf/black-pre-commit-mirror
-      rev: 25.11.0
-      hooks:
-          - id: black
-            language_version: python3.10
-#    - repo: https://github.com/pycqa/isort
-#      rev: 5.12.0
-#      hooks:
-#          - id: isort
-#            name: isort
-#            args:
-#                - --profile black
-    - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: v0.14.6
-      hooks:
-          - id: ruff
-            exclude: ^dead_code/
-            args: ["--config", "pyproject.toml", "--fix"]
-    - repo: https://github.com/pre-commit/pygrep-hooks
-      rev: v1.10.0 # Use the ref you want to point at
-      hooks:
-          - id: python-use-type-annotations
-          - id: python-no-eval
-          - id: python-no-log-warn
-          - id: text-unicode-replacement-char
-# breaks change log validator
-#    - repo: https://github.com/executablebooks/mdformat
-#      rev: 0.7.17
-#      hooks:
-#          - id: mdformat
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # each hook takes about 1s to run. These are expensive-ish checks
+      - id: check-added-large-files
+        args: ['--maxkb=999']
+      - id: check-yaml
+      - id: check-builtin-literals
+      - id: fix-byte-order-marker
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: debug-statements
+      - id: detect-private-key
+      - id: forbid-new-submodules
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.21.2
+    hooks:
+      - id: pyupgrade
+        args: [ --py37-plus ]
+  # Buggy? Reports no files change, "FAILURE"
+  #    -   repo: https://github.com/tox-dev/pyproject-fmt
+  #        rev: "0.4.1"
+  #        hooks:
+  #            -   id: pyproject-fmt
+  # works for me, don't know why it is complaining
+  #    -   repo: https://github.com/abravalheri/validate-pyproject
+  #        rev: v0.10.1
+  #        hooks:
+  #            -   id: validate-pyproject
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        args:
+          - --in-place
+          - --recursive
+          - --expand-star-imports
+          - --remove-all-unused-imports
+          - --remove-duplicate-keys
+          - --remove-unused-variables
+# black is conflicting with something else
+#  - repo: https://github.com/psf/black
+#    rev: 23.12.1
+#    hooks:
+#      - id: black
+#        language_version: python3.10
+  #    -   repo: https://github.com/pycqa/isort
+  #        rev: 5.11.4
+  #        hooks:
+  #            -   id: isort
+  #                name: isort
+  #                args:
+  #                    - --profile black
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.6
+    hooks:
+      - id: ruff
+        exclude: ^dead_code/
+        args: [
+          "--config",
+          "pyproject.toml",
+          "--fix",
+        ]
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0  # Use the ref you want to point at
+    hooks:
+      - id: python-use-type-annotations
+      - id: python-no-eval
+      - id: python-no-log-warn
+      - id: text-unicode-replacement-char
+#  - repo: https://github.com/igorshubovych/markdownlint-cli
+#    rev: v0.38.0
+#    hooks:
+#      - id: markdownlint
+#        # '--fix'
+#        args: [ 'content/**/*.md', '--config', '.markdownlintrc' ]
+#  - repo: https://github.com/executablebooks/mdformat
+#    rev: 0.7.17  # Use the ref you want to point at
+#    hooks:
+#      - id: mdformat
+#        # Optionally add plugins
+#        additional_dependencies:
+#          - mdformat-gfm
+#          - mdformat-black
+
