@@ -47,7 +47,7 @@ dev = ["parameterized>=0.9.0",
 
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ['py310']
 include = '\.pyi?$'
 exclude = '''
 
