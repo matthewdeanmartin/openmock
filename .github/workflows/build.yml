@@ -13,12 +13,12 @@ jobs:
     - name: Install poetry and pipx
       run: |
         pip install poetry && pip install pipx
-    - uses: actions/setup-python@v5.1.1
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.14'
-        cache: 'poetry'   # caching poetry dependencies
+        cache: 'uv'   # caching poetry dependencies
 
-    - name: Install poetry and pipx
+    - name: Install package managers
       run: |
         pip install pipx && pip install uv && pipx install uv && pipx install hatchling && uv sync
 
