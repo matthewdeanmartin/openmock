@@ -1,0 +1,113 @@
+[tool.poetry]
+name = "openmock"
+version = "3.1.4"
+description = "Python OpenSearch Mock for test purposes"
+authors = ["Marcos Cardoso",
+    "Mathew Martin <matthewdeanmartin@gmail.com>"]
+keywords = ["opensearch", "mocking", "testing"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/matthewdeanmartin/openmock"
+homepage = "https://github.com/matthewdeanmartin/openmock"
+documentation ="https://github.com/matthewdeanmartin/openmock"
+
+classifiers = [
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+include = [
+    "openmock/**/*.py",
+    "LICENSE",
+    "README.md",
+]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/matthewdeanmartin/openmock/issues"
+"Change Log" = "https://github.com/matthewdeanmartin/openmock/blob/main/CHANGELOG.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9, <4"
+opensearch-py = "*"
+python-dateutil = ">=2.8.2"
+# optional dependency of opensearch-py
+aiohttp = "*"
+
+# Old python had support up to 1.0.0
+# python-ranges  = "1.0.0" # nope!
+python-ranges  = "0.2.1"
+
+#{ version = "1.0.0", python = "<=3.8" }
+# this is 3.9+ for most recent
+# python-ranges  = { version = "^1.2.2", python = ">=3.9" }
+
+[tool.poetry.dev-dependencies]
+parameterized = ">=0.9.0"
+pytest = ">=7.4.3"
+mypy = ">=1.6.1"
+requests = ">=2.31.0"
+types-python-dateutil = "*"
+tox = ">=4.11.3"
+coverage = ">=7.3.2"
+pytest-cov = ">=4.1.0"
+
+pylint = ">=3.0.2"
+# docs
+metametameta  = "*"
+interrogate = ">=1.5.0"
+pydoctest = ">=0.1.22"
+pdoc3 = ">=0.10.0"
+mdformat = ">=0.7.17"
+linkcheckmd = ">=1.4.0"
+codespell = ">=2.2.6"
+pyenchant = ">=3.2.2"
+
+aiounittest = "^1.5.0"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[[tool.poetry.source]]
+name = "pypi-public"
+url = "https://pypi.org/simple/"
+priority = "primary"
+
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
