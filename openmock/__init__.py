@@ -55,8 +55,9 @@ def openmock(f):
     def wrapper(*args, **kwargs):
         OPEN_INSTANCES.clear()
         OPEN_ASYNC_INSTANCES.clear()
-        with patch("opensearchpy.OpenSearch", _get_openmock), patch(
-            "opensearchpy.AsyncOpenSearch", _get_async_openmock
+        with (
+            patch("opensearchpy.OpenSearch", _get_openmock),
+            patch("opensearchpy.AsyncOpenSearch", _get_async_openmock),
         ):
             return f(*args, **kwargs)
 
@@ -64,8 +65,9 @@ def openmock(f):
     async def async_wrapper(*args, **kwargs):
         OPEN_INSTANCES.clear()
         OPEN_ASYNC_INSTANCES.clear()
-        with patch("opensearchpy.OpenSearch", _get_openmock), patch(
-            "opensearchpy.AsyncOpenSearch", _get_async_openmock
+        with (
+            patch("opensearchpy.OpenSearch", _get_openmock),
+            patch("opensearchpy.AsyncOpenSearch", _get_async_openmock),
         ):
             return await f(*args, **kwargs)
 

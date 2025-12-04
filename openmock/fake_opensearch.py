@@ -4,13 +4,14 @@ Simulate some range queries
 
 import datetime
 import json
+import time
 from collections import defaultdict
 from typing import Any, Optional
 
 import dateutil.parser
 import ranges
 from opensearchpy import OpenSearch
-from opensearchpy.client.utils import query_params
+from opensearchpy.client.utils import query_params, SKIP_IN_PATH
 from opensearchpy.exceptions import ConflictError, NotFoundError, RequestError
 from opensearchpy.transport import Transport
 
@@ -1253,6 +1254,27 @@ class FakeOpenSearch(OpenSearch):
                 }
             ]
         return result_dict
+
+    @query_params(
+        "allow_partial_pit_creation",
+        "error_trace",
+        "expand_wildcards",
+        "filter_path",
+        "human",
+        "keep_alive",
+        "preference",
+        "pretty",
+        "routing",
+        "source",
+    )
+    def create_pit(self, index: Any, params: Any = None, headers: Any = None):
+        if index in SKIP_IN_PATH:
+            raise ValueError("Empty value passed for a required argument 'index'.")
+        return {
+            "pit_id": get_random_id(168),
+            "_shards": {"total": 1, "successful": 1, "skipped": 0, "failed": 0},
+            "creation_time": int(time.time() * 1000),
+        }
 
     def _normalize_index_to_list(self, index):
         # Ensure to have a list of index
