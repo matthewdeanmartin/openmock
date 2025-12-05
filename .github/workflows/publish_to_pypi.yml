@@ -24,7 +24,7 @@ jobs:
 
       - name: Install poetry and pipx
         run: |
-          pip install pipx && pip install uv && pipx install uv && pipx install hatchling && uv sync
+          pip install pipx uv hatchling && pipx install uv && pipx install hatchling && uv sync
 
       - name: Install Dependencies
         run: uv sync --all-extras

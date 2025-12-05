@@ -41,6 +41,7 @@ pylint:  black
 
 check: test pylint bandit pre-commit
 
+.PHONY: build
 build: check
 	$(VENV) rm -rf dist
 	$(VENV) hatch build
