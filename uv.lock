@@ -1248,7 +1248,7 @@ wheels = [
 
 [[package]]
 name = "openmock"
-version = "3.1.4"
+version = "3.1.5"
 source = { virtual = "." }
 dependencies = [
     { name = "aiohttp" },
