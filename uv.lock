@@ -746,6 +746,22 @@ wheels = [
 ]
 
 [[package]]
+name = "hatchling"
+version = "1.28.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+    { name = "pathspec" },
+    { name = "pluggy" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "trove-classifiers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0b/8e/e480359492affde4119a131da729dd26da742c2c9b604dff74836e47eef9/hatchling-1.28.0.tar.gz", hash = "sha256:4d50b02aece6892b8cd0b3ce6c82cb218594d3ec5836dbde75bf41a21ab004c8", size = 55365, upload-time = "2025-11-27T00:31:13.766Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0d/a5/48cb7efb8b4718b1a4c0c331e3364a3a33f614ff0d6afd2b93ee883d3c47/hatchling-1.28.0-py3-none-any.whl", hash = "sha256:dc48722b68b3f4bbfa3ff618ca07cdea6750e7d03481289ffa8be1521d18a961", size = 76075, upload-time = "2025-11-27T00:31:12.544Z" },
+]
+
+[[package]]
 name = "identify"
 version = "2.6.15"
 source = { registry = "https://pypi.org/simple" }
@@ -1249,7 +1265,7 @@ wheels = [
 [[package]]
 name = "openmock"
 version = "3.1.5"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
     { name = "opensearch-py" },
@@ -1264,6 +1280,7 @@ dev = [
     { name = "black" },
     { name = "codespell" },
     { name = "coverage" },
+    { name = "hatchling" },
     { name = "interrogate" },
     { name = "linkcheckmd" },
     { name = "mdformat" },
@@ -1297,6 +1314,7 @@ dev = [
     { name = "black", specifier = ">=25.11.0" },
     { name = "codespell", specifier = ">=2.2.6" },
     { name = "coverage", specifier = ">=7.3.2" },
+    { name = "hatchling" },
     { name = "interrogate", specifier = ">=1.5.0" },
     { name = "linkcheckmd", specifier = ">=1.4.0" },
     { name = "mdformat", specifier = ">=0.7.17" },
@@ -1910,6 +1928,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/59/bf/0e4dbd42724cbae25959f0e34c95d0c730df03ab03f54d52accd9abfc614/tox-4.32.0.tar.gz", hash = "sha256:1ad476b5f4d3679455b89a992849ffc3367560bbc7e9495ee8a3963542e7c8ff", size = 203330, upload-time = "2025-10-24T18:03:38.132Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fc/cc/e09c0d663a004945f82beecd4f147053567910479314e8d01ba71e5d5dea/tox-4.32.0-py3-none-any.whl", hash = "sha256:451e81dc02ba8d1ed20efd52ee409641ae4b5d5830e008af10fe8823ef1bd551", size = 175905, upload-time = "2025-10-24T18:03:36.337Z" },
+]
+
+[[package]]
+name = "trove-classifiers"
+version = "2025.12.1.14"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/e1/000add3b3e0725ce7ee0ea6ea4543f1e1d9519742f3b2320de41eeefa7c7/trove_classifiers-2025.12.1.14.tar.gz", hash = "sha256:a74f0400524fc83620a9be74a07074b5cbe7594fd4d97fd4c2bfde625fdc1633", size = 16985, upload-time = "2025-12-01T14:47:11.456Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4f/7e/bc19996fa86cad8801e8ffe6f1bba5836ca0160df76d0410d27432193712/trove_classifiers-2025.12.1.14-py3-none-any.whl", hash = "sha256:a8206978ede95937b9959c3aff3eb258bbf7b07dff391ddd4ea7e61f316635ab", size = 14184, upload-time = "2025-12-01T14:47:10.113Z" },
 ]
 
 [[package]]
