@@ -42,7 +42,8 @@ pylint:  black
 check: test pylint bandit pre-commit
 
 build: check
-	rm -rf dist && $(VENV) hatch build
+	$(VENV) rm -rf dist
+	$(VENV) hatch build
 
 check_docs:
 	$(VENV) interrogate openmock --verbose
