@@ -2,7 +2,7 @@
 Module initialization
 """
 
-from asyncio import iscoroutinefunction
+import inspect
 from functools import wraps
 from unittest.mock import patch
 
@@ -71,4 +71,4 @@ def openmock(f):
         ):
             return await f(*args, **kwargs)
 
-    return async_wrapper if iscoroutinefunction(f) else wrapper
+    return async_wrapper if inspect.iscoroutinefunction(f) else wrapper

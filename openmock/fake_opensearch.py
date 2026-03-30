@@ -1278,8 +1278,8 @@ class FakeOpenSearch(OpenSearch):
 
     def _normalize_index_to_list(self, index):
         # Ensure to have a list of index
-        if index is None:
-            searchable_indexes = self.__documents_dict.keys()
+        if index is None or index == "*" or index == "_all":
+            searchable_indexes = list(self.__documents_dict.keys())
         elif isinstance(index, str):
             searchable_indexes = [index]
         elif isinstance(index, list):
@@ -1308,6 +1308,18 @@ class FakeOpenSearch(OpenSearch):
     def make_aggregation_buckets(self, aggregation, documents):
         if "composite" in aggregation:
             return self.make_composite_aggregation_buckets(aggregation, documents)
+        if "terms" in aggregation:
+            field = aggregation["terms"]["field"]
+            counts = defaultdict(int)
+            for doc in documents:
+                val = doc["_source"].get(field)
+                if val is not None:
+                    counts[val] += 1
+            buckets = [
+                {"key": k, "doc_count": v}
+                for k, v in sorted(counts.items(), key=lambda x: x[1], reverse=True)
+            ]
+            return buckets
         return []
 
     def make_composite_aggregation_buckets(self, aggregation, documents):

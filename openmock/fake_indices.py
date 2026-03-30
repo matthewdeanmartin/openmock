@@ -5,7 +5,11 @@ Fake Index state
 from opensearchpy.client.indices import IndicesClient
 from opensearchpy.client.utils import query_params
 
+from openmock.behaviour.server_failure import server_failure
+from openmock.utilities.decorator import for_all_methods
 
+
+@for_all_methods([server_failure])
 class FakeIndicesClient(IndicesClient):
     @query_params("master_timeout", "timeout")
     def create(self, index, body=None, params=None, headers=None):
