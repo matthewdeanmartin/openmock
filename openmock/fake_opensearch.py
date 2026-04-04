@@ -11,7 +11,7 @@ from typing import Any, Optional
 import dateutil.parser
 import ranges
 from opensearchpy import OpenSearch
-from opensearchpy.client.utils import query_params, SKIP_IN_PATH
+from opensearchpy.client.utils import SKIP_IN_PATH, query_params
 from opensearchpy.exceptions import ConflictError, NotFoundError, RequestError
 from opensearchpy.transport import Transport
 
@@ -19,11 +19,8 @@ from openmock.behaviour.server_failure import server_failure
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_indices import FakeIndicesClient
 from openmock.normalize_hosts import _normalize_hosts
-from openmock.utilities import (
-    extract_ignore_as_iterable,
-    get_random_id,
-    get_random_scroll_id,
-)
+from openmock.utilities import (extract_ignore_as_iterable, get_random_id,
+                                get_random_scroll_id)
 from openmock.utilities.decorator import for_all_methods
 
 LT_KEYS = {"lt", "lte"}

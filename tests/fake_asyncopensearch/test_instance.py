@@ -1,6 +1,6 @@
 import opensearchpy
 
-from openmock import openmock, AsyncFakeOpenSearch
+from openmock import AsyncFakeOpenSearch, openmock
 from tests import Testasyncopenmock
 
 

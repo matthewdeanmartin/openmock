@@ -1,4 +1,5 @@
 import time
+
 from opensearchpy.client.utils import SKIP_IN_PATH
 
 from tests import INDEX_NAME, Testopenmock

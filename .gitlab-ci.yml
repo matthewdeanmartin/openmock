@@ -1,12 +1,165 @@
 stages:
-  - test
+  - quality
+  - docs
+  - package
+  - compatibility
 
-tox:
-  stage: test
-  image: python:$PYTHON_VERSION
-  parallel:
-    matrix:
-      - PYTHON_VERSION: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+variables:
+  UV_CACHE_DIR: .uv-cache
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PYTHONUNBUFFERED: "1"
+
+default:
+  interruptible: true
+
+cache:
+  key: "$CI_JOB_IMAGE"
+  paths:
+    - .uv-cache/
+
+.python_job: &python_job
+  image: python:3.12-bookworm
+  before_script:
+    # - python -m pip install --upgrade pip uv
+    - uv sync --all-extras
+
+.tox_job: &tox_job
+  stage: compatibility
+  before_script:
+    - python -m pip install --upgrade pip uv
+    - uv sync --all-extras
+  when: manual
+  allow_failure: false
+
+format:
+  <<: *python_job
+  stage: quality
   script:
-    - pip install tox
-    - tox -e py
+    - uv run black . && uv run isort .
+
+pylint:
+  <<: *python_job
+  stage: quality
+  script:
+    - uv run pylint openmock --fail-under 10
+
+bandit:
+  <<: *python_job
+  stage: quality
+  script:
+    - uv run bandit openmock -r
+
+pre_commit:
+  <<: *python_job
+  stage: quality
+  script:
+    - uv run pre-commit run --all-files
+
+tests:
+  <<: *python_job
+  stage: quality
+  script:
+    - uv run pytest tests --cov=openmock --cov-report=term-missing --cov-report=html --cov-fail-under 85
+  artifacts:
+    when: always
+    paths:
+      - htmlcov/
+      - .coverage
+
+docs:
+  <<: *python_job
+  stage: docs
+  script:
+    - uv run interrogate openmock --verbose
+    - |
+      if [ -f .pydoctest.json ]; then
+        uv run pydoctest --config .pydoctest.json | grep -v "__init__" | grep -v "__main__" | grep -v "Unable to parse"
+      else
+        echo "Skipping pydoctest because .pydoctest.json is not present in this repository."
+      fi
+
+markdown_format:
+  <<: *python_job
+  stage: docs
+  script:
+    - |
+      doc_files="$(find docs -maxdepth 1 -name '*.md' -print)"
+      uv run mdformat README.md $doc_files
+
+markdown_lint:
+  image: node:20-bookworm-slim
+  stage: docs
+  before_script:
+    - npm install --global markdownlint-cli
+  script:
+    - markdownlint README.md --config .markdownlintrc
+
+spelling:
+  <<: *python_job
+  stage: docs
+  script:
+    - uv run pylint openmock --enable C0402 --rcfile=.pylintrc_spell
+    - uv run codespell README.md --ignore-words=private_dictionary.txt
+    - uv run codespell openmock --ignore-words=private_dictionary.txt
+
+changelog:
+  <<: *python_job
+  stage: docs
+  script:
+    - uv run changelogmanager validate
+
+build:
+  <<: *python_job
+  stage: package
+  needs:
+    - format
+    - pylint
+    - bandit
+    - pre_commit
+    - tests
+    - docs
+    - markdown_format
+    - markdown_lint
+    - spelling
+    - changelog
+  script:
+    - uv build
+  artifacts:
+    paths:
+      - dist/
+
+tox:py310-opensearch13:
+  <<: *tox_job
+  image: python:3.10-bookworm
+  script:
+    - uv run tox -e py310-opensearch13
+
+tox:py310-opensearch14:
+  <<: *tox_job
+  image: python:3.10-bookworm
+  script:
+    - uv run tox -e py310-opensearch14
+
+tox:py311-opensearch13:
+  <<: *tox_job
+  image: python:3.11-bookworm
+  script:
+    - uv run tox -e py311-opensearch13
+
+tox:py311-opensearch14:
+  <<: *tox_job
+  image: python:3.11-bookworm
+  script:
+    - uv run tox -e py311-opensearch14
+
+tox:py314-opensearch13:
+  <<: *tox_job
+  image: python:3.14-bookworm
+  script:
+    - uv run tox -e py314-opensearch13
+
+tox:py314-opensearch14:
+  <<: *tox_job
+  image: python:3.14-bookworm
+  script:
+    - uv run tox -e py314-opensearch14

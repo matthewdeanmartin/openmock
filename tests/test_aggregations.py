@@ -1,6 +1,9 @@
 from unittest import TestCase
-from openmock import openmock
+
 import opensearchpy
+
+from openmock import openmock
+
 
 class TestAggregations(TestCase):
     @openmock
@@ -9,23 +12,17 @@ class TestAggregations(TestCase):
         es.index(index="test-index", body={"category": "A"})
         es.index(index="test-index", body={"category": "A"})
         es.index(index="test-index", body={"category": "B"})
-        
-        query = {
-            "aggs": {
-                "categories": {
-                    "terms": {"field": "category"}
-                }
-            }
-        }
-        
+
+        query = {"aggs": {"categories": {"terms": {"field": "category"}}}}
+
         res = es.search(index="test-index", body=query)
-        
+
         self.assertIn("aggregations", res)
         self.assertIn("categories", res["aggregations"])
         buckets = res["aggregations"]["categories"]["buckets"]
         self.assertEqual(len(buckets), 2)
-        
-        # Sort buckets by key for stable assertion if needed, 
+
+        # Sort buckets by key for stable assertion if needed,
         # but my implementation sorts by doc_count
         self.assertEqual(buckets[0]["key"], "A")
         self.assertEqual(buckets[0]["doc_count"], 2)
