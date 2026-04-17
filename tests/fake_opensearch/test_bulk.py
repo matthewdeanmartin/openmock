@@ -1,6 +1,7 @@
 import json
 
 from tests import BODY, DOC_ID, DOC_TYPE, INDEX_NAME, Testopenmock
+from tests.backend import mock_only
 
 
 class TestBulk(Testopenmock):
@@ -124,7 +125,8 @@ class TestBulk(Testopenmock):
             index = item.get("update")
             self.assertEqual(DOC_TYPE, index.get("_type"))
             self.assertEqual(INDEX_NAME, index.get("_index"))
-            self.assertEqual("updated", index.get("result"))
+            # Repeating the same doc results in noop under real OpenSearch semantics.
+            self.assertEqual("noop", index.get("result"))
             self.assertEqual(200, index.get("status"))
 
     def test_should_bulk_index_documents_delete_deletes(self):
@@ -161,6 +163,7 @@ class TestBulk(Testopenmock):
         self.assertEqual(second_item["delete"]["_type"], DOC_TYPE)
         self.assertEqual(second_item["delete"]["_id"], DOC_ID)
 
+    @mock_only("This asserts the fake bulk response shape exactly, not backend parity.")
     def test_should_bulk_index_documents_mixed_actions(self):
         doc_body = json.dumps(BODY, default=str)
 
@@ -240,7 +243,7 @@ class TestBulk(Testopenmock):
                     "_type": DOC_TYPE,
                     "_id": 2,
                     "_index": INDEX_NAME,
-                    "_version": 1,
+                    "_version": 2,
                     "status": 200,
                     "result": "updated",
                 }
@@ -252,7 +255,7 @@ class TestBulk(Testopenmock):
                     "_index": INDEX_NAME,
                     "_version": 1,
                     "status": 200,
-                    "result": "updated",
+                    "result": "noop",
                 }
             },
             {

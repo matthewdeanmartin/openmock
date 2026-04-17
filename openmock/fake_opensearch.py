@@ -353,6 +353,7 @@ class FakeOpenSearch(OpenSearch):
         # self.__documents_dict = {}
         self._FakeIndicesClient__documents_dict = {}
         self.__scrolls = {}
+        self._seq_no_counter = {}
         self.transport = Transport(_normalize_hosts(hosts), **kwargs)
 
         # This blows up if I call the real base.
@@ -370,6 +371,11 @@ class FakeOpenSearch(OpenSearch):
     def cluster(self):
         return FakeClusterClient(self)
 
+    def _next_seq_no(self, index):
+        current = self._seq_no_counter.get(index, -1) + 1
+        self._seq_no_counter[index] = current
+        return current
+
     @query_params()
     def ping(self, params=None, headers=None):
         return True
@@ -377,17 +383,21 @@ class FakeOpenSearch(OpenSearch):
     @query_params()
     def info(self, params=None, headers=None):
         return {
-            "status": 200,
             "cluster_name": "openmock",
+            "cluster_uuid": "openmock-cluster-uuid",
             "version": {
-                "lucene_version": "4.10.4",
+                "distribution": "opensearch",
+                "number": "3.1.0",
+                "build_type": "tar",
                 "build_hash": "00f95f4ffca6de89d68b7ccaf80d148f1f70e4d4",
-                "number": "1.7.5",
-                "build_timestamp": "2016-02-02T09:55:30Z",
+                "build_date": "2016-02-02T09:55:30Z",
                 "build_snapshot": False,
+                "lucene_version": "4.10.4",
+                "minimum_wire_compatibility_version": "1.0.0",
+                "minimum_index_compatibility_version": "1.0.0",
             },
             "name": "Nightwatch",
-            "tagline": "You Know, for Search",
+            "tagline": "The OpenSearch Project: https://opensearch.org/",
         }
 
     @query_params(
@@ -426,6 +436,7 @@ class FakeOpenSearch(OpenSearch):
         if id is None:
             id = get_random_id()
 
+        seq_no = self._next_seq_no(index)
         self.__documents_dict[index].append(
             {
                 "_type": doc_type,
@@ -433,16 +444,19 @@ class FakeOpenSearch(OpenSearch):
                 "_source": body,
                 "_index": index,
                 "_version": 1,
+                "_seq_no": seq_no,
+                "_primary_term": 1,
             }
         )
 
         return {
-            "_type": doc_type,
-            "_id": id,
-            "created": True,
-            "_version": 1,
             "_index": index,
+            "_id": id,
+            "_version": 1,
             "result": "created",
+            "_shards": {"total": 2, "successful": 1, "failed": 0},
+            "_seq_no": seq_no,
+            "_primary_term": 1,
         }
 
     @query_params(
@@ -484,6 +498,7 @@ class FakeOpenSearch(OpenSearch):
             self.delete(index, id, doc_type=doc_type)
             result = "updated"
 
+        seq_no = self._next_seq_no(index)
         self.__documents_dict[index].append(
             {
                 "_type": doc_type,
@@ -491,16 +506,19 @@ class FakeOpenSearch(OpenSearch):
                 "_source": body,
                 "_index": index,
                 "_version": version,
+                "_seq_no": seq_no,
+                "_primary_term": 1,
             }
         )
 
         return {
-            "_type": doc_type,
-            "_id": id,
-            "created": True,
-            "_version": version,
             "_index": index,
+            "_id": id,
+            "_version": version,
             "result": result,
+            "_shards": {"total": 2, "successful": 1, "failed": 0},
+            "_seq_no": seq_no,
+            "_primary_term": 1,
         }
 
     @query_params(
@@ -593,8 +611,25 @@ class FakeOpenSearch(OpenSearch):
                         }
                     }
                     if not error:
-                        item[action]["result"] = result
-                        if self.exists(
+                        if action == "update" and self.exists(
+                            index, document_id, doc_type=doc_type, params=params
+                        ):
+                            existing = self.get(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
+                            existing_source = existing.get("_source", {})
+                            merged = {**existing_source, **source}
+                            if merged == existing_source:
+                                item[action]["result"] = "noop"
+                                item[action]["_version"] = existing.get("_version", 1)
+                                items.append(item)
+                                continue
+                            source = merged
+                            version = existing.get("_version", 1) + 1
+                            self.delete(
+                                index, document_id, doc_type=doc_type, params=params
+                            )
+                        elif self.exists(
                             index, document_id, doc_type=doc_type, params=params
                         ):
                             doc = self.get(
@@ -605,6 +640,9 @@ class FakeOpenSearch(OpenSearch):
                                 index, document_id, doc_type=doc_type, params=params
                             )
 
+                        item[action]["result"] = result
+                        item[action]["_version"] = version
+                        seq_no = self._next_seq_no(index)
                         self.__documents_dict[index].append(
                             {
                                 "_type": doc_type,
@@ -612,6 +650,8 @@ class FakeOpenSearch(OpenSearch):
                                 "_source": source,
                                 "_index": index,
                                 "_version": version,
+                                "_seq_no": seq_no,
+                                "_primary_term": 1,
                             }
                         )
                     else:
@@ -748,17 +788,25 @@ class FakeOpenSearch(OpenSearch):
             for document in self.__documents_dict[index]:
                 if document.get("_id") == id:
                     if "doc" in body:
-                        document["_source"] = {**document["_source"], **body["doc"]}
-                        document["_version"] += 1
+                        merged = {**document["_source"], **body["doc"]}
+                        changed = merged != document["_source"]
+                        if changed:
+                            document["_source"] = merged
+                            document["_version"] += 1
+                            document["_seq_no"] = self._next_seq_no(index)
+                            document["_primary_term"] = 1
+                            op_result = "updated"
+                        else:
+                            op_result = "noop"
 
-                        # TODO: Might be removed since it seems that latest open search doesn't respond the _type anymore.
                         result = {
                             "_index": index,
                             "_id": id,
-                            "_type": document.get("_type", "_doc"),
                             "_version": document["_version"],
-                            "result": "updated",
-                            "_shards": {"total": 1, "successful": 1, "failed": 0},
+                            "result": op_result,
+                            "_shards": {"total": 2, "successful": 1, "failed": 0},
+                            "_seq_no": document.get("_seq_no", 0),
+                            "_primary_term": document.get("_primary_term", 1),
                         }
                     elif "script" in body:
                         # TODO: Add pain(ful)less language support
@@ -1199,6 +1247,7 @@ class FakeOpenSearch(OpenSearch):
     ) -> Any:
         doc_type = None
         found = False
+        existing_version = 1
         ignore = extract_ignore_as_iterable(params)
 
         if index in self.__documents_dict:
@@ -1208,22 +1257,39 @@ class FakeOpenSearch(OpenSearch):
                     if doc_type and document.get("_type") != doc_type:
                         found = False
                     if found:
+                        existing_version = document.get("_version", 1)
                         self.__documents_dict[index].remove(document)
                         break
 
-        result_dict = {
-            "found": found,
-            "_index": index,
-            "_type": doc_type,
-            "_id": id,
-            "_version": 1,
-        }
-
         if found:
-            return result_dict
+            seq_no = self._next_seq_no(index)
+            return {
+                "_index": index,
+                "_id": id,
+                "_version": existing_version + 1,
+                "result": "deleted",
+                "_shards": {"total": 2, "successful": 1, "failed": 0},
+                "_seq_no": seq_no,
+                "_primary_term": 1,
+                "found": True,
+            }
         if params and 404 in ignore:
-            return {"found": False}
-        raise NotFoundError(404, json.dumps(result_dict))
+            return {
+                "_index": index,
+                "_id": id,
+                "_version": 1,
+                "result": "not_found",
+                "_shards": {"total": 2, "successful": 1, "failed": 0},
+                "_seq_no": 0,
+                "_primary_term": 1,
+                "found": False,
+            }
+        raise NotFoundError(
+            404,
+            json.dumps(
+                {"_index": index, "_id": id, "found": False, "result": "not_found"}
+            ),
+        )
 
     @query_params(
         "allow_no_indices",
@@ -1334,6 +1400,10 @@ class FakeOpenSearch(OpenSearch):
                     metric_type_str = list(metric_definition)[0]
                     metric_type = MetricType.get_metric_type(metric_type_str)
                     attr = metric_definition[metric_type_str]["field"]
+                    # Strip .keyword multifield suffix; the fake is schema-light
+                    # and stores only the base field value.
+                    if attr.endswith(".keyword"):
+                        attr = attr[: -len(".keyword")]
                     data = [doc[attr] for doc in bucket]
 
                     if metric_type == MetricType.CARDINALITY:

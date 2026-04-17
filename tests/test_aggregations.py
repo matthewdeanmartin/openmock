@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import opensearchpy
 
-from openmock import openmock
+from tests.backend import openmock
 
 
 class TestAggregations(TestCase):

@@ -8,21 +8,17 @@ class TestCreate(Testasyncopenmock):
         data = await self.es.create(
             index=INDEX_NAME,
             id=1,
-            # doc_type=DOC_TYPE,
             body=BODY,
         )
 
-        # self.assertEqual(DOC_TYPE, data.get("_type"))
-        self.assertTrue(data.get("created"))
+        self.assertEqual("created", data.get("result"))
         self.assertEqual(1, data.get("_version"))
         self.assertEqual(INDEX_NAME, data.get("_index"))
-        self.assertEqual("created", data.get("result"))
 
     async def test_should_create_document_without_doc_type(self):
         data = await self.es.create(index=INDEX_NAME, id=1, body=BODY)
 
-        # self.assertEqual("_doc", data.get("_type"))
-        self.assertTrue(data.get("created"))
+        self.assertEqual("created", data.get("result"))
         self.assertEqual(1, data.get("_version"))
         self.assertEqual(INDEX_NAME, data.get("_index"))
 

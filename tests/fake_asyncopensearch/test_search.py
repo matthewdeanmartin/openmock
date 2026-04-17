@@ -544,6 +544,20 @@ class TestSearch(Testasyncopenmock):
             self.assertEqual(len(expected_ids), response["hits"]["total"]["value"])
 
     async def test_bucket_aggregation(self):
+        await self.es.indices.create(
+            index="index_for_search",
+            body={
+                "mappings": {
+                    "properties": {
+                        "data_x": {"type": "integer"},
+                        "data_y": {
+                            "type": "text",
+                            "fields": {"keyword": {"type": "keyword"}},
+                        },
+                    }
+                }
+            },
+        )
         data = [
             {"data_x": 1, "data_y": "a"},
             {"data_x": 1, "data_y": "a"},
@@ -566,7 +580,9 @@ class TestSearch(Testasyncopenmock):
                             "size": 10000,
                         },
                         "aggs": {
-                            "distinct_data_y": {"cardinality": {"field": "data_y"}}
+                            "distinct_data_y": {
+                                "cardinality": {"field": "data_y.keyword"}
+                            }
                         },
                     }
                 },

@@ -43,6 +43,22 @@ status-real:
 		echo "Real OpenSearch is STOPPED"; \
 	fi
 
+# Start real OpenSearch in Docker for parity testing
+run-real-docker:
+	uv run python scripts/opensearch_docker.py start
+
+# Stop the Dockerized parity OpenSearch
+stop-real-docker:
+	uv run python scripts/opensearch_docker.py stop
+
+# Check Dockerized parity OpenSearch status
+status-real-docker:
+	uv run python scripts/opensearch_docker.py status
+
+# Run tests against Dockerized OpenSearch
+test-real:
+	uv run python scripts/opensearch_docker.py test tests
+
 # --- MOCK OPENSEARCH (Port 9201) ---
 
 # Start the Openmock Management Console

@@ -26,16 +26,12 @@ class TestGet(Testopenmock):
         document_id = data.get("_id")
         target_doc = self.es.get(index=INDEX_NAME, id=document_id)
 
-        expected = {
-            "_type": "_doc",
-            "_source": BODY,
-            "_index": INDEX_NAME,
-            "_version": 1,
-            "found": True,
-            "_id": document_id,
-        }
-
-        self.assertDictEqual(expected, target_doc)
+        self.assertEqual(INDEX_NAME, target_doc["_index"])
+        self.assertEqual(document_id, target_doc["_id"])
+        self.assertEqual(1, target_doc["_version"])
+        self.assertTrue(target_doc["found"])
+        self.assertEqual(BODY["author"], target_doc["_source"]["author"])
+        self.assertEqual(BODY["text"], target_doc["_source"]["text"])
 
     def test_should_get_document_with_id_and_doc_type(self):
         data = self.es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=BODY)
@@ -43,16 +39,12 @@ class TestGet(Testopenmock):
         document_id = data.get("_id")
         target_doc = self.es.get(index=INDEX_NAME, id=document_id, doc_type=DOC_TYPE)
 
-        expected = {
-            "_type": "_doc",
-            "_source": BODY,
-            "_index": INDEX_NAME,
-            "_version": 1,
-            "found": True,
-            "_id": document_id,
-        }
-
-        self.assertDictEqual(expected, target_doc)
+        self.assertEqual(INDEX_NAME, target_doc["_index"])
+        self.assertEqual(document_id, target_doc["_id"])
+        self.assertEqual(1, target_doc["_version"])
+        self.assertTrue(target_doc["found"])
+        self.assertEqual(BODY["author"], target_doc["_source"]["author"])
+        self.assertEqual(BODY["text"], target_doc["_source"]["text"])
 
     def test_should_get_only_document_source_with_id(self):
         data = self.es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=BODY)

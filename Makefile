@@ -16,6 +16,10 @@ test: pylint bandit uv.lock
 	@echo "Running unit tests"
 	$(VENV) py.test tests --cov=openmock --cov-report=html --cov-fail-under 85
 
+test-real: uv.lock
+	@echo "Running parity tests against Docker OpenSearch"
+	uv run python scripts/opensearch_docker.py test tests
+
 
 black:
 	@echo "Formatting code"

@@ -7,17 +7,14 @@ class TestIndex(Testopenmock):
     def test_should_index_document(self):
         data = self.es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=BODY)
 
-        # self.assertEqual(DOC_TYPE, data.get("_type"))
-        self.assertTrue(data.get("created"))
+        self.assertEqual("created", data.get("result"))
         self.assertEqual(1, data.get("_version"))
         self.assertEqual(INDEX_NAME, data.get("_index"))
-        self.assertEqual("created", data.get("result"))
 
     def test_should_index_document_without_doc_type(self):
         data = self.es.index(index=INDEX_NAME, body=BODY)
 
-        self.assertEqual("_doc", data.get("_type"))
-        self.assertTrue(data.get("created"))
+        self.assertEqual("created", data.get("result"))
         self.assertEqual(1, data.get("_version"))
         self.assertEqual(INDEX_NAME, data.get("_index"))
 
@@ -48,16 +45,11 @@ class TestIndex(Testopenmock):
         )
         target_doc = self.es.get(index=INDEX_NAME, id=document_id)
 
-        expected = {
-            "_type": "_doc",
-            "_source": UPDATED_BODY,
-            "_index": INDEX_NAME,
-            "_version": 2,
-            "found": True,
-            "_id": document_id,
-        }
-
-        self.assertDictEqual(expected, target_doc)
+        self.assertEqual(UPDATED_BODY, target_doc["_source"])
+        self.assertEqual(INDEX_NAME, target_doc["_index"])
+        self.assertEqual(document_id, target_doc["_id"])
+        self.assertEqual(2, target_doc["_version"])
+        self.assertTrue(target_doc["found"])
 
     def test_update_by_query(self):
         data = self.es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=BODY)

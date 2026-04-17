@@ -178,6 +178,17 @@ Preferred for testing one version of python.
 pytest test
 ```
 
+Run the same pytest suite against a disposable Docker OpenSearch instead of the in-memory
+fake:
+
+```bash
+uv run python scripts/opensearch_docker.py test tests
+```
+
+If you want to manage the container yourself, the backend seam is driven by
+`OPENMOCK_TEST_BACKEND=real` and `OPENMOCK_REAL_OPENSEARCH_URL=http://localhost:9200`.
+The default remains the in-memory mock backend.
+
 Won't catch pytest tests.
 
 ```bash
