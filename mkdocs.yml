@@ -1,0 +1,38 @@
+site_name: "Openmock"
+site_url: "https://openmock.readthedocs.io/"
+site_author: "Matthew Dean Martin <matthewdeanmartin@gmail.com>"
+site_description: "Stateful OpenSearch test surrogate for Python unit tests."
+
+repo_url: "https://github.com/matthewdeanmartin/openmock"
+edit_uri: edit/main/docs/
+
+theme:
+  name: readthedocs
+
+markdown_extensions:
+  - attr_list
+  - codehilite
+  - toc:
+      permalink: true
+
+not_in_nav: |
+  /requirements.txt
+  /openmock/**
+
+nav:
+  - "Home": "index.md"
+  - "Using Openmock in unit tests": "unit-testing.md"
+  - "Web UI and REST bridge": "web-ui.md"
+  - "Contributing": "contributing.md"
+  - "API reference": "api-reference.md"
+
+validation:
+  nav:
+    omitted_files: warn
+  links:
+    absolute_links: warn
+    unrecognized_links: warn
+    anchors: warn
+
+plugins:
+  - search
