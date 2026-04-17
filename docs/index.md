@@ -2,7 +2,6 @@
 
 Openmock is a Python test surrogate for `opensearch-py`. It gives unit tests an in-memory, stateful stand-in for `OpenSearch` and `AsyncOpenSearch` so application code can exercise realistic indexing, search, update, and delete flows without a live cluster.
 
-This documentation is written for a future MkDocs / Read the Docs setup. Everything here is Markdown, and the generated API reference under [`docs/openmock`](openmock/index.html) stays separate.
 
 ## What to read
 
