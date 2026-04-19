@@ -40,10 +40,13 @@ all = [
     "openmock[web]"
 ]
 
+[project.scripts]
+openmock = "openmock.web:main"
+
 [project.urls]
 "Bug Tracker" = "https://github.com/matthewdeanmartin/openmock/issues"
 "Change Log" = "https://github.com/matthewdeanmartin/openmock/blob/main/CHANGELOG.md"
-
+"Documentation" = "https://openmock.readthedocs.io/en/latest/"
 
 [dependency-groups]
 dev = [

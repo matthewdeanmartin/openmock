@@ -63,7 +63,7 @@ test-real:
 
 # Start the Openmock Management Console
 web:
-	uv run streamlit run -m openmock.web
+	uv run openmock
 
 # Start a Mock REST Server (allows curl/dashboards to connect to the fake)
 run-mock-server:

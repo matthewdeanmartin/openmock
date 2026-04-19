@@ -20,18 +20,27 @@ just web
 or:
 
 ```bash
+uv run openmock
+```
+
+or:
+
+```bash
 uv run streamlit run -m openmock.web
 ```
 
 ## What you can do in the UI
 
-The management console currently has three tabs:
+The management console currently has six tabs:
 
 | Tab | Purpose |
 | --- | --- |
 | `Indices` | Inspect current indices and documents, then add a document with JSON input. |
 | `Search Sandbox` | Run a JSON search body against the fake and inspect hits and aggregations. |
 | `Cluster Stats` | View fake cluster health and info responses. |
+| `CAT` | Preview fake `_cat` output as either a text table or JSON. |
+| `Security` | Manage fake users and roles with permissive CRUD and no auth checks. |
+| `Ingest` | Create fake ingest pipelines, simulate them, and use them during indexing. |
 
 The sidebar also lets you:
 
@@ -74,10 +83,16 @@ The bridge currently exposes a focused subset:
 
 - `GET /` - fake cluster info
 - `GET /_cluster/health` - fake cluster health
-- `POST /{index}/_doc` - index a document
-- `POST /{index}/_create` - create a document
+- `POST /{index}/_doc` and `PUT /{index}/_doc/{id}` - index a document, optionally with `?pipeline=...`
+- `POST` or `PUT /{index}/_create/{id}` - create a document, optionally with `?pipeline=...`
 - `GET` or `POST /{index}/_search` - search an index
-- `GET /{index}/_count` - count documents
+- `GET /{index}/_count` and `GET /_count` - count documents
+- `GET /_cat/indices` and `GET /_cat/count` - text or JSON cat output
+- `GET|PUT|PATCH|DELETE /_plugins/_security/api/internalusers...` - fake user CRUD
+- `GET|PUT|PATCH|DELETE /_plugins/_security/api/roles...` - fake role CRUD
+- `GET|PUT|DELETE /_ingest/pipeline...` and `POST /_ingest/pipeline/.../_simulate` - fake ingest pipelines
+
+The legacy `_opendistro/_security/...` aliases are also accepted for the security routes.
 
 Examples:
 

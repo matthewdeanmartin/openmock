@@ -14,12 +14,14 @@ from openmock.fake_asyncopensearch import AsyncFakeOpenSearch
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_indices import FakeIndicesClient
 from openmock.fake_opensearch import FakeOpenSearch
+from openmock.fake_server import FakeOpenSearchServer
 from openmock.normalize_hosts import _normalize_hosts
 
 __all__ = [
     "openmock",
     "server_failure",
     "FakeOpenSearch",
+    "FakeOpenSearchServer",
     "AsyncFakeOpenSearch",
     "FakeClusterClient",
     "FakeIndicesClient",
