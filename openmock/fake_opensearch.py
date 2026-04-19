@@ -315,7 +315,7 @@ class FakeQueryCondition:
 
         doc_val = doc_source
         # Remove boosting
-        field, *_ = field.split("*")
+        field, *_ = field.split("^")
         # Remove ".keyword"
         exact_search = field.lower().endswith(".keyword")
         field = field[: -len(".keyword")] if exact_search else field
@@ -330,16 +330,22 @@ class FakeQueryCondition:
         if not isinstance(doc_val, list):
             doc_val = [doc_val]
 
+        # Handle multiple terms for match queries
+        query_terms = [value]
+        if not exact_search and isinstance(value, str):
+            query_terms = value.split()
+
         for val in doc_val:
             if not isinstance(val, (int, float, complex)) or val is None:
                 val = str(val)
                 if ignore_case:
                     val = val.lower()
 
-            if value == val:
-                return True
-            if isinstance(val, str) and str(value) in val and not exact_search:
-                return True
+            for term in query_terms:
+                if term == val:
+                    return True
+                if isinstance(val, str) and str(term) in val and not exact_search:
+                    return True
 
         return False
 
@@ -352,6 +358,9 @@ class FakeOpenSearch(OpenSearch):
     def __init__(self, hosts=None, transport_class=None, **kwargs):
         # self.__documents_dict = {}
         self._FakeIndicesClient__documents_dict = {}
+        self._FakeIndicesClient__mappings_dict = {}
+        self._FakeIndicesClient__settings_dict = {}
+        self._FakeIndicesClient__aliases_dict = {}
         self.__scrolls = {}
         self._seq_no_counter = {}
         self.transport = Transport(_normalize_hosts(hosts), **kwargs)
@@ -362,6 +371,18 @@ class FakeOpenSearch(OpenSearch):
     @property
     def __documents_dict(self):
         return self._FakeIndicesClient__documents_dict
+
+    @property
+    def __mappings_dict(self):
+        return self._FakeIndicesClient__mappings_dict
+
+    @property
+    def __settings_dict(self):
+        return self._FakeIndicesClient__settings_dict
+
+    @property
+    def __aliases_dict(self):
+        return self._FakeIndicesClient__aliases_dict
 
     @property
     def indices(self):
@@ -534,70 +555,50 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
-    # def bulk(self, body, index=None, doc_type=None, params=None, headers=None):
     def bulk(
         self,
         body: Any,
         index: Any = None,
         params: Any = None,
         headers: Any = None,
+        **kwargs,
     ) -> Any:
         doc_type = None
         items = []
         errors = False
 
-        for raw_line in body.splitlines():
-            if len(raw_line.strip()) > 0:
-                line = json.loads(raw_line)
+        if isinstance(body, (bytes, bytearray)):
+            body = body.decode("utf-8")
 
-                if any(
-                    action in line for action in ["index", "create", "update", "delete"]
-                ):
-                    action = next(iter(line.keys()))
+        if isinstance(body, str):
+            lines = body.splitlines()
+        elif isinstance(body, list):
+            lines = body
+        else:
+            raise TypeError("bulk body must be str, bytes or list")
 
-                    version = 1
-                    index = line[action].get("_index") or index
-                    doc_type = line[action].get(
-                        "_type", "_doc"
-                    )  # _type is deprecated in 7.x
+        it = iter(lines)
+        for line in it:
+            if isinstance(line, str):
+                if len(line.strip()) == 0:
+                    continue
+                line = json.loads(line)
 
-                    if action in ["delete", "update"] and not line[action].get("_id"):
-                        raise RequestError(
-                            400, "action_request_validation_exception", "missing id"
-                        )
+            if any(action in line for action in ["index", "create", "update", "delete"]):
+                action = next(iter(line.keys()))
 
-                    document_id = line[action].get("_id", get_random_id())
+                version = 1
+                index = line[action].get("_index") or index
+                doc_type = line[action].get("_type", "_doc")
 
-                    if action == "delete":
-                        status, result, error = self._validate_action(
-                            action, index, document_id, doc_type, params=params
-                        )
-                        item = {
-                            action: {
-                                "_type": doc_type,
-                                "_id": document_id,
-                                "_index": index,
-                                "_version": version,
-                                "status": status,
-                            }
-                        }
-                        if error:
-                            errors = True
-                            item[action]["error"] = result
-                        else:
-                            self.delete(
-                                index, document_id, doc_type=doc_type, params=params
-                            )
-                            item[action]["result"] = result
-                        items.append(item)
+                if action in ["delete", "update"] and not line[action].get("_id"):
+                    raise RequestError(
+                        400, "action_request_validation_exception", "missing id"
+                    )
 
-                    if index not in self.__documents_dict:
-                        self.__documents_dict[index] = []
-                else:
-                    if "doc" in line and action == "update":
-                        source = line["doc"]
-                    else:
-                        source = line
+                document_id = line[action].get("_id", get_random_id())
+
+                if action == "delete":
                     status, result, error = self._validate_action(
                         action, index, document_id, doc_type, params=params
                     )
@@ -610,54 +611,95 @@ class FakeOpenSearch(OpenSearch):
                             "status": status,
                         }
                     }
-                    if not error:
-                        if action == "update" and self.exists(
-                            index, document_id, doc_type=doc_type, params=params
-                        ):
-                            existing = self.get(
-                                index, document_id, doc_type=doc_type, params=params
-                            )
-                            existing_source = existing.get("_source", {})
-                            merged = {**existing_source, **source}
-                            if merged == existing_source:
-                                item[action]["result"] = "noop"
-                                item[action]["_version"] = existing.get("_version", 1)
-                                items.append(item)
-                                continue
-                            source = merged
-                            version = existing.get("_version", 1) + 1
-                            self.delete(
-                                index, document_id, doc_type=doc_type, params=params
-                            )
-                        elif self.exists(
-                            index, document_id, doc_type=doc_type, params=params
-                        ):
-                            doc = self.get(
-                                index, document_id, doc_type=doc_type, params=params
-                            )
-                            version = doc["_version"] + 1
-                            self.delete(
-                                index, document_id, doc_type=doc_type, params=params
-                            )
-
-                        item[action]["result"] = result
-                        item[action]["_version"] = version
-                        seq_no = self._next_seq_no(index)
-                        self.__documents_dict[index].append(
-                            {
-                                "_type": doc_type,
-                                "_id": document_id,
-                                "_source": source,
-                                "_index": index,
-                                "_version": version,
-                                "_seq_no": seq_no,
-                                "_primary_term": 1,
-                            }
-                        )
-                    else:
+                    if error:
                         errors = True
                         item[action]["error"] = result
+                    else:
+                        self.delete(index, document_id, doc_type=doc_type, params=params)
+                        item[action]["result"] = result
                     items.append(item)
+                    continue
+
+                if index not in self.__documents_dict:
+                    self.__documents_dict[index] = []
+
+                # If it's not delete, we need the source from the next line
+                try:
+                    source_line = next(it)
+                except StopIteration:
+                    raise RequestError(
+                        400, "action_request_validation_exception", "missing source"
+                    )
+
+                if isinstance(source_line, str):
+                    source = json.loads(source_line)
+                else:
+                    source = source_line
+
+                if "doc" in source and action == "update":
+                    source = source["doc"]
+
+                status, result, error = self._validate_action(
+                    action, index, document_id, doc_type, params=params
+                )
+                item = {
+                    action: {
+                        "_type": doc_type,
+                        "_id": document_id,
+                        "_index": index,
+                        "_version": version,
+                        "status": status,
+                    }
+                }
+                if not error:
+                    if action == "update" and self.exists(
+                        index, document_id, doc_type=doc_type, params=params
+                    ):
+                        existing = self.get(
+                            index, document_id, doc_type=doc_type, params=params
+                        )
+                        existing_source = existing.get("_source", {})
+                        merged = {**existing_source, **source}
+                        if merged == existing_source:
+                            item[action]["result"] = "noop"
+                            item[action]["_version"] = existing.get("_version", 1)
+                            items.append(item)
+                            continue
+                        source = merged
+                        version = existing.get("_version", 1) + 1
+                        self.delete(
+                            index, document_id, doc_type=doc_type, params=params
+                        )
+                    elif self.exists(
+                        index, document_id, doc_type=doc_type, params=params
+                    ):
+                        doc = self.get(
+                            index, document_id, doc_type=doc_type, params=params
+                        )
+                        version = doc["_version"] + 1
+                        self.delete(
+                            index, document_id, doc_type=doc_type, params=params
+                        )
+
+                    item[action]["result"] = result
+                    item[action]["_version"] = version
+                    seq_no = self._next_seq_no(index)
+                    self.__documents_dict[index].append(
+                        {
+                            "_type": doc_type,
+                            "_id": document_id,
+                            "_source": source,
+                            "_index": index,
+                            "_version": version,
+                            "_seq_no": seq_no,
+                            "_primary_term": 1,
+                        }
+                    )
+                else:
+                    errors = True
+                    item[action]["error"] = result
+                items.append(item)
+
         return {"errors": errors, "items": items}
 
     def _validate_action(self, action, index, document_id, doc_type, params=None):
@@ -927,21 +969,40 @@ class FakeOpenSearch(OpenSearch):
         params: Any = None,
         headers: Any = None,
     ) -> Any:
-        # def mget(self, body, index, doc_type="_all", params=None, headers=None):
         doc_type = "_all"
         docs = body.get("docs")
-        ids = [doc["_id"] for doc in docs]
+        if docs:
+            items = [(doc.get("_index") or index, doc["_id"]) for doc in docs]
+        else:
+            ids = body.get("ids")
+            if ids:
+                items = [(index, doc_id) for doc_id in ids]
+            else:
+                items = []
+
         results = []
-        for id in ids:
+        for doc_index, doc_id in items:
             # pylint: disable=bare-except
             try:
                 results.append(
                     self.get(
-                        index, id, doc_type=doc_type, params=params, headers=headers
+                        doc_index,
+                        doc_id,
+                        doc_type=doc_type,
+                        params=params,
+                        headers=headers,
                     )
                 )
             except:  # noqa
-                pass  # nosec
+                results.append(
+                    {
+                        "_index": doc_index,
+                        "_type": doc_type,
+                        "_id": doc_id,
+                        "found": False,
+                    }
+                )
+
         if not results:
             raise RequestError(
                 400,

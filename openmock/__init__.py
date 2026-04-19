@@ -6,7 +6,10 @@ import inspect
 from functools import wraps
 from unittest.mock import patch
 
+from opensearchpy.exceptions import ConnectionError
+
 from openmock.behaviour.server_failure import server_failure
+from openmock.fake_asyncindices import FakeAsyncIndicesClient
 from openmock.fake_asyncopensearch import AsyncFakeOpenSearch
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_indices import FakeIndicesClient
@@ -50,6 +53,12 @@ def _get_async_openmock(*args, hosts=None, **kwargs):
     return connection
 
 
+def _fail_on_real_connection(*args, **kwargs):
+    raise ConnectionError(
+        "N/A", "Attempted to connect to real OpenSearch server during openmock.", "N/A"
+    )
+
+
 def openmock(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -58,6 +67,23 @@ def openmock(f):
         with (
             patch("opensearchpy.OpenSearch", _get_openmock),
             patch("opensearchpy.AsyncOpenSearch", _get_async_openmock),
+            patch("opensearchpy.client.indices.IndicesClient", FakeIndicesClient),
+            patch("opensearchpy.client.cluster.ClusterClient", FakeClusterClient),
+            patch(
+                "opensearchpy._async.client.indices.IndicesClient",
+                FakeAsyncIndicesClient,
+            ),
+            patch(
+                "opensearchpy._async.client.cluster.ClusterClient", FakeClusterClient
+            ),
+            patch(
+                "opensearchpy.transport.Transport.perform_request",
+                _fail_on_real_connection,
+            ),
+            patch(
+                "opensearchpy._async.transport.AsyncTransport.perform_request",
+                _fail_on_real_connection,
+            ),
         ):
             return f(*args, **kwargs)
 
@@ -68,6 +94,23 @@ def openmock(f):
         with (
             patch("opensearchpy.OpenSearch", _get_openmock),
             patch("opensearchpy.AsyncOpenSearch", _get_async_openmock),
+            patch("opensearchpy.client.indices.IndicesClient", FakeIndicesClient),
+            patch("opensearchpy.client.cluster.ClusterClient", FakeClusterClient),
+            patch(
+                "opensearchpy._async.client.indices.IndicesClient",
+                FakeAsyncIndicesClient,
+            ),
+            patch(
+                "opensearchpy._async.client.cluster.ClusterClient", FakeClusterClient
+            ),
+            patch(
+                "opensearchpy.transport.Transport.perform_request",
+                _fail_on_real_connection,
+            ),
+            patch(
+                "opensearchpy._async.transport.AsyncTransport.perform_request",
+                _fail_on_real_connection,
+            ),
         ):
             return await f(*args, **kwargs)
 

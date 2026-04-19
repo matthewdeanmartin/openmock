@@ -3,10 +3,10 @@ name = "openmock"
 version = "3.2.0"
 description = "Python OpenSearch Mock for test purposes"
 authors = [
-    {name = "Marcos Cardoso"},
-    {name = "Mathew Martin", email = "matthewdeanmartin@gmail.com"},
+    { name = "Marcos Cardoso" },
+    { name = "Mathew Martin", email = "matthewdeanmartin@gmail.com" },
 ]
-license = {text = "MIT"}
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = ["opensearch", "mocking", "testing"]
@@ -46,12 +46,33 @@ all = [
 
 
 [dependency-groups]
-dev = ["parameterized>=0.9.0",
-    "pytest>=7.4.3", "mypy>=1.6.1", "requests>=2.31.0", "types-python-dateutil",
-    "tox>=4.11.3", "coverage>=7.3.2", "pytest-cov>=4.1.0", "pylint>=3.0.2",
-    "metametameta", "interrogate>=1.5.0", "pydoctest>=0.1.22", "pdoc3>=0.10.0",
-    "mdformat>=0.7.17", "linkcheckmd>=1.4.0", "codespell>=2.2.6", "pyenchant>=3.2.2", "aiounittest>=1.5.0",
-    "black>=25.11.0","bandit>=1.9.2","pre-commit","hatchling",
+dev = [
+    # pytest
+    "pytest_asyncio",
+    "aiounittest>=1.5.0",
+    "parameterized>=0.9.0",
+    "pytest>=7.4.3",
+    "coverage>=7.3.2", "pytest-cov>=4.1.0",
+    # types
+    "mypy>=1.6.1",
+    "types-python-dateutil",
+    # web
+    "requests>=2.31.0",
+    # cross compat
+    "tox>=4.11.3",
+    # code quality
+    "pylint>=3.0.2",
+    "pre-commit",
+    "metametameta",
+    # docs checking
+    "interrogate>=1.5.0",
+    "pydoctest>=0.1.22",
+    "mdformat>=0.7.17", "linkcheckmd>=1.4.0", "codespell>=2.2.6", "pyenchant>=3.2.2", "pdoc3>=0.10.0",
+    "black>=25.11.0",
+    # security
+    "bandit>=1.9.2",
+    # publishing
+    "hatchling",
 ]
 
 [build-system]

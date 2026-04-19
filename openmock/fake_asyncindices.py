@@ -19,6 +19,7 @@ class FakeAsyncIndicesClient(IndicesClient):
         documents_dict = self.__get_documents_dict()
         if index not in documents_dict:
             documents_dict[index] = []
+        return {"acknowledged": True, "shards_acknowledged": True, "index": index}
 
     @query_params("allow_no_indices", "expand_wildcards", "ignore_unavailable", "local")
     async def exists(self, index, params=None, headers=None):
@@ -38,6 +39,7 @@ class FakeAsyncIndicesClient(IndicesClient):
         """
         Fake index refresh (no implementation)
         """
+        return {"_shards": {"total": 1, "successful": 1, "failed": 0}}
 
     @query_params("master_timeout", "timeout")
     async def delete(self, index, params=None, headers=None):
@@ -45,37 +47,64 @@ class FakeAsyncIndicesClient(IndicesClient):
         documents_dict = self.__get_documents_dict()
         if index in documents_dict:
             del documents_dict[index]
+        return {"acknowledged": True}
 
-    @query_params(
-        "cluster_manager_timeout",
-        "error_trace",
-        "filter_path",
-        "human",
-        "master_timeout",
-        "pretty",
-        "source",
-        "task_execution_timeout",
-        "timeout",
-        "wait_for_active_shards",
-        "wait_for_completion",
-    )
-    async def clone(
-        self,
-        index,
-        target,
-        body=None,
-        params=None,
-        headers=None,
-    ):
-        if await self.exists(target):
-            msg = "Target already exists"
-            raise ValueError(msg)
-        if not await self.exists(index):
-            msg = "index doesn't exist"
-            raise ValueError(msg)
-        documents_dict = self.__get_documents_dict()
-        documents_dict[target] = documents_dict.pop(index)
+    @query_params("master_timeout", "timeout")
+    async def put_alias(self, index, name, body=None, params=None, headers=None, **kwargs):
+        """Fake put alias"""
+        aliases_dict = self.__get_aliases_dict()
+        for idx in self._normalize_index_to_list(index):
+            if idx not in aliases_dict:
+                aliases_dict[idx] = {"aliases": {}}
+            aliases_dict[idx]["aliases"][name] = {}
+        return {"acknowledged": True}
+
+    @query_params("allow_no_indices", "expand_wildcards", "ignore_unavailable", "local")
+    async def get_alias(self, index=None, name=None, params=None, headers=None, **kwargs):
+        """Fake get alias"""
+        aliases_dict = self.__get_aliases_dict()
+        res = {}
+        for idx in self._normalize_index_to_list(index):
+            if idx in aliases_dict:
+                res[idx] = aliases_dict[idx]
+            else:
+                res[idx] = {"aliases": {}}
+        return res
+
+    @query_params("master_timeout", "timeout")
+    async def delete_alias(self, index, name, params=None, headers=None, **kwargs):
+        """Fake delete alias"""
+        aliases_dict = self.__get_aliases_dict()
+        for idx in self._normalize_index_to_list(index):
+            if idx in aliases_dict and name in aliases_dict[idx]["aliases"]:
+                del aliases_dict[idx]["aliases"][name]
+        return {"acknowledged": True}
+
+    async def stats(self, index=None, metric=None, params=None, headers=None, **kwargs):
+        """Fake stats"""
+        return {
+            "_shards": {"total": 1, "successful": 1, "failed": 0},
+            "indices": {
+                idx: {"uuid": "uuid", "primaries": {}, "total": {}}
+                for idx in self._normalize_index_to_list(index)
+            },
+        }
+
+    def __get_aliases_dict(self):
+        """Get the aliases dictionary"""
+        return self.client.__aliases_dict
 
     def __get_documents_dict(self):
         """Get the documents dictionary"""
         return self.client.__documents_dict
+
+    def _normalize_index_to_list(self, index):
+        """Normalize index to a list of indexes"""
+        if index is None or index == "*" or index == "_all":
+            return list(self.__get_documents_dict().keys())
+        if isinstance(index, str):
+            res = [idx.strip() for idx in index.split(",")]
+            return res
+        if isinstance(index, list):
+            return index
+        return [index]
