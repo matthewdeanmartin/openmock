@@ -110,10 +110,14 @@ def run_tests(args) -> int:
     env = os.environ.copy()
     env["OPENMOCK_TEST_BACKEND"] = "real"
     env["OPENMOCK_REAL_OPENSEARCH_URL"] = endpoint_url(args.port)
-    pytest_args = args.pytest_args or ["tests"]
+    pytest_args = args.pytest_args or ["tests", "-m", "parity"]
 
     try:
-        result = subprocess.run(["uv", "run", "pytest", *pytest_args], env=env, check=False)
+        result = subprocess.run(
+            ["uv", "run", "python", "-m", "pytest", *pytest_args],
+            env=env,
+            check=False,
+        )
         return result.returncode
     finally:
         if not args.keep_container:

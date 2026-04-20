@@ -18,7 +18,15 @@ test: pylint bandit uv.lock
 
 test-real: uv.lock
 	@echo "Running parity tests against Docker OpenSearch"
-	uv run python scripts/opensearch_docker.py test tests
+	uv run python scripts/opensearch_docker.py test
+
+test-mock: uv.lock
+	@echo "Running mock-backend-only tests"
+	uv run python -m pytest tests -m mock_backend
+
+test-parity: uv.lock
+	@echo "Running parity tests against the in-memory backend"
+	uv run python -m pytest tests -m parity
 
 
 black:

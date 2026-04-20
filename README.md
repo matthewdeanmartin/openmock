@@ -182,12 +182,24 @@ Run the same pytest suite against a disposable Docker OpenSearch instead of the 
 fake:
 
 ```bash
-uv run python scripts/opensearch_docker.py test tests
+uv run python scripts/opensearch_docker.py test
 ```
 
 If you want to manage the container yourself, the backend seam is driven by
 `OPENMOCK_TEST_BACKEND=real` and `OPENMOCK_REAL_OPENSEARCH_URL=http://localhost:9200`.
 The default remains the in-memory mock backend.
+
+The collected tests are split into two marker groups:
+
+- `parity` for live-backend parity coverage,
+- `mock_backend` for tests that are specific to the in-memory fake.
+
+Examples:
+
+```bash
+uv run python -m pytest tests -m parity
+uv run python -m pytest tests -m mock_backend
+```
 
 Won't catch pytest tests.
 

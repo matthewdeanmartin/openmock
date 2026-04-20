@@ -30,8 +30,8 @@ Prefer the existing project commands instead of ad hoc one-offs.
 | Task | Command |
 | --- | --- |
 | Sync dependencies | `uv sync --all-extras` |
-| Run tests | `uv run pytest tests` |
-| Run parity tests against Docker OpenSearch | `uv run python scripts/opensearch_docker.py test tests` |
+| Run tests | `uv run python -m pytest tests` |
+| Run parity tests against Docker OpenSearch | `uv run python scripts/opensearch_docker.py test` |
 | Run the full Makefile unit checks | `make test` |
 | Run formatting and pre-commit checks | `make pre-commit` |
 | Run the Streamlit UI | `just web` |
@@ -116,7 +116,7 @@ If you are unsure what a method should do, start by finding or adding a test her
 
 ## Parity testing
 
-The repository supports running the same test suite against a real OpenSearch backend. That path is driven by `tests/backend.py` and the `OPENMOCK_TEST_BACKEND=real` seam.
+The repository supports running a parity-focused subset against a real OpenSearch backend. That path is driven by `tests/backend.py` and the `OPENMOCK_TEST_BACKEND=real` seam.
 
 Use it when:
 

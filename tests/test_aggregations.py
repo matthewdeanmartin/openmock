@@ -9,9 +9,14 @@ class TestAggregations(TestCase):
     @openmock
     def test_terms_aggregation(self):
         es = opensearchpy.OpenSearch()
+        es.indices.create(
+            index="test-index",
+            body={"mappings": {"properties": {"category": {"type": "keyword"}}}},
+        )
         es.index(index="test-index", body={"category": "A"})
         es.index(index="test-index", body={"category": "A"})
         es.index(index="test-index", body={"category": "B"})
+        es.indices.refresh(index="test-index")
 
         query = {"aggs": {"categories": {"terms": {"field": "category"}}}}
 

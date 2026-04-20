@@ -50,12 +50,6 @@ def _client_kwargs(hosts=None, **kwargs):
     return options
 
 
-def _with_refresh(params):
-    merged = dict(params or {})
-    merged.setdefault("refresh", "wait_for")
-    return merged
-
-
 def _normalize_bulk_body(body):
     if not isinstance(body, str):
         return body
@@ -143,7 +137,7 @@ class LiveOpenSearchAdapter:
             index=index,
             id=id,
             body=body,
-            params=_with_refresh(params),
+            params=params,
             headers=headers,
         )
 
@@ -162,7 +156,7 @@ class LiveOpenSearchAdapter:
             index=index,
             body=body,
             id=id,
-            params=_with_refresh(params),
+            params=params,
             headers=headers,
             **kwargs,
         )
@@ -223,7 +217,7 @@ class LiveOpenSearchAdapter:
     ) -> Any:
         del doc_type
         return self._client.delete(
-            index=index, id=id, params=_with_refresh(params), headers=headers
+            index=index, id=id, params=params, headers=headers
         )
 
     def bulk(self, body: Any, index: Any = None, params: Any = None, headers: Any = None):
@@ -231,18 +225,16 @@ class LiveOpenSearchAdapter:
         response = self._client.bulk(
             body=_normalize_bulk_body(body),
             index=index,
-            params=_with_refresh(params),
+            params=params,
             headers=headers,
         )
         return _normalize_bulk_response(response, action_defaults)
 
     def update(self, *args, params: Any = None, **kwargs):
-        return self._client.update(*args, params=_with_refresh(params), **kwargs)
+        return self._client.update(*args, params=params, **kwargs)
 
     def update_by_query(self, *args, params: Any = None, **kwargs):
-        return self._client.update_by_query(
-            *args, params=_with_refresh(params), **kwargs
-        )
+        return self._client.update_by_query(*args, params=params, **kwargs)
 
     def __getattr__(self, item):
         return getattr(self._client, item)
@@ -268,7 +260,7 @@ class AsyncLiveOpenSearchAdapter:
             index=index,
             id=id,
             body=body,
-            params=_with_refresh(params),
+            params=params,
             headers=headers,
         )
 
@@ -287,7 +279,7 @@ class AsyncLiveOpenSearchAdapter:
             index=index,
             body=body,
             id=id,
-            params=_with_refresh(params),
+            params=params,
             headers=headers,
             **kwargs,
         )
@@ -352,7 +344,7 @@ class AsyncLiveOpenSearchAdapter:
     ) -> Any:
         del doc_type
         return await self._client.delete(
-            index=index, id=id, params=_with_refresh(params), headers=headers
+            index=index, id=id, params=params, headers=headers
         )
 
     async def bulk(
@@ -362,18 +354,16 @@ class AsyncLiveOpenSearchAdapter:
         response = await self._client.bulk(
             body=_normalize_bulk_body(body),
             index=index,
-            params=_with_refresh(params),
+            params=params,
             headers=headers,
         )
         return _normalize_bulk_response(response, action_defaults)
 
     async def update(self, *args, params: Any = None, **kwargs):
-        return await self._client.update(*args, params=_with_refresh(params), **kwargs)
+        return await self._client.update(*args, params=params, **kwargs)
 
     async def update_by_query(self, *args, params: Any = None, **kwargs):
-        return await self._client.update_by_query(
-            *args, params=_with_refresh(params), **kwargs
-        )
+        return await self._client.update_by_query(*args, params=params, **kwargs)
 
     def __getattr__(self, item):
         return getattr(self._client, item)
@@ -476,11 +466,7 @@ def cleanup_sync_client(client) -> None:
             ignore=[400, 404],
             params={"expand_wildcards": "all"},
         )
-        # Wait for cluster to acknowledge so subsequent tests see a clean state.
-        try:
-            raw_client.cluster.health(params={"wait_for_status": "yellow", "timeout": "5s"})
-        except Exception:
-            pass
+        raw_client.cluster.health(params={"wait_for_status": "yellow"}, request_timeout=2)
 
 
 async def cleanup_async_client(client) -> None:
@@ -500,12 +486,9 @@ async def cleanup_async_client(client) -> None:
             ignore=[400, 404],
             params={"expand_wildcards": "all"},
         )
-        try:
-            await raw_client.cluster.health(
-                params={"wait_for_status": "yellow", "timeout": "5s"}
-            )
-        except Exception:
-            pass
+        await raw_client.cluster.health(
+            params={"wait_for_status": "yellow"}, request_timeout=2
+        )
 
 
 def cleanup_real_cluster() -> None:

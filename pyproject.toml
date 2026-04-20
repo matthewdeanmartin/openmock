@@ -123,3 +123,9 @@ exclude = '''
 )
 '''
 
+[tool.pytest.ini_options]
+markers = [
+    "parity: tests intended to run against a live OpenSearch backend for parity checks",
+    "mock_backend: tests intended for the in-memory mock backend only",
+]
+

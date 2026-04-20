@@ -57,7 +57,15 @@ status-real-docker:
 
 # Run tests against Dockerized OpenSearch
 test-real:
-	uv run python scripts/opensearch_docker.py test tests
+	uv run python scripts/opensearch_docker.py test
+
+# Run mock-backend-only tests
+test-mock:
+	uv run python -m pytest tests -m mock_backend
+
+# Run parity tests against the in-memory mock backend
+test-parity:
+	uv run python -m pytest tests -m parity
 
 # --- MOCK OPENSEARCH (Port 9201) ---
 
