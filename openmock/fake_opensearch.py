@@ -966,6 +966,67 @@ class FakeOpenSearch(OpenSearch):
 
     @query_params(
         "_source",
+        "_source_excludes",
+        "_source_includes",
+        "allow_no_indices",
+        "analyze_wildcard",
+        "analyzer",
+        "conflicts",
+        "default_operator",
+        "df",
+        "expand_wildcards",
+        "from_",
+        "ignore_unavailable",
+        "lenient",
+        "max_docs",
+        "preference",
+        "q",
+        "refresh",
+        "request_cache",
+        "requests_per_second",
+        "routing",
+        "scroll",
+        "scroll_size",
+        "search_timeout",
+        "search_type",
+        "slices",
+        "sort",
+        "stats",
+        "terminate_after",
+        "timeout",
+        "version",
+        "wait_for_active_shards",
+        "wait_for_completion",
+    )
+    def delete_by_query(
+        self,
+        index: Any,
+        body: Any = None,
+        params: Any = None,
+        headers: Any = None,
+    ) -> Any:
+        matches = self.search(index=index, body=body, params=params, headers=headers)
+        total_deleted = 0
+        for hit in matches["hits"]["hits"]:
+            self.delete(hit["_index"], hit["_id"])
+            total_deleted += 1
+        return {
+            "took": 1,
+            "timed_out": False,
+            "total": total_deleted,
+            "deleted": total_deleted,
+            "batches": 1,
+            "version_conflicts": 0,
+            "noops": 0,
+            "retries": {"bulk": 0, "search": 0},
+            "throttled_millis": 0,
+            "requests_per_second": -1,
+            "throttled_until_millis": 0,
+            "failures": [],
+        }
+
+    @query_params(
+        "_source",
         "_source_exclude",
         "_source_include",
         "preference",
@@ -1167,6 +1228,7 @@ class FakeOpenSearch(OpenSearch):
         "terminate_after",
         "timeout",
         "track_scores",
+        "track_total_hits",
         "version",
     )
     def search(
@@ -1432,6 +1494,20 @@ class FakeOpenSearch(OpenSearch):
         else:
             # Is it the correct exception to use ?
             raise ValueError("Invalid param 'index'")
+
+        # Resolve aliases to backing indices
+        resolved = []
+        for name in searchable_indexes:
+            backing = [
+                idx
+                for idx, entry in self.__aliases_dict.items()
+                if name in entry.get("aliases", {})
+            ]
+            if backing:
+                resolved.extend(backing)
+            else:
+                resolved.append(name)
+        searchable_indexes = resolved
 
         # Check index(es) exists
         for searchable_index in searchable_indexes:

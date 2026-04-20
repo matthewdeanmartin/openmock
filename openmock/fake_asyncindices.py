@@ -67,12 +67,22 @@ class FakeAsyncIndicesClient(IndicesClient):
     ):
         """Fake get alias"""
         aliases_dict = self.__get_aliases_dict()
+        if index is None:
+            candidate_indices = list(aliases_dict.keys())
+        else:
+            candidate_indices = self._normalize_index_to_list(index)
+
         res = {}
-        for idx in self._normalize_index_to_list(index):
-            if idx in aliases_dict:
-                res[idx] = aliases_dict[idx]
+        for idx in candidate_indices:
+            entry = aliases_dict.get(idx, {"aliases": {}})
+            if name is not None:
+                filtered = {
+                    k: v for k, v in entry["aliases"].items() if name in ("*", k)
+                }
+                if filtered or index is not None:
+                    res[idx] = {"aliases": filtered}
             else:
-                res[idx] = {"aliases": {}}
+                res[idx] = entry
         return res
 
     @query_params("master_timeout", "timeout")
@@ -82,6 +92,44 @@ class FakeAsyncIndicesClient(IndicesClient):
         for idx in self._normalize_index_to_list(index):
             if idx in aliases_dict and name in aliases_dict[idx]["aliases"]:
                 del aliases_dict[idx]["aliases"][name]
+        return {"acknowledged": True}
+
+    @query_params("allow_no_indices", "expand_wildcards", "ignore_unavailable", "local")
+    async def exists_alias(self, name, index=None, params=None, headers=None, **kwargs):
+        """Fake exists alias"""
+        aliases_dict = self.__get_aliases_dict()
+        indices_to_check = (
+            self._normalize_index_to_list(index) if index else list(aliases_dict.keys())
+        )
+        for idx in indices_to_check:
+            if idx in aliases_dict:
+                if isinstance(name, str):
+                    names = [n.strip() for n in name.split(",")]
+                else:
+                    names = [name]
+                for n in names:
+                    if n in aliases_dict[idx]["aliases"]:
+                        return True
+        return False
+
+    @query_params("master_timeout", "timeout")
+    async def update_aliases(self, body, params=None, headers=None, **kwargs):
+        """Fake update_aliases — atomic add/remove actions"""
+        aliases_dict = self.__get_aliases_dict()
+        for action in body.get("actions", []):
+            if "add" in action:
+                add = action["add"]
+                idx = add["index"]
+                name = add["alias"]
+                if idx not in aliases_dict:
+                    aliases_dict[idx] = {"aliases": {}}
+                aliases_dict[idx]["aliases"][name] = {}
+            elif "remove" in action:
+                rem = action["remove"]
+                idx = rem["index"]
+                name = rem["alias"]
+                if idx in aliases_dict and name in aliases_dict[idx]["aliases"]:
+                    del aliases_dict[idx]["aliases"][name]
         return {"acknowledged": True}
 
     async def stats(self, index=None, metric=None, params=None, headers=None, **kwargs):
@@ -103,12 +151,25 @@ class FakeAsyncIndicesClient(IndicesClient):
         return self.client.__documents_dict
 
     def _normalize_index_to_list(self, index):
-        """Normalize index to a list of indexes"""
+        """Normalize index to a list of indexes, resolving aliases to their backing indices."""
         if index is None or index == "*" or index == "_all":
             return list(self.__get_documents_dict().keys())
         if isinstance(index, str):
-            res = [idx.strip() for idx in index.split(",")]
-            return res
-        if isinstance(index, list):
-            return index
-        return [index]
+            raw = [idx.strip() for idx in index.split(",")]
+        elif isinstance(index, list):
+            raw = index
+        else:
+            raw = [index]
+        aliases_dict = self.__get_aliases_dict()
+        resolved = []
+        for name in raw:
+            backing = [
+                idx
+                for idx, entry in aliases_dict.items()
+                if name in entry.get("aliases", {})
+            ]
+            if backing:
+                resolved.extend(backing)
+            else:
+                resolved.append(name)
+        return resolved

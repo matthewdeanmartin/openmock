@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to tell openmock to use a real server.
 - Extra `openmock[web]`, which enables `openmock` cli command which runs a web UI for a web console for openmock.
 - Included `openmock gui` which also is a dashboard, but uses standard library tkinter
+- delete_by_query: searches for matching docs and deletes them, returning standard OpenSearch response format (sync +
+  async)
+- track_total_hits: added to @query_params on search in both sync and async clients
+- exists_alias: checks if an alias exists, optionally scoped to a specific index (sync + async)
+- update_aliases: atomic add/remove actions on aliases (sync + async)
+- Enhanced get_alias: when index=None returns all indices with aliases; when name is provided, filters to only matching
+  alias names
+- _normalize_index_to_list in both fake_indices.py and fake_opensearch.py (and async variants) now checks the aliases
+  dict and resolves alias names to their backing indices, so search, count,
+  delete_by_query, and all other operations transparently work with alias names
 
 ### Changed
 
