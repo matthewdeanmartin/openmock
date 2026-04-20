@@ -584,7 +584,9 @@ class FakeOpenSearch(OpenSearch):
                     continue
                 line = json.loads(line)
 
-            if any(action in line for action in ["index", "create", "update", "delete"]):
+            if any(
+                action in line for action in ["index", "create", "update", "delete"]
+            ):
                 action = next(iter(line.keys()))
 
                 version = 1
@@ -615,7 +617,9 @@ class FakeOpenSearch(OpenSearch):
                         errors = True
                         item[action]["error"] = result
                     else:
-                        self.delete(index, document_id, doc_type=doc_type, params=params)
+                        self.delete(
+                            index, document_id, doc_type=doc_type, params=params
+                        )
                         item[action]["result"] = result
                     items.append(item)
                     continue
@@ -1240,13 +1244,19 @@ class FakeOpenSearch(OpenSearch):
                 if body["sort"][0][key]["order"] == "desc":
                     hits = sorted(
                         hits,
-                        key=lambda k, key=key: (k["_source"].get(key) is None, k["_source"].get(key)),
+                        key=lambda k, key=key: (
+                            k["_source"].get(key) is None,
+                            k["_source"].get(key),
+                        ),
                         reverse=True,
                     )
                 else:
                     hits = sorted(
                         hits,
-                        key=lambda k, key=key: (k["_source"].get(key) is None, k["_source"].get(key)),
+                        key=lambda k, key=key: (
+                            k["_source"].get(key) is None,
+                            k["_source"].get(key),
+                        ),
                     )
 
         if body is not None and "size" in body:

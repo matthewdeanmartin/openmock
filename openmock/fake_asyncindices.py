@@ -50,7 +50,9 @@ class FakeAsyncIndicesClient(IndicesClient):
         return {"acknowledged": True}
 
     @query_params("master_timeout", "timeout")
-    async def put_alias(self, index, name, body=None, params=None, headers=None, **kwargs):
+    async def put_alias(
+        self, index, name, body=None, params=None, headers=None, **kwargs
+    ):
         """Fake put alias"""
         aliases_dict = self.__get_aliases_dict()
         for idx in self._normalize_index_to_list(index):
@@ -60,7 +62,9 @@ class FakeAsyncIndicesClient(IndicesClient):
         return {"acknowledged": True}
 
     @query_params("allow_no_indices", "expand_wildcards", "ignore_unavailable", "local")
-    async def get_alias(self, index=None, name=None, params=None, headers=None, **kwargs):
+    async def get_alias(
+        self, index=None, name=None, params=None, headers=None, **kwargs
+    ):
         """Fake get alias"""
         aliases_dict = self.__get_aliases_dict()
         res = {}

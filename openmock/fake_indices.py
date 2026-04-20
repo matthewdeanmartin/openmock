@@ -20,16 +20,17 @@ class FakeIndicesClient(IndicesClient):
         for char in invalid_chars:
             if char in index:
                 from opensearchpy.exceptions import RequestError
+
                 raise RequestError(
-                    400, 
-                    'invalid_index_name_exception', 
-                    f"Invalid index name [{index}], must not contain the following characters [ , \", *, \\, <, |, ,, >, /, ?]"
+                    400,
+                    "invalid_index_name_exception",
+                    f'Invalid index name [{index}], must not contain the following characters [ , ", *, \\, <, |, ,, >, /, ?]',
                 )
 
         documents_dict = self.__get_documents_dict()
         if index not in documents_dict:
             documents_dict[index] = []
-        
+
         if body:
             if "mappings" in body:
                 mappings_dict = self.__get_mappings_dict()
@@ -121,7 +122,7 @@ class FakeIndicesClient(IndicesClient):
         mappings_dict = self.__get_mappings_dict()
         if index is None or index == "_all" or index == "*":
             return mappings_dict
-        
+
         res = {}
         for idx in self._normalize_index_to_list(index):
             res[idx] = mappings_dict.get(idx, {"mappings": {}})
@@ -138,33 +139,55 @@ class FakeIndicesClient(IndicesClient):
                 mappings_dict[idx]["mappings"] = {"properties": {}}
             if "properties" not in mappings_dict[idx]["mappings"]:
                 mappings_dict[idx]["mappings"]["properties"] = {}
-            
+
             new_props = body.get("properties", body)
             mappings_dict[idx]["mappings"]["properties"].update(new_props)
         return {"acknowledged": True}
 
-    @query_params("allow_no_indices", "expand_wildcards", "flat_settings", "ignore_unavailable", "local", "master_timeout")
+    @query_params(
+        "allow_no_indices",
+        "expand_wildcards",
+        "flat_settings",
+        "ignore_unavailable",
+        "local",
+        "master_timeout",
+    )
     def get_settings(self, index=None, name=None, params=None, headers=None, **kwargs):
         """Fake get settings"""
         settings_dict = self.__get_settings_dict()
         if index is None or index == "_all" or index == "*":
             return settings_dict
-        
+
         res = {}
         for idx in self._normalize_index_to_list(index):
-            entry = settings_dict.get(idx, {"settings": {"index": {"number_of_shards": "1", "number_of_replicas": "1"}}})
+            entry = settings_dict.get(
+                idx,
+                {
+                    "settings": {
+                        "index": {"number_of_shards": "1", "number_of_replicas": "1"}
+                    }
+                },
+            )
             settings = entry.get("settings", {})
-            
+
             # Real OpenSearch often nests these under "index" if not already
             if "index" not in settings:
                 # If it's a flat dict of settings, or has other top level keys
                 # for now let's just ensure we return it in a way that includes "index"
                 new_settings = {"index": {}}
                 for k, v in settings.items():
-                    if k in ["number_of_shards", "number_of_replicas", "analysis", "provided_name", "creation_date", "uuid", "version"]:
-                         new_settings["index"][k] = v
+                    if k in [
+                        "number_of_shards",
+                        "number_of_replicas",
+                        "analysis",
+                        "provided_name",
+                        "creation_date",
+                        "uuid",
+                        "version",
+                    ]:
+                        new_settings["index"][k] = v
                     else:
-                         new_settings["index"][k] = v
+                        new_settings["index"][k] = v
                 settings = new_settings
 
             # Convert all values to strings for number_of_shards/replicas to match real behavior
@@ -172,11 +195,19 @@ class FakeIndicesClient(IndicesClient):
                 for k in ["number_of_shards", "number_of_replicas"]:
                     if k in settings["index"]:
                         settings["index"][k] = str(settings["index"][k])
-            
+
             res[idx] = {"settings": settings}
         return res
 
-    @query_params("allow_no_indices", "expand_wildcards", "flat_settings", "ignore_unavailable", "master_timeout", "preserve_existing", "timeout")
+    @query_params(
+        "allow_no_indices",
+        "expand_wildcards",
+        "flat_settings",
+        "ignore_unavailable",
+        "master_timeout",
+        "preserve_existing",
+        "timeout",
+    )
     def put_settings(self, body, index=None, params=None, headers=None, **kwargs):
         """Fake put settings"""
         settings_dict = self.__get_settings_dict()
@@ -187,7 +218,7 @@ class FakeIndicesClient(IndicesClient):
                 settings_dict[idx]["settings"] = {"index": {}}
             if "index" not in settings_dict[idx]["settings"]:
                 settings_dict[idx]["settings"]["index"] = {}
-            
+
             new_settings = body.get("index", body)
             for k, v in new_settings.items():
                 settings_dict[idx]["settings"]["index"][k] = str(v)

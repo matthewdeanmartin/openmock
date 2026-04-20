@@ -1,4 +1,3 @@
-import sys
 
 from openmock.cli import main
 

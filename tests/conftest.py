@@ -13,7 +13,9 @@ def _relative_test_path(item: pytest.Item, root_path: Path) -> str:
     return Path(str(item.path)).resolve().relative_to(root_path).as_posix()
 
 
-def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+def pytest_collection_modifyitems(
+    config: pytest.Config, items: list[pytest.Item]
+) -> None:
     root_path = Path(str(config.rootpath)).resolve()
     for item in items:
         relative_path = _relative_test_path(item, root_path)

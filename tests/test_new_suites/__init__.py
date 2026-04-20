@@ -5,13 +5,8 @@ from datetime import datetime
 import aiounittest
 import opensearchpy
 
-from tests.backend import (
-    close_test_client_async,
-    close_test_client_sync,
-    get_test_hosts,
-    openmock,
-    using_real_opensearch,
-)
+from tests.backend import (close_test_client_async, close_test_client_sync,
+                           get_test_hosts, openmock, using_real_opensearch)
 
 INDEX_NAME = "test_index"
 DOC_TYPE = "doc-Type"

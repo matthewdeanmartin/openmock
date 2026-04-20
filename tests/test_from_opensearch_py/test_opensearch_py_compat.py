@@ -1,27 +1,31 @@
-
 import unittest
-import pytest
+
 import opensearchpy
 from opensearchpy import Date, Document, Index, Text
-from opensearchpy.helpers import analysis
 from opensearchpy.exceptions import RequestError
+from opensearchpy.helpers import analysis
+
 from openmock import openmock
+
 
 class Post(Document):
     title = Text(analyzer=analysis.analyzer("my_analyzer", tokenizer="keyword"))
     published_from = Date()
 
+
 class TestOpenSearchPyCompatibility(unittest.TestCase):
     @openmock
     def setUp(self):
-        self.client = opensearchpy.OpenSearch(hosts=[{"host": "localhost", "port": 9200}])
+        self.client = opensearchpy.OpenSearch(
+            hosts=[{"host": "localhost", "port": 9200}]
+        )
 
     def test_index_with_slash(self) -> None:
         index_name = "movies/shmovies"
         with self.assertRaises(RequestError) as e:
             self.client.indices.create(index=index_name)
         self.assertEqual(e.exception.status_code, 400)
-        self.assertEqual(e.exception.error, 'invalid_index_name_exception')
+        self.assertEqual(e.exception.error, "invalid_index_name_exception")
         self.assertIn("must not contain the following characters", e.exception.args[2])
 
     def test_indices_lifecycle_english(self) -> None:
@@ -84,7 +88,6 @@ class TestOpenSearchPyCompatibility(unittest.TestCase):
         self.assertEqual("1", result["items"][0]["index"]["_id"])
         self.assertEqual(201, result["items"][0]["index"]["status"])
 
-
     def test_bulk_works_with_bytestring_body(self) -> None:
         docs = b'{ "index" : { "_index" : "bulk_test_index", "_id" : "2" } }\n{"answer": 42}'
         response = self.client.bulk(body=docs)
@@ -107,10 +110,22 @@ class TestOpenSearchPyCompatibility(unittest.TestCase):
     def test_simple_search(self) -> None:
         index_name = "search_test_index"
         self.client.indices.create(index=index_name)
-        self.client.index(index=index_name, body={"name": "test_doc_1", "value": 1}, id="1", refresh=True)
-        self.client.index(index=index_name, body={"name": "test_doc_2", "value": 2}, id="2", refresh=True)
+        self.client.index(
+            index=index_name,
+            body={"name": "test_doc_1", "value": 1},
+            id="1",
+            refresh=True,
+        )
+        self.client.index(
+            index=index_name,
+            body={"name": "test_doc_2", "value": 2},
+            id="2",
+            refresh=True,
+        )
 
-        result = self.client.search(index=index_name, body={"query": {"match": {"name": "test_doc_1"}}})
+        result = self.client.search(
+            index=index_name, body={"query": {"match": {"name": "test_doc_1"}}}
+        )
         self.assertEqual(1, result["hits"]["total"]["value"])
         self.assertEqual("test_doc_1", result["hits"]["hits"][0]["_source"]["name"])
 
@@ -145,11 +160,14 @@ class TestOpenSearchPyCompatibility(unittest.TestCase):
                 }
             }
         }
-        self.assertEqual(expected_mapping, self.client.indices.get_mapping(index="test-blog"))
+        self.assertEqual(
+            expected_mapping, self.client.indices.get_mapping(index="test-blog")
+        )
 
         settings = self.client.indices.get_settings(index="test-blog")
         assert settings["test-blog"]["settings"]["index"]["number_of_replicas"] == "0"
         assert settings["test-blog"]["settings"]["index"]["number_of_shards"] == "1"
+
 
 if __name__ == "__main__":
     unittest.main()

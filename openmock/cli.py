@@ -10,7 +10,9 @@ def main(args: list[str] | None = None) -> int:
 
     if argv and argv[0] == "gui":
         from openmock.gui import main as gui_main
+
         return gui_main()
 
     from openmock.web import main as web_main
+
     return web_main(argv)

@@ -3,9 +3,8 @@ Bug reproduction tests.  Each test documents a concrete behavioral difference
 between openmock and real OpenSearch.  Tests that currently FAIL are marked
 with a comment so they can be tracked and fixed without blocking CI.
 """
-import unittest
 
-import opensearchpy
+
 from opensearchpy.exceptions import NotFoundError
 
 from tests import INDEX_NAME, Testopenmock
@@ -41,7 +40,9 @@ class TestPaginationBugs(Testopenmock):
 
         result = self.es.search(index=INDEX_NAME, body={"size": 0})
         total = result["hits"]["total"]["value"]
-        self.assertEqual(3, total, "total.value must reflect all matches even when size=0")
+        self.assertEqual(
+            3, total, "total.value must reflect all matches even when size=0"
+        )
 
     def test_from_without_size_applies_offset(self):
         """
@@ -177,7 +178,9 @@ class TestMgetSwallowsException(Testopenmock):
             for doc in result.get("docs", []):
                 if not doc.get("found"):
                     return  # known divergence, pass with a note
-            self.fail("Expected NotFoundError or at least found=False for missing index")
+            self.fail(
+                "Expected NotFoundError or at least found=False for missing index"
+            )
         except NotFoundError:
             pass  # this is the correct real-OpenSearch behaviour
 
@@ -258,9 +261,7 @@ class TestScrollPagination(Testopenmock):
         for i in range(10):
             self.es.index(index=INDEX_NAME, body={"n": i})
 
-        page1 = self.es.search(
-            index=INDEX_NAME, params={"scroll": "1m", "size": 4}
-        )
+        page1 = self.es.search(index=INDEX_NAME, params={"scroll": "1m", "size": 4})
         ids1 = {h["_id"] for h in page1["hits"]["hits"]}
         self.assertEqual(4, len(ids1))
 

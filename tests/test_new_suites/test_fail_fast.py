@@ -1,5 +1,7 @@
 import opensearchpy
+
 from openmock import openmock
+
 
 @openmock
 def test_fail_fast():
@@ -11,6 +13,7 @@ def test_fail_fast():
     except Exception as e:
         print(f"Caught expected exception: {e}")
         assert "Attempted to connect to real OpenSearch server" in str(e)
+
 
 if __name__ == "__main__":
     test_fail_fast()

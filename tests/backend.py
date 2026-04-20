@@ -1,4 +1,3 @@
-import asyncio
 import inspect
 import json
 import os
@@ -205,7 +204,9 @@ class LiveOpenSearchAdapter:
         headers: Any = None,
     ) -> Any:
         del doc_type
-        return self._client.count(index=index, body=body, params=params, headers=headers)
+        return self._client.count(
+            index=index, body=body, params=params, headers=headers
+        )
 
     def delete(
         self,
@@ -216,11 +217,11 @@ class LiveOpenSearchAdapter:
         headers: Any = None,
     ) -> Any:
         del doc_type
-        return self._client.delete(
-            index=index, id=id, params=params, headers=headers
-        )
+        return self._client.delete(index=index, id=id, params=params, headers=headers)
 
-    def bulk(self, body: Any, index: Any = None, params: Any = None, headers: Any = None):
+    def bulk(
+        self, body: Any, index: Any = None, params: Any = None, headers: Any = None
+    ):
         action_defaults = _bulk_action_defaults(body)
         response = self._client.bulk(
             body=_normalize_bulk_body(body),
@@ -306,7 +307,9 @@ class AsyncLiveOpenSearchAdapter:
         headers: Any = None,
     ) -> Any:
         del doc_type
-        return await self._client.get(index=index, id=id, params=params, headers=headers)
+        return await self._client.get(
+            index=index, id=id, params=params, headers=headers
+        )
 
     async def search(
         self,
@@ -371,7 +374,9 @@ class AsyncLiveOpenSearchAdapter:
 
 def _get_real_opensearch(*args, hosts=None, **kwargs):
     del args
-    return LiveOpenSearchAdapter(_REAL_OPENSEARCH_CLASS(**_client_kwargs(hosts, **kwargs)))
+    return LiveOpenSearchAdapter(
+        _REAL_OPENSEARCH_CLASS(**_client_kwargs(hosts, **kwargs))
+    )
 
 
 def _get_async_real_opensearch(*args, hosts=None, **kwargs):
@@ -418,24 +423,32 @@ class AsyncLiveIndicesAdapter:
     def __init__(self, client):
         self._client = client
 
-    async def create(self, index: Any, params: Any = None, headers: Any = None, **kwargs):
+    async def create(
+        self, index: Any, params: Any = None, headers: Any = None, **kwargs
+    ):
         return await self._client.create(
             index=index, params=params, headers=headers, **kwargs
         )
 
-    async def exists(self, index: Any, params: Any = None, headers: Any = None, **kwargs):
+    async def exists(
+        self, index: Any, params: Any = None, headers: Any = None, **kwargs
+    ):
         return await self._client.exists(
             index=index, params=params, headers=headers, **kwargs
         )
 
-    async def delete(self, index: Any, params: Any = None, headers: Any = None, **kwargs):
+    async def delete(
+        self, index: Any, params: Any = None, headers: Any = None, **kwargs
+    ):
         delete_params = dict(params or {})
         delete_params.setdefault("ignore_unavailable", "true")
         return await self._client.delete(
             index=index, params=delete_params, headers=headers, **kwargs
         )
 
-    async def refresh(self, index: Any, params: Any = None, headers: Any = None, **kwargs):
+    async def refresh(
+        self, index: Any, params: Any = None, headers: Any = None, **kwargs
+    ):
         return await self._client.refresh(
             index=index, params=params, headers=headers, **kwargs
         )
@@ -466,7 +479,9 @@ def cleanup_sync_client(client) -> None:
             ignore=[400, 404],
             params={"expand_wildcards": "all"},
         )
-        raw_client.cluster.health(params={"wait_for_status": "yellow"}, request_timeout=2)
+        raw_client.cluster.health(
+            params={"wait_for_status": "yellow"}, request_timeout=2
+        )
 
 
 async def cleanup_async_client(client) -> None:

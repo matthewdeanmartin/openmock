@@ -137,7 +137,9 @@ def build_parser():
         subparser.add_argument("--port", type=int, default=DEFAULT_PORT)
         if command_name in {"start", "test"}:
             subparser.add_argument("--image", default=DEFAULT_IMAGE)
-            subparser.add_argument("--wait-seconds", type=int, default=DEFAULT_WAIT_SECONDS)
+            subparser.add_argument(
+                "--wait-seconds", type=int, default=DEFAULT_WAIT_SECONDS
+            )
         if command_name == "test":
             subparser.add_argument(
                 "--keep-container",

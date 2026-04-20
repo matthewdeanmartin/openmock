@@ -1,10 +1,10 @@
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 from typing import Any
 
-from openmock.fake_server import FakeOpenSearchServer
 from openmock.behaviour.server_failure import server_failure
+from openmock.fake_server import FakeOpenSearchServer
 
 
 def _streamlit_missing_message() -> str:

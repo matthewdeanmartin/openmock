@@ -1,10 +1,12 @@
 import uuid
 
-import pytest
-from openmock import openmock
 import opensearchpy
 import opensearchpy.client.cluster
 import opensearchpy.client.indices
+import pytest
+
+from openmock import openmock
+
 # from opensearchpy import AsyncOpenSearch, OpenSearch
 # from opensearchpy.client.cluster import ClusterClient
 # from opensearchpy.client.indices import IndicesClient
@@ -18,6 +20,7 @@ import opensearchpy.client.indices
 def _index_name(prefix: str) -> str:
     return f"{prefix}-{uuid.uuid4().hex[:8]}"
 
+
 @openmock
 def _make_sync_client() -> opensearchpy.OpenSearch:
     return opensearchpy.OpenSearch(
@@ -28,6 +31,7 @@ def _make_sync_client() -> opensearchpy.OpenSearch:
         ssl_show_warn=False,
     )
 
+
 @openmock
 def _make_async_client() -> opensearchpy.AsyncOpenSearch:
     return opensearchpy.AsyncOpenSearch(
@@ -36,14 +40,13 @@ def _make_async_client() -> opensearchpy.AsyncOpenSearch:
         verify_certs=False,
         ssl_assert_hostname=False,
         ssl_show_warn=False,
-
     )
 
 
 @openmock
 def test_cluster_health_and_root_info() -> None:
     client = _make_sync_client()
-    cluster =opensearchpy.client.cluster.ClusterClient(client)
+    cluster = opensearchpy.client.cluster.ClusterClient(client)
 
     info = client.info()
     assert isinstance(info, dict)
@@ -58,7 +61,7 @@ def test_cluster_health_and_root_info() -> None:
 @openmock
 def test_indices_client_lifecycle_and_metadata() -> None:
     client = _make_sync_client()
-    indices =opensearchpy.client.indices.IndicesClient(client)
+    indices = opensearchpy.client.indices.IndicesClient(client)
     index_name = _index_name("books-indices")
     alias_name = f"{index_name}-alias"
 
@@ -165,7 +168,9 @@ def test_opensearch_document_crud_bulk_search_count_and_delete() -> None:
         "series": "Extraordinary Voyages",
     }
 
-    index_resp = client.index(index=index_name, id="journey", body=journey_doc, refresh=True)
+    index_resp = client.index(
+        index=index_name, id="journey", body=journey_doc, refresh=True
+    )
     assert index_resp["result"] in {"created", "updated"}
 
     assert client.exists(index=index_name, id="journey") is True
@@ -229,7 +234,9 @@ def test_opensearch_document_crud_bulk_search_count_and_delete() -> None:
     assert len(hits) >= 1
     assert hits[0]["_source"]["title"] == "Twenty Thousand Leagues Under the Seas"
 
-    count_resp = client.count(index=index_name, body={"query": {"term": {"author": "Jules Verne"}}})
+    count_resp = client.count(
+        index=index_name, body={"query": {"term": {"author": "Jules Verne"}}}
+    )
     assert count_resp["count"] >= 3
 
     delete_resp = client.delete(index=index_name, id="journey", refresh=True)
@@ -239,7 +246,6 @@ def test_opensearch_document_crud_bulk_search_count_and_delete() -> None:
     assert final_count_resp["count"] >= 1
 
     indices.delete(index=index_name)
-
 
 
 @pytest.mark.asyncio
@@ -322,7 +328,9 @@ async def test_async_opensearch_crud_search_and_bulk() -> None:
         or "Around the World in Eighty Days" in titles
     )
 
-    count_resp = await client.count(index=index_name, body={"query": {"term": {"author": "Jules Verne"}}})
+    count_resp = await client.count(
+        index=index_name, body={"query": {"term": {"author": "Jules Verne"}}}
+    )
     assert count_resp["count"] >= 3
 
     delete_resp = await client.delete(index=index_name, id="moon", refresh=True)

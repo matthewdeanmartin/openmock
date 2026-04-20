@@ -16,7 +16,9 @@ def _fmt(obj: Any) -> str:
 
 
 class _Tab(ttk.Frame):
-    def __init__(self, parent: ttk.Notebook, server_ref: list[FakeOpenSearchServer]) -> None:
+    def __init__(
+        self, parent: ttk.Notebook, server_ref: list[FakeOpenSearchServer]
+    ) -> None:
         super().__init__(parent)
         self._srv = server_ref
         self._build()
@@ -61,7 +63,9 @@ class _IndicesTab(_Tab):
 
         ttk.Label(form, text="Pipeline").grid(row=2, column=0, sticky="w", pady=2)
         self._pipeline_var = tk.StringVar(value="(none)")
-        self._pipeline_cb = ttk.Combobox(form, textvariable=self._pipeline_var, state="readonly")
+        self._pipeline_cb = ttk.Combobox(
+            form, textvariable=self._pipeline_var, state="readonly"
+        )
         self._pipeline_cb.grid(row=2, column=1, sticky="ew", padx=(4, 0))
 
         ttk.Label(form, text="Document JSON").grid(row=3, column=0, sticky="nw", pady=2)
@@ -72,7 +76,9 @@ class _IndicesTab(_Tab):
         self._status = ttk.Label(top, text="", foreground="green")
         self._status.pack(anchor="w")
 
-        ttk.Button(top, text="Index Document", command=self._index_doc).pack(anchor="w", pady=4)
+        ttk.Button(top, text="Index Document", command=self._index_doc).pack(
+            anchor="w", pady=4
+        )
 
     def _index_doc(self) -> None:
         idx = self._idx.get().strip()
@@ -81,11 +87,15 @@ class _IndicesTab(_Tab):
         pipeline = None if pipeline == "(none)" else pipeline
         try:
             body = json.loads(self._doc_body.get("1.0", "end"))
-            res = self.server.index_document(index=idx, body=body, document_id=doc_id, pipeline=pipeline)
+            res = self.server.index_document(
+                index=idx, body=body, document_id=doc_id, pipeline=pipeline
+            )
             if isinstance(res, dict) and res.get("status_code", 200) >= 400:
                 self._status.config(text=f"Error: {res.get('error')}", foreground="red")
             else:
-                self._status.config(text=f"Indexed: {res.get('_id')}", foreground="green")
+                self._status.config(
+                    text=f"Indexed: {res.get('_id')}", foreground="green"
+                )
                 self.refresh()
         except Exception as exc:
             self._status.config(text=f"Error: {exc}", foreground="red")
@@ -97,7 +107,9 @@ class _IndicesTab(_Tab):
         if not docs_dict:
             ttk.Label(self._tree_frame, text="No indices yet.").pack(anchor="w")
             return
-        tree = ttk.Treeview(self._tree_frame, columns=("index", "count"), show="headings", height=8)
+        tree = ttk.Treeview(
+            self._tree_frame, columns=("index", "count"), show="headings", height=8
+        )
         tree.heading("index", text="Index")
         tree.heading("count", text="Docs")
         tree.column("count", width=60, anchor="center")
@@ -121,7 +133,9 @@ class _SearchTab(_Tab):
         f.columnconfigure(1, weight=1)
         f.rowconfigure(3, weight=1)
 
-        ttk.Label(f, text="Search Sandbox", font=("", 12, "bold")).grid(row=0, column=0, columnspan=2, sticky="w")
+        ttk.Label(f, text="Search Sandbox", font=("", 12, "bold")).grid(
+            row=0, column=0, columnspan=2, sticky="w"
+        )
 
         ttk.Label(f, text="Index (* for all)").grid(row=1, column=0, sticky="w", pady=2)
         self._index = ttk.Entry(f)
@@ -133,7 +147,9 @@ class _SearchTab(_Tab):
         self._query.insert("1.0", '{"query": {"match_all": {}}}')
         self._query.grid(row=2, column=1, sticky="ew", padx=(4, 0))
 
-        ttk.Button(f, text="Execute Search", command=self._search).grid(row=3, column=0, columnspan=2, sticky="w", pady=4)
+        ttk.Button(f, text="Execute Search", command=self._search).grid(
+            row=3, column=0, columnspan=2, sticky="w", pady=4
+        )
 
         ttk.Label(f, text="Response").grid(row=4, column=0, columnspan=2, sticky="w")
         self._result = scrolledtext.ScrolledText(f, height=15, state="disabled")
@@ -164,8 +180,12 @@ class _ClusterTab(_Tab):
         f.columnconfigure(0, weight=1)
         f.rowconfigure(2, weight=1)
 
-        ttk.Label(f, text="Cluster Status", font=("", 12, "bold")).grid(row=0, column=0, sticky="w")
-        ttk.Button(f, text="Refresh", command=self.refresh).grid(row=0, column=1, sticky="e")
+        ttk.Label(f, text="Cluster Status", font=("", 12, "bold")).grid(
+            row=0, column=0, sticky="w"
+        )
+        ttk.Button(f, text="Refresh", command=self.refresh).grid(
+            row=0, column=1, sticky="e"
+        )
 
         self._text = scrolledtext.ScrolledText(f, state="disabled")
         self._text.grid(row=2, column=0, columnspan=2, sticky="nsew")
@@ -192,7 +212,9 @@ class _CatTab(_Tab):
         f.columnconfigure(0, weight=1)
         f.rowconfigure(3, weight=1)
 
-        ttk.Label(f, text="CAT", font=("", 12, "bold")).grid(row=0, column=0, columnspan=3, sticky="w")
+        ttk.Label(f, text="CAT", font=("", 12, "bold")).grid(
+            row=0, column=0, columnspan=3, sticky="w"
+        )
 
         ttk.Label(f, text="Endpoint").grid(row=1, column=0, sticky="w", pady=2)
         self._endpoint = ttk.Combobox(f, values=["indices", "count"], state="readonly")
@@ -201,10 +223,16 @@ class _CatTab(_Tab):
 
         ttk.Label(f, text="Format").grid(row=2, column=0, sticky="w", pady=2)
         self._fmt_var = tk.StringVar(value="text")
-        ttk.Radiobutton(f, text="text", variable=self._fmt_var, value="text").grid(row=2, column=1, sticky="w")
-        ttk.Radiobutton(f, text="json", variable=self._fmt_var, value="json").grid(row=2, column=2, sticky="w")
+        ttk.Radiobutton(f, text="text", variable=self._fmt_var, value="text").grid(
+            row=2, column=1, sticky="w"
+        )
+        ttk.Radiobutton(f, text="json", variable=self._fmt_var, value="json").grid(
+            row=2, column=2, sticky="w"
+        )
 
-        ttk.Button(f, text="Run", command=self._run).grid(row=2, column=3, sticky="e", padx=4)
+        ttk.Button(f, text="Run", command=self._run).grid(
+            row=2, column=3, sticky="e", padx=4
+        )
 
         self._text = scrolledtext.ScrolledText(f, state="disabled")
         self._text.grid(row=3, column=0, columnspan=4, sticky="nsew", pady=(4, 0))
@@ -236,7 +264,9 @@ class _SecurityTab(_Tab):
         outer.pack(fill="both", expand=True, padx=6, pady=6)
 
         ttk.Label(outer, text="Security", font=("", 12, "bold")).pack(anchor="w")
-        ttk.Label(outer, text="Permissive fake CRUD — no auth enforced.", foreground="gray").pack(anchor="w")
+        ttk.Label(
+            outer, text="Permissive fake CRUD — no auth enforced.", foreground="gray"
+        ).pack(anchor="w")
 
         nb = ttk.Notebook(outer)
         nb.pack(fill="both", expand=True, pady=6)
@@ -252,12 +282,16 @@ class _SecurityTab(_Tab):
     def _build_users(self, parent: ttk.Frame) -> None:
         parent.columnconfigure(1, weight=1)
 
-        ttk.Label(parent, text="Current Users").grid(row=0, column=0, columnspan=2, sticky="w", pady=2)
+        ttk.Label(parent, text="Current Users").grid(
+            row=0, column=0, columnspan=2, sticky="w", pady=2
+        )
         self._users_text = scrolledtext.ScrolledText(parent, height=6, state="disabled")
         self._users_text.grid(row=1, column=0, columnspan=2, sticky="ew")
 
         ttk.Separator(parent).grid(row=2, column=0, columnspan=2, sticky="ew", pady=4)
-        ttk.Label(parent, text="Create / Update User", font=("", 10, "bold")).grid(row=3, column=0, columnspan=2, sticky="w")
+        ttk.Label(parent, text="Create / Update User", font=("", 10, "bold")).grid(
+            row=3, column=0, columnspan=2, sticky="w"
+        )
 
         ttk.Label(parent, text="Username").grid(row=4, column=0, sticky="w")
         self._uname = ttk.Entry(parent)
@@ -266,18 +300,25 @@ class _SecurityTab(_Tab):
 
         ttk.Label(parent, text="User JSON").grid(row=5, column=0, sticky="nw")
         self._user_body = scrolledtext.ScrolledText(parent, height=4)
-        self._user_body.insert("1.0", '{"password":"not-checked","backend_roles":["admin"],"attributes":{"team":"demo"}}')
+        self._user_body.insert(
+            "1.0",
+            '{"password":"not-checked","backend_roles":["admin"],"attributes":{"team":"demo"}}',
+        )
         self._user_body.grid(row=5, column=1, sticky="ew", padx=(4, 0))
 
         self._user_status = ttk.Label(parent, text="")
         self._user_status.grid(row=6, column=0, columnspan=2, sticky="w")
-        ttk.Button(parent, text="Create / Update", command=self._upsert_user).grid(row=7, column=0, sticky="w", pady=2)
+        ttk.Button(parent, text="Create / Update", command=self._upsert_user).grid(
+            row=7, column=0, sticky="w", pady=2
+        )
 
         ttk.Separator(parent).grid(row=8, column=0, columnspan=2, sticky="ew", pady=4)
         ttk.Label(parent, text="Delete Username").grid(row=9, column=0, sticky="w")
         self._del_uname = ttk.Entry(parent)
         self._del_uname.grid(row=9, column=1, sticky="ew", padx=(4, 0))
-        ttk.Button(parent, text="Delete User", command=self._delete_user).grid(row=10, column=0, sticky="w", pady=2)
+        ttk.Button(parent, text="Delete User", command=self._delete_user).grid(
+            row=10, column=0, sticky="w", pady=2
+        )
 
     def _upsert_user(self) -> None:
         name = self._uname.get().strip()
@@ -301,12 +342,16 @@ class _SecurityTab(_Tab):
     def _build_roles(self, parent: ttk.Frame) -> None:
         parent.columnconfigure(1, weight=1)
 
-        ttk.Label(parent, text="Current Roles").grid(row=0, column=0, columnspan=2, sticky="w", pady=2)
+        ttk.Label(parent, text="Current Roles").grid(
+            row=0, column=0, columnspan=2, sticky="w", pady=2
+        )
         self._roles_text = scrolledtext.ScrolledText(parent, height=6, state="disabled")
         self._roles_text.grid(row=1, column=0, columnspan=2, sticky="ew")
 
         ttk.Separator(parent).grid(row=2, column=0, columnspan=2, sticky="ew", pady=4)
-        ttk.Label(parent, text="Create / Update Role", font=("", 10, "bold")).grid(row=3, column=0, columnspan=2, sticky="w")
+        ttk.Label(parent, text="Create / Update Role", font=("", 10, "bold")).grid(
+            row=3, column=0, columnspan=2, sticky="w"
+        )
 
         ttk.Label(parent, text="Role Name").grid(row=4, column=0, sticky="w")
         self._rname = ttk.Entry(parent)
@@ -315,18 +360,25 @@ class _SecurityTab(_Tab):
 
         ttk.Label(parent, text="Role JSON").grid(row=5, column=0, sticky="nw")
         self._role_body = scrolledtext.ScrolledText(parent, height=4)
-        self._role_body.insert("1.0", '{"cluster_permissions":["cluster_all"],"index_permissions":[{"index_patterns":["*"],"allowed_actions":["read"]}]}')
+        self._role_body.insert(
+            "1.0",
+            '{"cluster_permissions":["cluster_all"],"index_permissions":[{"index_patterns":["*"],"allowed_actions":["read"]}]}',
+        )
         self._role_body.grid(row=5, column=1, sticky="ew", padx=(4, 0))
 
         self._role_status = ttk.Label(parent, text="")
         self._role_status.grid(row=6, column=0, columnspan=2, sticky="w")
-        ttk.Button(parent, text="Create / Update", command=self._upsert_role).grid(row=7, column=0, sticky="w", pady=2)
+        ttk.Button(parent, text="Create / Update", command=self._upsert_role).grid(
+            row=7, column=0, sticky="w", pady=2
+        )
 
         ttk.Separator(parent).grid(row=8, column=0, columnspan=2, sticky="ew", pady=4)
         ttk.Label(parent, text="Delete Role").grid(row=9, column=0, sticky="w")
         self._del_rname = ttk.Entry(parent)
         self._del_rname.grid(row=9, column=1, sticky="ew", padx=(4, 0))
-        ttk.Button(parent, text="Delete Role", command=self._delete_role).grid(row=10, column=0, sticky="w", pady=2)
+        ttk.Button(parent, text="Delete Role", command=self._delete_role).grid(
+            row=10, column=0, sticky="w", pady=2
+        )
 
     def _upsert_role(self) -> None:
         name = self._rname.get().strip()
@@ -365,15 +417,27 @@ class _IngestTab(_Tab):
         f.pack(fill="both", expand=True, padx=6, pady=6)
         f.columnconfigure(1, weight=1)
 
-        ttk.Label(f, text="Ingest", font=("", 12, "bold")).grid(row=0, column=0, columnspan=2, sticky="w")
-        ttk.Label(f, text="Fake in-memory pipelines. Supported: set, rename, remove, append, lowercase, uppercase, trim, split, convert, gsub, json.", foreground="gray", wraplength=500, justify="left").grid(row=1, column=0, columnspan=2, sticky="w")
+        ttk.Label(f, text="Ingest", font=("", 12, "bold")).grid(
+            row=0, column=0, columnspan=2, sticky="w"
+        )
+        ttk.Label(
+            f,
+            text="Fake in-memory pipelines. Supported: set, rename, remove, append, lowercase, uppercase, trim, split, convert, gsub, json.",
+            foreground="gray",
+            wraplength=500,
+            justify="left",
+        ).grid(row=1, column=0, columnspan=2, sticky="w")
 
-        ttk.Label(f, text="Current Pipelines").grid(row=2, column=0, columnspan=2, sticky="w", pady=(6, 0))
+        ttk.Label(f, text="Current Pipelines").grid(
+            row=2, column=0, columnspan=2, sticky="w", pady=(6, 0)
+        )
         self._pipelines_text = scrolledtext.ScrolledText(f, height=5, state="disabled")
         self._pipelines_text.grid(row=3, column=0, columnspan=2, sticky="ew")
 
         ttk.Separator(f).grid(row=4, column=0, columnspan=2, sticky="ew", pady=4)
-        ttk.Label(f, text="Create / Update Pipeline", font=("", 10, "bold")).grid(row=5, column=0, columnspan=2, sticky="w")
+        ttk.Label(f, text="Create / Update Pipeline", font=("", 10, "bold")).grid(
+            row=5, column=0, columnspan=2, sticky="w"
+        )
 
         ttk.Label(f, text="Pipeline ID").grid(row=6, column=0, sticky="w")
         self._pid = ttk.Entry(f)
@@ -382,27 +446,40 @@ class _IngestTab(_Tab):
 
         ttk.Label(f, text="Pipeline JSON").grid(row=7, column=0, sticky="nw")
         self._pipeline_body = scrolledtext.ScrolledText(f, height=5)
-        self._pipeline_body.insert("1.0", '{"description":"Normalize message","processors":[{"trim":{"field":"message"}},{"lowercase":{"field":"message"}}]}')
+        self._pipeline_body.insert(
+            "1.0",
+            '{"description":"Normalize message","processors":[{"trim":{"field":"message"}},{"lowercase":{"field":"message"}}]}',
+        )
         self._pipeline_body.grid(row=7, column=1, sticky="ew", padx=(4, 0))
 
         self._pipe_status = ttk.Label(f, text="")
         self._pipe_status.grid(row=8, column=0, columnspan=2, sticky="w")
-        ttk.Button(f, text="Create / Update", command=self._upsert_pipeline).grid(row=9, column=0, sticky="w", pady=2)
+        ttk.Button(f, text="Create / Update", command=self._upsert_pipeline).grid(
+            row=9, column=0, sticky="w", pady=2
+        )
 
         ttk.Separator(f).grid(row=10, column=0, columnspan=2, sticky="ew", pady=4)
-        ttk.Label(f, text="Simulate Pipeline", font=("", 10, "bold")).grid(row=11, column=0, columnspan=2, sticky="w")
+        ttk.Label(f, text="Simulate Pipeline", font=("", 10, "bold")).grid(
+            row=11, column=0, columnspan=2, sticky="w"
+        )
 
         ttk.Label(f, text="Pipeline ID").grid(row=12, column=0, sticky="w")
         self._sim_pid_var = tk.StringVar()
-        self._sim_pid_cb = ttk.Combobox(f, textvariable=self._sim_pid_var, state="readonly")
+        self._sim_pid_cb = ttk.Combobox(
+            f, textvariable=self._sim_pid_var, state="readonly"
+        )
         self._sim_pid_cb.grid(row=12, column=1, sticky="ew", padx=(4, 0))
 
         ttk.Label(f, text="Simulation JSON").grid(row=13, column=0, sticky="nw")
         self._sim_body = scrolledtext.ScrolledText(f, height=4)
-        self._sim_body.insert("1.0", '{"docs":[{"_source":{"message":"  HELLO WORLD  ","count":"3"}}]}')
+        self._sim_body.insert(
+            "1.0", '{"docs":[{"_source":{"message":"  HELLO WORLD  ","count":"3"}}]}'
+        )
         self._sim_body.grid(row=13, column=1, sticky="ew", padx=(4, 0))
 
-        ttk.Button(f, text="Simulate", command=self._simulate).grid(row=14, column=0, sticky="w", pady=2)
+        ttk.Button(f, text="Simulate", command=self._simulate).grid(
+            row=14, column=0, sticky="w", pady=2
+        )
 
         ttk.Label(f, text="Result").grid(row=15, column=0, columnspan=2, sticky="w")
         self._sim_result = scrolledtext.ScrolledText(f, height=5, state="disabled")
@@ -412,7 +489,9 @@ class _IngestTab(_Tab):
         ttk.Label(f, text="Delete Pipeline").grid(row=18, column=0, sticky="w")
         self._del_pid = ttk.Entry(f)
         self._del_pid.grid(row=18, column=1, sticky="ew", padx=(4, 0))
-        ttk.Button(f, text="Delete", command=self._delete_pipeline).grid(row=19, column=0, sticky="w", pady=2)
+        ttk.Button(f, text="Delete", command=self._delete_pipeline).grid(
+            row=19, column=0, sticky="w", pady=2
+        )
 
     def _upsert_pipeline(self) -> None:
         pid = self._pid.get().strip()
@@ -476,7 +555,9 @@ class OpenmockApp:
         sidebar.pack(side="left", fill="y", padx=4, pady=4)
         sidebar.pack_propagate(False)
 
-        ttk.Label(sidebar, text="Behaviors", font=("", 11, "bold")).pack(anchor="w", pady=(4, 2))
+        ttk.Label(sidebar, text="Behaviors", font=("", 11, "bold")).pack(
+            anchor="w", pady=(4, 2)
+        )
 
         self._failure_var = tk.BooleanVar(value=server_failure.is_enabled())
         ttk.Checkbutton(
