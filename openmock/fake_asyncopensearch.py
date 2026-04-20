@@ -905,18 +905,21 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
             for key in body["sort"][0]:
                 if body["sort"][0][key]["order"] == "desc":
                     hits = sorted(
-                        hits, key=lambda k, key=key: k["_source"][key], reverse=True
+                        hits,
+                        key=lambda k, key=key: (k["_source"].get(key) is None, k["_source"].get(key)),
+                        reverse=True,
                     )
                 else:
-                    hits = sorted(hits, key=lambda k, key=key: k["_source"][key])
+                    hits = sorted(
+                        hits,
+                        key=lambda k, key=key: (k["_source"].get(key) is None, k["_source"].get(key)),
+                    )
 
-        if (
-            body is not None
-            and "from" in body
-            and "size" in body
-            and body["from"] + body["size"] > 0
-        ):
-            hits = hits[body["from"] : body["from"] + body["size"]]
+        if body is not None and "size" in body:
+            start = body.get("from", 0)
+            hits = hits[start : start + body["size"]]
+        elif body is not None and "from" in body:
+            hits = hits[body["from"] :]
 
         if "scroll" in params:
             result["_scroll_id"] = str(get_random_scroll_id())
