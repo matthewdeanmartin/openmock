@@ -1,5 +1,6 @@
-from openmock.web import main
+import sys
 
+from openmock.cli import main
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -41,7 +41,7 @@ all = [
 ]
 
 [project.scripts]
-openmock = "openmock.web:main"
+openmock = "openmock.cli:main"
 
 [project.urls]
 "Bug Tracker" = "https://github.com/matthewdeanmartin/openmock/issues"
