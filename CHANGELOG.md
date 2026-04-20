@@ -11,11 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ability to tell openmock to use a real server.
 - Extra `openmock[web]`, which enables `openmock` cli command which runs a web UI for a web console for openmock.
+- Included `openmock gui` which also is a dashboard, but uses standard library tkinter
+
+### Changed
+
+- Behaviors changed to better match real opensearch
 
 ### Fixed
 
 - Various issues found when running tests against OpenSearch.
-
+- More unit tests, some based on those used by the opensearch-py library
 
 ## [3.1.5] - 2025-12-04
 

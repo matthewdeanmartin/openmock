@@ -91,6 +91,16 @@ Helpers shared by the fake implementations live here, including decorators and I
 
 Check for reusable helpers here before duplicating logic in the client classes.
 
+### `openmock/gui.py`
+
+This is the Tkinter desktop GUI. It uses only Python's built-in `tkinter` module and requires no extra dependencies. It exposes the same six-tab interface as the Streamlit app.
+
+Changes here should keep the UI simple and clearly development-oriented.
+
+### `openmock/cli.py`
+
+This is the top-level CLI dispatcher for the `openmock` command. `openmock gui` launches the Tkinter GUI; `openmock` (no arguments) launches the Streamlit web UI.
+
 ### `openmock/web.py`
 
 This is the Streamlit management console. It is a lightweight manual frontend over a `FakeOpenSearch` instance.

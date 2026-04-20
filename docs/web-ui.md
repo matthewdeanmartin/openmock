@@ -1,15 +1,38 @@
-# Web UI and REST bridge
+# Web UI, desktop GUI, and REST bridge
 
-Openmock includes a small web experience for exploring the fake backend interactively:
+Openmock includes three tools for exploring the fake backend interactively:
 
+- a **Tkinter desktop GUI** in `openmock.gui` — no extra dependencies,
 - a **Streamlit management console** in `openmock.web`,
 - a **FastAPI REST bridge** in `scripts/rest_bridge.py`.
 
-Both are meant for development and debugging. They are not a production service.
+All three are meant for development and debugging. They are not production services.
+
+## Tkinter desktop GUI
+
+The Tkinter GUI ships with the base package and requires no extra dependencies beyond Python's standard `tkinter` module.
+
+Start it with:
+
+```bash
+openmock gui
+```
+
+or:
+
+```bash
+uv run openmock gui
+```
 
 ## What the web UI is
 
 The Streamlit app creates a `FakeOpenSearch` instance and keeps it in `st.session_state`. That gives the UI a live in-memory backend you can inspect and mutate from the browser.
+
+The web UI requires the optional web extras:
+
+```bash
+pip install openmock[web]
+```
 
 Start it with:
 
@@ -31,7 +54,7 @@ uv run streamlit run -m openmock.web
 
 ## What you can do in the UI
 
-The management console currently has six tabs:
+Both the Tkinter GUI and the Streamlit app expose the same six tabs:
 
 | Tab | Purpose |
 | --- | --- |
@@ -49,12 +72,12 @@ The sidebar also lets you:
 
 ## Important limitation: UI state is local to the app process
 
-The UI does **not** automatically show the state from your unit tests.
+Neither the Tkinter GUI nor the Streamlit app automatically shows the state from your unit tests.
 
 That is because:
 
 - the decorator-backed fake in tests lives in the test process,
-- the Streamlit app creates its own fake in the Streamlit process,
+- each UI tool creates its own fake in its own process,
 - each process has separate in-memory state.
 
 So the UI is best for manual exploration of Openmock behavior, not for inspecting a test that is already running somewhere else.

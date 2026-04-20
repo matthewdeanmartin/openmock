@@ -114,9 +114,27 @@ class FooServiceTest(TestCase):
 
 ```
 
+## Admin tools
+
+Openmock ships two interactive admin tools for exploring fake state outside of tests.
+
+**Streamlit web UI** (requires `pip install openmock[web]`):
+
+```bash
+openmock
+```
+
+**Tkinter desktop GUI** (no extra dependencies — uses Python's built-in `tkinter`):
+
+```bash
+openmock gui
+```
+
+Both tools open a six-tab interface covering indices, search sandbox, cluster stats, CAT output, fake security (users/roles), and ingest pipelines. State in these tools is separate from your test processes.
+
 ## Notes:
 
-- The mocked **search** method returns **all available documents** indexed on the index with the requested document type.
+- The mocked **search** method evaluates the query against indexed documents and returns matching results, not all documents. Use `match_all` if you want everything.
 - The mocked **suggest** method returns the exactly suggestions dictionary passed as body serialized in OpenSearch.suggest response. **Attention:** If the term is an *int*, the suggestion will be `python term + 1`. If not, the suggestion will be formatted as `python {0}_suggestion.format(term) `.
   Example:
   - **Suggestion Body**:

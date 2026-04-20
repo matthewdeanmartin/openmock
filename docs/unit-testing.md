@@ -123,13 +123,26 @@ The in-memory fake is meant for the common workflows already covered by the test
 
 Search support includes practical query shapes such as:
 
+- `match_all`,
 - `match` and `term`,
 - `terms`,
 - `bool` with `filter`, `must`, `must_not`, and `should`,
 - `multi_match`,
 - `range`,
-- simple terms aggregation,
-- cardinality metric aggregation.
+- `exists`,
+- simple `terms` aggregation,
+- `composite` aggregation,
+- `cardinality` metric aggregation (inside `composite` only).
+
+**Not supported** (will silently return no results or empty aggregations):
+
+- `wildcard`, `prefix`, `fuzzy`, `regexp` queries,
+- `nested` and `geo` queries,
+- `script` queries and aggregations,
+- numeric aggregations (`avg`, `sum`, `min`, `max`, `percentiles`),
+- `date_histogram` and `histogram` aggregations,
+- relevance scoring (`_score` is not populated),
+- full-text analyzers, stemming, and highlighting.
 
 It is still a fake, not a full OpenSearch clone. When behavior details matter, the tests under `tests/fake_opensearch` and `tests/fake_asyncopensearch` are the best executable specification.
 
