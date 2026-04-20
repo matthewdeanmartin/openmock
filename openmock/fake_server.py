@@ -331,7 +331,7 @@ class FakeOpenSearchServer:
         body: dict[str, Any] | None = None,
     ) -> str | list[dict[str, str]]:
         count = self.count_documents(index=index, body=body).get("count", 0)
-        now = dt.datetime.utcnow()
+        now = dt.datetime.now(dt.timezone.utc)
         rows = [
             {
                 "epoch": str(int(time.time())),
