@@ -1,5 +1,4 @@
 import sys
-import json
 from unittest.mock import MagicMock, patch
 import pytest
 from openmock.web import website, main, _get_response_error

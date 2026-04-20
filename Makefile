@@ -77,3 +77,19 @@ check_spelling:
 
 check_changelog:
 	$(VENV) changelogmanager validate
+
+.PHONY: gha-validate
+gha-validate:
+	@echo "Validating GitHub Actions workflows"
+	$(VENV) python -c "import pathlib, yaml; [yaml.safe_load(p.read_text(encoding='utf-8')) for p in pathlib.Path('.github/workflows').glob('*.yml')]; print('YAML parse OK')"
+	$(VENV) python -c "from pathlib import Path; import yaml; data=yaml.safe_load(Path('.github/workflows/publish_to_pypi.yml').read_text(encoding='utf-8')); build_steps=data['jobs']['build']['steps']; publish_steps=data['jobs']['pypi-publish']['steps']; up=next(s for s in build_steps if s.get('uses','').startswith('actions/upload-artifact@')); down=next(s for s in publish_steps if s.get('uses','').startswith('actions/download-artifact@')); assert up['with']['name']==down['with']['name']=='packages'; assert up['with']['path']==down['with']['path']=='dist/'; print('Artifact handoff OK:', up['uses'], '->', down['uses'])"
+	uvx zizmor --no-progress --no-exit-codes .
+
+.PHONY: gha-pin
+gha-pin:
+	@echo "Pinning GitHub Actions to current SHAs"
+	$(VENV) python -c "import os, subprocess, sys; token=os.environ.get('GITHUB_TOKEN') or subprocess.run(['gh', 'auth', 'token'], capture_output=True, text=True).stdout.strip(); assert token, 'Set GITHUB_TOKEN or log in with gh auth login'; env=dict(os.environ, GITHUB_TOKEN=token); raise SystemExit(subprocess.run(['gha-update'], env=env).returncode)"
+
+.PHONY: gha-upgrade
+gha-upgrade: gha-pin gha-validate
+	@echo "GitHub Actions upgrade complete"

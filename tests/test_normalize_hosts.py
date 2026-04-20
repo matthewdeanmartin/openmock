@@ -1,4 +1,3 @@
-import pytest
 from openmock.normalize_hosts import _normalize_hosts
 
 

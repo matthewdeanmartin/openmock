@@ -50,6 +50,7 @@ openmock = "openmock.cli:main"
 
 [dependency-groups]
 dev = [
+    "gha-update; python_version >= '3.12'",
     # pytest
     "pytest_asyncio",
     "aiounittest>=1.5.0",

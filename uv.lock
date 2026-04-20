@@ -767,6 +767,19 @@ wheels = [
 ]
 
 [[package]]
+name = "gha-update"
+version = "0.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click", marker = "python_full_version >= '3.12'" },
+    { name = "httpx", marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/46/e8/eb710e08998a22b314cc068f14805cfdd12e3934a5496c8916c5a164c65a/gha_update-0.2.0.tar.gz", hash = "sha256:328ee0db09346ad13ee90646698cea2ec1f9035964ddd7c2a728a91034c3f4b0", size = 4756, upload-time = "2025-07-14T03:13:33.254Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4b/29/a0e42b0b80d614aa82929f65cce0d51443eea296802b2094cadc5660321b/gha_update-0.2.0-py3-none-any.whl", hash = "sha256:ec5641bf23f71baa1232fc61b3059fb08456e1b78150d1e9c1bab69b37046e49", size = 5323, upload-time = "2025-07-14T03:13:31.932Z" },
+]
+
+[[package]]
 name = "gitdb"
 version = "4.0.12"
 source = { registry = "https://pypi.org/simple" }
@@ -874,6 +887,34 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0b/8e/e480359492affde4119a131da729dd26da742c2c9b604dff74836e47eef9/hatchling-1.28.0.tar.gz", hash = "sha256:4d50b02aece6892b8cd0b3ce6c82cb218594d3ec5836dbde75bf41a21ab004c8", size = 55365, upload-time = "2025-11-27T00:31:13.766Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0d/a5/48cb7efb8b4718b1a4c0c331e3364a3a33f614ff0d6afd2b93ee883d3c47/hatchling-1.28.0-py3-none-any.whl", hash = "sha256:dc48722b68b3f4bbfa3ff618ca07cdea6750e7d03481289ffa8be1521d18a961", size = 76075, upload-time = "2025-11-27T00:31:12.544Z" },
+]
+
+[[package]]
+name = "httpcore"
+version = "1.0.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi", marker = "python_full_version >= '3.12'" },
+    { name = "h11", marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/06/94/82699a10bca87a5556c9c59b5963f2d039dbd239f25bc2a63907a05a14cb/httpcore-1.0.9.tar.gz", hash = "sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8", size = 85484, upload-time = "2025-04-24T22:06:22.219Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl", hash = "sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55", size = 78784, upload-time = "2025-04-24T22:06:20.566Z" },
+]
+
+[[package]]
+name = "httpx"
+version = "0.28.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio", marker = "python_full_version >= '3.12'" },
+    { name = "certifi", marker = "python_full_version >= '3.12'" },
+    { name = "httpcore", marker = "python_full_version >= '3.12'" },
+    { name = "idna", marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc", size = 141406, upload-time = "2024-12-06T15:37:23.222Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl", hash = "sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad", size = 73517, upload-time = "2024-12-06T15:37:21.509Z" },
 ]
 
 [[package]]
@@ -1603,6 +1644,7 @@ dev = [
     { name = "black" },
     { name = "codespell" },
     { name = "coverage" },
+    { name = "gha-update", marker = "python_full_version >= '3.12'" },
     { name = "hatchling" },
     { name = "interrogate" },
     { name = "linkcheckmd" },
@@ -1643,6 +1685,7 @@ dev = [
     { name = "black", specifier = ">=25.11.0" },
     { name = "codespell", specifier = ">=2.2.6" },
     { name = "coverage", specifier = ">=7.3.2" },
+    { name = "gha-update", marker = "python_full_version >= '3.12'" },
     { name = "hatchling" },
     { name = "interrogate", specifier = ">=1.5.0" },
     { name = "linkcheckmd", specifier = ">=1.4.0" },

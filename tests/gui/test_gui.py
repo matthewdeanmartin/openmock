@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock, patch
-import tkinter as tk
 from openmock.gui import OpenmockApp, main
 
 
@@ -34,7 +33,7 @@ def test_gui_app_init(
     mock_showinfo,
 ):
     # Setup mock returns to avoid errors during widget creation
-    mock_tk_inst = mock_tk.return_value
+    mock_tk.return_value
     mock_nb_inst = mock_nb.return_value
     mock_nb_inst.index.return_value = 0
     mock_nb_inst.select.return_value = "tab0"
