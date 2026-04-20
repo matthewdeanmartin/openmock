@@ -6,6 +6,7 @@ import sys
 
 
 def main(args: list[str] | None = None) -> int:
+    # pylint: disable=import-outside-toplevel
     argv = list(sys.argv[1:] if args is None else args)
 
     if argv and argv[0] == "gui":

@@ -390,6 +390,7 @@ class FakeOpenSearchServer:
                 return
             raise exc
 
+    # pylint: disable=too-many-statements
     def _run_named_processor(
         self, processor_name: str, config: dict[str, Any], document: dict[str, Any]
     ) -> None:

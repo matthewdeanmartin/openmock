@@ -4,6 +4,7 @@ Fake Index state
 
 from opensearchpy.client.indices import IndicesClient
 from opensearchpy.client.utils import query_params
+from opensearchpy.exceptions import RequestError
 
 from openmock.behaviour.server_failure import server_failure
 from openmock.utilities.decorator import for_all_methods
@@ -19,8 +20,6 @@ class FakeIndicesClient(IndicesClient):
         invalid_chars = [" ", '"', "*", "\\", "<", "|", ",", ">", "/", "?"]
         for char in invalid_chars:
             if char in index:
-                from opensearchpy.exceptions import RequestError
-
                 raise RequestError(
                     400,
                     "invalid_index_name_exception",

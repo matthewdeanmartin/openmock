@@ -19,8 +19,11 @@ from openmock.fake_asyncindices import FakeAsyncIndicesClient
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_opensearch import FakeQueryCondition, MetricType, QueryType
 from openmock.normalize_hosts import _normalize_hosts
-from openmock.utilities import (extract_ignore_as_iterable, get_random_id,
-                                get_random_scroll_id)
+from openmock.utilities import (
+    extract_ignore_as_iterable,
+    get_random_id,
+    get_random_scroll_id,
+)
 from openmock.utilities.decorator import for_all_methods
 
 
@@ -45,6 +48,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         return self._FakeAsyncIndicesClient__documents_dict
 
     @property
+    # pylint: disable=unused-private-member
     def __aliases_dict(self):
         return self._FakeAsyncIndicesClient__aliases_dict
 
@@ -219,6 +223,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         "version",
         "version_type",
     )
+    # pylint: disable=too-many-statements
     async def bulk(
         self,
         body: Any,
@@ -294,10 +299,10 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                 # If it's not delete, we need the source from the next line
                 try:
                     source_line = next(it)
-                except StopIteration:
+                except StopIteration as exc:
                     raise RequestError(
                         400, "action_request_validation_exception", "missing source"
-                    )
+                    ) from exc
 
                 if isinstance(source_line, str):
                     source = json.loads(source_line)

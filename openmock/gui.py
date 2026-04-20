@@ -1,5 +1,7 @@
 """Tkinter GUI for Openmock — a dependency-free alternative to the Streamlit web UI."""
 
+# pylint: disable=too-many-ancestors
+
 from __future__ import annotations
 
 import json
@@ -97,7 +99,7 @@ class _IndicesTab(_Tab):
                     text=f"Indexed: {res.get('_id')}", foreground="green"
                 )
                 self.refresh()
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             self._status.config(text=f"Error: {exc}", foreground="red")
 
     def refresh(self) -> None:
@@ -163,7 +165,7 @@ class _SearchTab(_Tab):
             body = json.loads(self._query.get("1.0", "end"))
             res = self.server.search_documents(index=index, body=body)
             self._show(_fmt(res))
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             self._show(f"Error: {exc}")
 
     def _show(self, text: str) -> None:
@@ -195,7 +197,7 @@ class _ClusterTab(_Tab):
             health = self.server.health()
             info = self.server.info()
             self._show(_fmt({"health": health, "info": info}))
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             self._show(f"Error: {exc}")
 
     def _show(self, text: str) -> None:
@@ -248,7 +250,7 @@ class _CatTab(_Tab):
                 payload = self.server.cat_count(format_type=fmt, verbose=verbose)
             text = payload if isinstance(payload, str) else _fmt(payload)
             self._show(text or "(empty)")
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             self._show(f"Error: {exc}")
 
     def _show(self, text: str) -> None:
@@ -258,6 +260,7 @@ class _CatTab(_Tab):
         self._text.config(state="disabled")
 
 
+# pylint: disable=too-many-instance-attributes
 class _SecurityTab(_Tab):
     def _build(self) -> None:
         outer = ttk.Frame(self)
@@ -280,6 +283,7 @@ class _SecurityTab(_Tab):
         self._build_roles(self._roles_frame)
 
     def _build_users(self, parent: ttk.Frame) -> None:
+        # pylint: disable=attribute-defined-outside-init
         parent.columnconfigure(1, weight=1)
 
         ttk.Label(parent, text="Current Users").grid(
@@ -327,7 +331,7 @@ class _SecurityTab(_Tab):
             res = self.server.put_user(name, body)
             self._user_status.config(text=res["message"], foreground="green")
             self.refresh()
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             self._user_status.config(text=f"Error: {exc}", foreground="red")
 
     def _delete_user(self) -> None:
@@ -340,6 +344,7 @@ class _SecurityTab(_Tab):
             self.refresh()
 
     def _build_roles(self, parent: ttk.Frame) -> None:
+        # pylint: disable=attribute-defined-outside-init
         parent.columnconfigure(1, weight=1)
 
         ttk.Label(parent, text="Current Roles").grid(
@@ -387,7 +392,7 @@ class _SecurityTab(_Tab):
             res = self.server.put_role(name, body)
             self._role_status.config(text=res["message"], foreground="green")
             self.refresh()
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             self._role_status.config(text=f"Error: {exc}", foreground="red")
 
     def _delete_role(self) -> None:
@@ -500,7 +505,7 @@ class _IngestTab(_Tab):
             res = self.server.put_pipeline(pid, body)
             self._pipe_status.config(text=res["message"], foreground="green")
             self.refresh()
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             self._pipe_status.config(text=f"Error: {exc}", foreground="red")
 
     def _simulate(self) -> None:
@@ -512,7 +517,7 @@ class _IngestTab(_Tab):
             self._sim_result.delete("1.0", "end")
             self._sim_result.insert("1.0", _fmt(res))
             self._sim_result.config(state="disabled")
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             self._sim_result.config(state="normal")
             self._sim_result.delete("1.0", "end")
             self._sim_result.insert("1.0", f"Error: {exc}")
@@ -539,6 +544,7 @@ class _IngestTab(_Tab):
             self._sim_pid_var.set(pids[0])
 
 
+# pylint: disable=too-many-instance-attributes
 class OpenmockApp:
     def __init__(self) -> None:
         self._server_ref: list[FakeOpenSearchServer] = [FakeOpenSearchServer()]

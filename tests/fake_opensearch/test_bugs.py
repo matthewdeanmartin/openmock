@@ -4,7 +4,6 @@ between openmock and real OpenSearch.  Tests that currently FAIL are marked
 with a comment so they can be tracked and fixed without blocking CI.
 """
 
-
 from opensearchpy.exceptions import NotFoundError
 
 from tests import INDEX_NAME, Testopenmock

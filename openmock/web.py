@@ -19,6 +19,7 @@ def _get_response_error(result: Any) -> str | None:
 
 def main(args: list[str] | None = None) -> int:
     try:
+        # pylint: disable=import-outside-toplevel
         from streamlit.web import bootstrap
     except ImportError as exc:
         raise SystemExit(_streamlit_missing_message()) from exc
@@ -28,8 +29,10 @@ def main(args: list[str] | None = None) -> int:
     return 0
 
 
+# pylint: disable=too-many-statements
 def website() -> None:
     try:
+        # pylint: disable=import-outside-toplevel
         import streamlit as st
     except ImportError as exc:
         raise SystemExit(_streamlit_missing_message()) from exc
@@ -102,7 +105,7 @@ def website() -> None:
                     else:
                         st.success(f"Document indexed: {res.get('_id')}")
                         st.rerun()
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught
                     st.error(f"Error: {e}")
 
     with tab2:
@@ -133,7 +136,7 @@ def website() -> None:
                 else:
                     st.write("Hits:")
                     st.json(res)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
                 st.error(f"Error: {e}")
 
     with tab3:
@@ -154,7 +157,7 @@ def website() -> None:
                 st.error(error)
             else:
                 st.json(info)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             st.error(f"Error: {e}")
 
     with tab4:
@@ -176,7 +179,7 @@ def website() -> None:
                 st.code(payload or "(empty)", language="text")
             else:
                 st.json(payload)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             st.error(f"Error: {e}")
 
     with tab5:
@@ -210,7 +213,7 @@ def website() -> None:
                         else:
                             st.success(result["message"])
                             st.rerun()
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught
                         st.error(f"Error: {e}")
 
             delete_user = st.text_input("Delete Username", value="")
@@ -246,7 +249,7 @@ def website() -> None:
                         else:
                             st.success(result["message"])
                             st.rerun()
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught
                         st.error(f"Error: {e}")
 
             delete_role = st.text_input("Delete Role", value="")
@@ -289,7 +292,7 @@ def website() -> None:
                     else:
                         st.success(result["message"])
                         st.rerun()
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught
                     st.error(f"Error: {e}")
 
         pipeline_ids = sorted(server._pipelines.keys())
@@ -312,7 +315,7 @@ def website() -> None:
                         st.error(error)
                     else:
                         st.json(result)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught
                     st.error(f"Error: {e}")
         else:
             st.info(

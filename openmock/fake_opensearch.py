@@ -19,8 +19,11 @@ from openmock.behaviour.server_failure import server_failure
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_indices import FakeIndicesClient
 from openmock.normalize_hosts import _normalize_hosts
-from openmock.utilities import (extract_ignore_as_iterable, get_random_id,
-                                get_random_scroll_id)
+from openmock.utilities import (
+    extract_ignore_as_iterable,
+    get_random_id,
+    get_random_scroll_id,
+)
 from openmock.utilities.decorator import for_all_methods
 
 LT_KEYS = {"lt", "lte"}
@@ -369,18 +372,22 @@ class FakeOpenSearch(OpenSearch):
         # super(FakeOpenSearch, self).__init__()
 
     @property
+    # pylint: disable=unused-private-member
     def __documents_dict(self):
         return self._FakeIndicesClient__documents_dict
 
     @property
+    # pylint: disable=unused-private-member
     def __mappings_dict(self):
         return self._FakeIndicesClient__mappings_dict
 
     @property
+    # pylint: disable=unused-private-member
     def __settings_dict(self):
         return self._FakeIndicesClient__settings_dict
 
     @property
+    # pylint: disable=unused-private-member
     def __aliases_dict(self):
         return self._FakeIndicesClient__aliases_dict
 
@@ -555,6 +562,7 @@ class FakeOpenSearch(OpenSearch):
         "version",
         "version_type",
     )
+    # pylint: disable=too-many-statements
     def bulk(
         self,
         body: Any,
@@ -630,10 +638,10 @@ class FakeOpenSearch(OpenSearch):
                 # If it's not delete, we need the source from the next line
                 try:
                     source_line = next(it)
-                except StopIteration:
+                except StopIteration as exc:
                     raise RequestError(
                         400, "action_request_validation_exception", "missing source"
-                    )
+                    ) from exc
 
                 if isinstance(source_line, str):
                     source = json.loads(source_line)
