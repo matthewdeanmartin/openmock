@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, patch
+
 from openmock.gui import OpenmockApp, main
 
 

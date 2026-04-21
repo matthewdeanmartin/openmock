@@ -75,7 +75,7 @@ web:
 
 # Start a Mock REST Server (allows curl/dashboards to connect to the fake)
 run-mock-server:
-	uv run python scripts/rest_bridge.py
+	uv run openmock serve
 
 # --- DEVELOPER TASKS ---
 

@@ -107,9 +107,9 @@ This is the Streamlit management console. It is a lightweight manual frontend ov
 
 Changes here should keep the UI simple and clearly development-oriented.
 
-### `scripts/rest_bridge.py`
+### `openmock/rest_bridge.py`
 
-This file exposes a narrow HTTP facade over the fake so non-Python tools can interact with it. It is useful for manual testing and demos, not as a production API server.
+This file exposes a narrow HTTP facade over the fake so non-Python tools can interact with it. It is useful for manual testing and demos, not as a production API server. It is launched via `openmock serve`.
 
 ### `tests/`
 

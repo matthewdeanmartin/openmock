@@ -36,12 +36,17 @@ web = [
     "fastapi",
     "uvicorn"
 ]
+rest = [
+    "fastapi",
+    "uvicorn"
+]
 all = [
-    "openmock[web]"
+    "openmock[web,rest]"
 ]
 
 [project.scripts]
 openmock = "openmock.cli:main"
+openmock-serve = "openmock.rest_bridge:main"
 
 [project.urls]
 "Bug Tracker" = "https://github.com/matthewdeanmartin/openmock/issues"

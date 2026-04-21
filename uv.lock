@@ -1631,6 +1631,10 @@ all = [
     { name = "streamlit" },
     { name = "uvicorn" },
 ]
+rest = [
+    { name = "fastapi" },
+    { name = "uvicorn" },
+]
 web = [
     { name = "fastapi" },
     { name = "streamlit" },
@@ -1668,15 +1672,17 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aiohttp" },
+    { name = "fastapi", marker = "extra == 'rest'" },
     { name = "fastapi", marker = "extra == 'web'" },
-    { name = "openmock", extras = ["web"], marker = "extra == 'all'" },
+    { name = "openmock", extras = ["web", "rest"], marker = "extra == 'all'" },
     { name = "opensearch-py" },
     { name = "python-dateutil", specifier = ">=2.8.2" },
     { name = "python-ranges", specifier = "==0.2.1" },
     { name = "streamlit", marker = "extra == 'web'" },
+    { name = "uvicorn", marker = "extra == 'rest'" },
     { name = "uvicorn", marker = "extra == 'web'" },
 ]
-provides-extras = ["web", "all"]
+provides-extras = ["web", "rest", "all"]
 
 [package.metadata.requires-dev]
 dev = [

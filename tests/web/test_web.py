@@ -1,8 +1,10 @@
 import sys
 from unittest.mock import MagicMock, patch
+
 import pytest
-from openmock.web import website, main, _get_response_error
+
 from openmock.fake_server import FakeOpenSearchServer
+from openmock.web import _get_response_error, main, website
 
 
 def test_get_response_error():

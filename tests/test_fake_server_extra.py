@@ -1,11 +1,12 @@
 import pytest
+
 from openmock.fake_server import (
-    _coerce_bool,
-    _get_field,
-    _set_field,
-    _delete_field,
-    _merge_patch,
     FakeOpenSearchServer,
+    _coerce_bool,
+    _delete_field,
+    _get_field,
+    _merge_patch,
+    _set_field,
 )
 
 

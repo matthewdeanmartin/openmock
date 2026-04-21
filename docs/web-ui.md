@@ -4,7 +4,7 @@ Openmock includes three tools for exploring the fake backend interactively:
 
 - a **Tkinter desktop GUI** in `openmock.gui` — no extra dependencies,
 - a **Streamlit management console** in `openmock.web`,
-- a **FastAPI REST bridge** in `scripts/rest_bridge.py`.
+- a **FastAPI REST bridge** in `openmock.rest_bridge`.
 
 All three are meant for development and debugging. They are not production services.
 
@@ -86,6 +86,12 @@ So the UI is best for manual exploration of Openmock behavior, not for inspectin
 
 The REST bridge exposes a small HTTP facade over a `FakeOpenSearch` instance. This is useful for tools that want to speak HTTP instead of using the Python client directly.
 
+The REST bridge requires the optional rest extras:
+
+```bash
+pip install openmock[rest]
+```
+
 Start it with:
 
 ```bash
@@ -95,7 +101,13 @@ just run-mock-server
 or:
 
 ```bash
-uv run python scripts/rest_bridge.py
+openmock serve
+```
+
+or:
+
+```bash
+uv run openmock serve
 ```
 
 It listens on `http://localhost:9201`.

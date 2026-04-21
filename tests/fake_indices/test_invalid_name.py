@@ -1,5 +1,6 @@
 import pytest
 from opensearchpy.exceptions import RequestError
+
 from openmock import FakeOpenSearch
 
 

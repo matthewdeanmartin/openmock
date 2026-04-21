@@ -14,6 +14,11 @@ def main(args: list[str] | None = None) -> int:
 
         return gui_main()
 
+    if argv and argv[0] == "serve":
+        from openmock.rest_bridge import main as serve_main
+
+        return serve_main()
+
     from openmock.web import main as web_main
 
     return web_main(argv)

@@ -116,7 +116,7 @@ class FooServiceTest(TestCase):
 
 ## Admin tools
 
-Openmock ships two interactive admin tools for exploring fake state outside of tests.
+Openmock ships three interactive admin tools for exploring fake state outside of tests.
 
 **Streamlit web UI** (requires `pip install openmock[web]`):
 
@@ -130,7 +130,13 @@ openmock
 openmock gui
 ```
 
-Both tools open a six-tab interface covering indices, search sandbox, cluster stats, CAT output, fake security (users/roles), and ingest pipelines. State in these tools is separate from your test processes.
+**FastAPI REST Bridge** (requires `pip install openmock[rest]`):
+
+```bash
+openmock serve
+```
+
+These tools open a six-tab interface or an HTTP facade covering indices, search sandbox, cluster stats, CAT output, fake security (users/roles), and ingest pipelines. State in these tools is separate from your test processes.
 
 ## Notes:
 

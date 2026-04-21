@@ -1,5 +1,6 @@
 import sys
 from unittest.mock import patch
+
 from openmock.cli import main
 
 
@@ -15,6 +16,13 @@ def test_cli_gui():
         mock_gui_main.return_value = 0
         assert main(["gui"]) == 0
         mock_gui_main.assert_called_once()
+
+
+def test_cli_serve():
+    with patch("openmock.rest_bridge.main") as mock_serve_main:
+        mock_serve_main.return_value = 0
+        assert main(["serve"]) == 0
+        mock_serve_main.assert_called_once()
 
 
 def test_cli_web_with_args():

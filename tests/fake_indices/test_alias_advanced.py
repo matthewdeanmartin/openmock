@@ -1,6 +1,7 @@
 """Tests for exists_alias, update_aliases, and enhanced get_alias."""
 
 import pytest
+
 from openmock import FakeOpenSearch
 
 

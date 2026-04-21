@@ -1,6 +1,7 @@
 """Tests for alias resolution in data operations and delete_by_query."""
 
 import pytest
+
 from openmock import FakeOpenSearch
 
 

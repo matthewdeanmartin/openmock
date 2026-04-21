@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - _normalize_index_to_list in both fake_indices.py and fake_opensearch.py (and async variants) now checks the aliases
   dict and resolves alias names to their backing indices, so search, count,
   delete_by_query, and all other operations transparently work with alias names
+- rest bridge to access open mock with http interface, install via `openmock[rest]` or `openmock[all]`
 
 ### Changed
 

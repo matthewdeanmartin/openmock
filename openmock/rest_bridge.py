@@ -214,7 +214,11 @@ async def simulate_pipeline(request: Request, pipeline_id: str | None = None):
     return server.simulate_pipeline(body=body, pipeline_id=pipeline_id)
 
 
-if __name__ == "__main__":
+def main():
     print("Openmock REST Bridge running on http://localhost:9201")
     print("This allows non-python tools to talk to the fake.")
-    uvicorn.run(app, host="0.0.0.0", port=9201)
+    uvicorn.run(app, host="127.0.0.1", port=9201)
+
+
+if __name__ == "__main__":
+    main()
