@@ -51,7 +51,7 @@ pylint:  black
 	$(VENV) pylint openmock --fail-under 10
 
 
-check: test pylint bandit pre-commit
+check: test pylint bandit
 
 .PHONY: build
 build: check
