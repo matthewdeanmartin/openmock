@@ -137,4 +137,6 @@ markers = [
 
 
 [tool.uv]
+
+[tool.uv.pip]
 universal = true
