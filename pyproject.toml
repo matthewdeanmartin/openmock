@@ -135,3 +135,6 @@ markers = [
     "mock_backend: tests intended for the in-memory mock backend only",
 ]
 
+
+[tool.uv]
+universal = true
