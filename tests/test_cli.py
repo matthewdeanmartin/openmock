@@ -42,3 +42,24 @@ def test_main_import():
             # Note: importing it again might not trigger the if __name__ == "__main__" block
             # if it was already imported, but it's a simple file.
             # Actually, since it's "if __name__ == '__main__':", we can't easily test it by importing.
+
+
+import subprocess
+from pathlib import Path
+import pytest
+
+
+@pytest.mark.parametrize("flag", ["--help", "-h", "--version"])
+def test_installed_info_flags_exit_without_starting_ui(
+    flag: str, tmp_path: Path
+) -> None:
+    result = subprocess.run(
+        [sys.executable, "-m", "openmock", flag],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=5,
+        check=False,
+    )
+    assert result.returncode == 0
+    assert ("openmock " if flag == "--version" else "usage: openmock") in result.stdout

@@ -244,3 +244,10 @@ See [CHANGELOG.md](https://github.com/matthewdeanmartin/openmock/blob/main/CHANG
 ## License
 
 MIT with `normalize_host.py` being Apache 2 from Elasticsearch.
+
+
+## Python 3.15 verification — 2026-10-04
+
+The former unbounded aiohttp requirement let the binary-only resolver select aiohttp 0.13.1 on RC3; it cannot even parse on modern Python. Runtime now requires aiohttp>=3.9,<4. Modern aiohttp still lacks matching RC3 wheels, including prereleases: installation is blocked rather than falsely succeeding with obsolete code. Full core, REST, GUI and web test suite passes on 3.14.7 (287 tests). Top-level help/version flags now exit without starting Streamlit. No native-free async fallback was introduced. Live OpenSearch parity was not run; the suite uses the mock backend.
+
+Dependencies were required to have published wheels; own pure-Python workspace wheels were built locally without build isolation. Locks were refreshed with uv lock --upgrade. Full developer stacks remain separately wheel-blocked (PyYAML or source-only linkcheckmd). No upstream reports or GitHub jobs were sent; bug filing belongs to the human operator.

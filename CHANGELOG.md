@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Python 3.15 support for the core library; the optional `web` extra still waits on pyarrow wheels for 3.15.
+
+### Changed
+- Requires Python 3.11 or newer; Python 3.10 is no longer supported.
+
+### Fixed
+
+- Require aiohttp>=3.9,<4 to prevent wheel-only resolution selecting ancient, unimportable aiohttp releases.
+- Handle top-level --help, -h and --version without starting the web UI.
+
 ## [3.2.0] - 2025-12-04
 
 ### Added
