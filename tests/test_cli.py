@@ -1,5 +1,9 @@
+import subprocess
 import sys
+from pathlib import Path
 from unittest.mock import patch
+
+import pytest
 
 from openmock.cli import main
 
@@ -42,11 +46,6 @@ def test_main_import():
             # Note: importing it again might not trigger the if __name__ == "__main__" block
             # if it was already imported, but it's a simple file.
             # Actually, since it's "if __name__ == '__main__':", we can't easily test it by importing.
-
-
-import subprocess
-from pathlib import Path
-import pytest
 
 
 @pytest.mark.parametrize("flag", ["--help", "-h", "--version"])

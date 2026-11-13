@@ -13,7 +13,13 @@ async def _read_json_body(request: Request, default):
     body = await request.body()
     if not body:
         return default
-    return json.loads(body)
+    try:
+        payload = json.loads(body)
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise HTTPException(status_code=400, detail="Invalid JSON body") from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=400, detail="Expected a JSON object")
+    return payload
 
 
 def _cat_response(payload):
@@ -71,8 +77,8 @@ async def search(index: str, request: Request):
     return server.search_documents(index=index, body=body)
 
 
-@app.get("/{index}/_count")
-@app.get("/_count")
+@app.api_route("/{index}/_count", methods=["GET", "POST"])
+@app.api_route("/_count", methods=["GET", "POST"])
 async def count(request: Request, index: str | None = None):
     body = await _read_json_body(request, None)
     return server.count_documents(index=index, body=body)

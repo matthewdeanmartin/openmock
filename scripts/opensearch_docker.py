@@ -10,7 +10,7 @@ import urllib.error
 import urllib.request
 
 DEFAULT_CONTAINER_NAME = "openmock-opensearch-tests"
-DEFAULT_IMAGE = "opensearchproject/opensearch:3.1.0"
+DEFAULT_IMAGE = "opensearchproject/opensearch:3.9.0"
 DEFAULT_PORT = 9200
 DEFAULT_WAIT_SECONDS = 120
 
@@ -74,7 +74,7 @@ def start_container(args) -> None:
         "--name",
         args.name,
         "--publish",
-        f"{args.port}:9200",
+        f"127.0.0.1:{args.port}:9200",
         "--env",
         "discovery.type=single-node",
         "--env",

@@ -5,10 +5,12 @@ Openmock is a Python test surrogate for `opensearch-py`. It gives unit tests an 
 
 ## What to read
 
+- [Getting started](getting-started.md) - installation and runnable sync/async examples.
+- [Compatibility](compatibility.md) - tested versions and parity limits.
 - [Using Openmock in unit tests](unit-testing.md) - how the decorator works, what testing style this is, and practical examples.
 - [Web UI, desktop GUI, and REST bridge](web-ui.md) - the Tkinter desktop GUI, the Streamlit management console, and the lightweight HTTP bridge for manual exploration.
 - [Contributing](contributing.md) - local setup, validation commands, and a short tour of the code.
-- [API reference](openmock/index.html) - generated reference docs for the package.
+- [API reference](api-reference.md) - generated reference docs for the package.
 
 ## What Openmock is
 
@@ -28,7 +30,7 @@ The package currently includes:
 - index and cluster sub-clients,
 - a behavior toggle for simulated server failures,
 - a Streamlit web UI for inspecting fake state (`openmock` command, requires `openmock[web]`),
-- a Tkinter desktop GUI for inspecting fake state (`openmock gui` command, no extra dependencies),
+- a Tkinter desktop GUI for inspecting fake state (`openmock gui` command, requires Tk and a graphical display),
 - a FastAPI bridge so HTTP tools can talk to the fake,
 - a parity seam used by tests to swap the fake for a real OpenSearch backend.
 

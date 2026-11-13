@@ -67,10 +67,12 @@ dev = [
     "types-python-dateutil",
     # web
     "requests>=2.31.0",
+    "httpx",
     # cross compat
     "tox>=4.11.3",
     # code quality
     "pylint>=3.0.2",
+    "ruff",
     "pre-commit",
     "metametameta",
     # docs checking
@@ -82,6 +84,7 @@ dev = [
     "bandit>=1.9.2",
     # publishing
     "hatchling",
+    "keepachangelog-manager-fork>=6.10.1",
 ]
 
 [build-system]
@@ -130,6 +133,7 @@ exclude = '''
 '''
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
 markers = [
     "parity: tests intended to run against a live OpenSearch backend for parity checks",
     "mock_backend: tests intended for the in-memory mock backend only",
@@ -142,4 +146,28 @@ markers = [
 universal = true
 
 [tool.ruff.lint]
+# Keep the rule set explicit as Ruff's defaults evolve.
+select = ["E4", "E7", "E9", "F", "I", "UP"]
 ignore = ["RUF100"]  # unused noqa differs across Python versions
+
+[[tool.mypy.overrides]]
+module = "ranges"
+ignore_missing_imports = true
+
+[tool.changelogmanager.versioning]
+scheme = "semver"
+
+[tool.changelogmanager.validation]
+enforce_preamble = true
+format = "auto"
+
+[tool.changelogmanager.defaults]
+skip_ci = true
+error_format = "github"
+commit_schema = "keepachangelog"
+schema_version = "current"
+
+[[tool.changelogmanager.components]]
+name = "default"
+changelog = "CHANGELOG.md"
+version_files = ["pyproject.toml"]

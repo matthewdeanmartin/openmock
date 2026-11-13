@@ -32,7 +32,7 @@ Prefer the existing project commands instead of ad hoc one-offs.
 | Sync dependencies | `uv sync --all-extras` |
 | Run tests | `uv run python -m pytest tests` |
 | Run parity tests against Docker OpenSearch | `uv run python scripts/opensearch_docker.py test` |
-| Run the full Makefile unit checks | `make test` |
+| Run the full Makefile unit checks | `uv run --all-extras python scripts/check.py` |
 | Run formatting and pre-commit checks | `make pre-commit` |
 | Run the Streamlit UI | `just web` |
 | Run the HTTP bridge | `just run-mock-server` |
@@ -93,7 +93,7 @@ Check for reusable helpers here before duplicating logic in the client classes.
 
 ### `openmock/gui.py`
 
-This is the Tkinter desktop GUI. It uses only Python's built-in `tkinter` module and requires no extra dependencies. It exposes the same six-tab interface as the Streamlit app.
+This is the Tkinter desktop GUI. It requires Tk support and a graphical display, but no extra Python package. It exposes the same six-tab interface as the Streamlit app.
 
 Changes here should keep the UI simple and clearly development-oriented.
 
@@ -137,7 +137,7 @@ Use it when:
 The Docker helper is:
 
 ```bash
-uv run python scripts/opensearch_docker.py test tests
+uv run --all-extras python scripts/opensearch_docker.py test
 ```
 
 There are also `just` commands for starting and stopping a local real backend.
@@ -153,6 +153,63 @@ When extending Openmock:
 
 ## Documentation layout
 
-User-facing docs belong under `docs/` as Markdown for the future MkDocs site.
+User-facing docs belong under `docs/` as Markdown for the MkDocs site hosted on Read the Docs.
 
-The generated API reference under `docs/openmock` should remain in place and separate from the narrative guides.
+The API reference is generated from current source by mkdocstrings during each build; do not check in generated HTML.
+
+## Maintenance release checks
+
+Use `uv run --all-extras python scripts/check.py` (also `make check-llm` or
+`just check-llm`) for concise Ruff, Black, mypy, pylint, Bandit and coverage checks.
+The runner uses Python subprocesses and works without a POSIX shell. CI runs it
+on Windows, Linux and macOS with Python 3.11, 3.14 and 3.15, then builds packages.
+A separate Linux job runs the parity subset against OpenSearch 3.9.0 in Docker.
+
+The current verified client is opensearch-py 3.2.0; tox also retains 2.8.0 coverage.
+See the [compatibility results](compatibility.md)
+for locally executed combinations. To compare another server release, pass
+`--image opensearchproject/opensearch:<version>` to the Docker runner's `test` command.
+
+## Changelog and release automation
+
+Write one changelog bullet per change, on one physical line, under Added,
+Changed, or Fixed in `CHANGELOG.md`. Run `uv run kaclm validate --strict`;
+this also runs as part of `scripts/check.py`.
+
+The workflows follow `keepachangelog-manager`:
+
+1. Push to main refreshes a GitHub draft release from Unreleased using `kaclm github-release`.
+2. Publishing that draft triggers `.github/workflows/publish_to_pypi.yml`.
+3. `kaclm release-bump` updates the changelog and `pyproject.toml`, pushes a release branch, and opens a PR.
+4. The build job checks out that branch, runs release checks, builds and validates distributions, then uploads artifacts.
+5. The publish job uploads those artifacts to PyPI with trusted publishing; merge the release PR after publication succeeds.
+
+Publishing the draft is the release gate. The previous standalone manual PyPI
+workflow has been replaced; it did not manage the changelog or bump versions.
+Repository Actions must be allowed to create PRs, and the existing PyPI trusted
+publisher must authorize `publish_to_pypi.yml` with the `pypi` environment.
+
+`uv run kaclm version --reference future` currently proposes **3.3.0** because
+Unreleased includes Added entries. No version has been bumped locally.
+
+## Build the documentation and homepage
+
+```shell
+uv run --with-requirements docs/requirements.txt mkdocs build --strict
+hugo --source landing --minify --gc
+```
+
+MkDocs builds the detailed guides and source-based API reference into `site/`.
+Read the Docs uses `.readthedocs.yaml`; the GitHub docs job checks the same strict
+build. Hugo builds the independent landing page into `landing/public/`, modeled on
+terminaltables3. Use Hugo 0.169.0, as pinned in `.github/workflows/pages.yml`.
+For a local preview, run `hugo server --source landing`.
+
+The Pages workflow builds pull requests and deploys only pushes/manual runs on
+main. Set repository Settings → Pages → Source to **GitHub Actions** once.
+The homepage links to RTD, PyPI and GitHub; it does not duplicate the API manual.
+
+Run `make gha-upgrade` to refresh action versions and full commit pins, validate
+workflow structure, and run zizmor. `uv run --with zizmor zizmor --persona pedantic .github/workflows`
+runs the audit directly. Supply a GitHub token through `GH_TOKEN` for online checks; without one, zizmor runs offline. The dedicated CI audit uses pinned zizmor 1.32.0;
+upgrade that pin when refreshing the audit tool.

@@ -1,39 +1,17 @@
 # Contributing
 
-## Project goals
+Use Python 3.11 or newer and uv:
 
-The old elasticmock might be an inspiration for new features, but I don't have the spare time to keep it "merge compatible", so I won't be merging code directly from elasticmock.
-
-## Setup
-
-Dependencies
-
-```bash
-poetry install --with dev
-poetry shell
+```shell
+uv sync --all-extras
+uv run --all-extras python scripts/check.py
 ```
 
-Poetry might work, too.
+Read the [contributor guide](docs/contributing.md) for the repository layout,
+Docker parity testing, documentation builds, and the release workflow.
+The old elasticmock project can inspire features, but this fork does not aim to
+remain merge-compatible with it.
 
-## Checks and Tests
-
-Minimal expectations.
-
-```bash
-black .
-pylint openmock
-pytest tests
-```
-
-For parity work against a live Docker OpenSearch instead of the in-memory fake, use:
-
-```bash
-uv run python scripts/opensearch_docker.py test
-```
-
-Or start the container separately and set `OPENMOCK_TEST_BACKEND=real` before invoking
-`python -m pytest tests -m parity`.
-
-On gitlab, it will run tox and check against python 3.9 thru 3.14 for all versions of openmock.
-
-See [build.yaml](.github/workflows/build.yaml) and [tox.yaml](.github/workflows/tox.yaml)
+See [build.yml](.github/workflows/build.yml) and [tox.yml](.github/workflows/tox.yml)
+for the current CI matrix. Keep meaningful changes in CHANGELOG.md, one bullet per
+change on one physical line. Do not commit or push without explicit authorization.

@@ -254,3 +254,10 @@ ENV/
 .ropeproject
 
 /.build_history/
+
+# Generated documentation and Hugo output
+/site/
+/landing/public/
+/landing/resources/
+/landing/.hugo_build.lock
+/.tools/

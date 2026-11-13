@@ -1,0 +1,28 @@
+name: Workflow security
+on:
+  push:
+    paths: [".github/**"]
+  pull_request:
+    paths: [".github/**"]
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+jobs:
+  zizmor:
+    name: Zizmor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: false
+      - name: Audit workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uv run --no-project --with zizmor==1.32.0 zizmor --no-progress --persona pedantic .github/workflows

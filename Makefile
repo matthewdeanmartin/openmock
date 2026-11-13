@@ -51,19 +51,21 @@ pylint:  black
 	$(VENV) pylint openmock --fail-under 10
 
 
-check: test pylint bandit
+check:
+	uv run --all-extras python scripts/check.py
+
+check-llm: check
 
 .PHONY: build
 build: check
-	$(VENV) rm -rf dist
-	$(VENV) hatch build
+	uv build
 
 check_docs:
 	$(VENV) interrogate openmock --verbose
 	$(VENV) pydoctest --config .pydoctest.json | grep -v "__init__" | grep -v "__main__" | grep -v "Unable to parse"
 
 make_docs:
-	pdoc openmock --html -o docs --force
+	uv run --with-requirements docs/requirements.txt mkdocs build --strict
 
 check_md:
 	$(VENV) mdformat README.md docs/*.md
@@ -76,14 +78,14 @@ check_spelling:
 	$(VENV) codespell openmock --ignore-words=private_dictionary.txt
 
 check_changelog:
-	$(VENV) changelogmanager validate
+	uv run kaclm validate --strict
 
 .PHONY: gha-validate
 gha-validate:
 	@echo "Validating GitHub Actions workflows"
 	$(VENV) python -c "import pathlib, yaml; [yaml.safe_load(p.read_text(encoding='utf-8')) for p in pathlib.Path('.github/workflows').glob('*.yml')]; print('YAML parse OK')"
-	$(VENV) python -c "from pathlib import Path; import yaml; data=yaml.safe_load(Path('.github/workflows/publish_to_pypi.yml').read_text(encoding='utf-8')); build_steps=data['jobs']['build']['steps']; publish_steps=data['jobs']['pypi-publish']['steps']; up=next(s for s in build_steps if s.get('uses','').startswith('actions/upload-artifact@')); down=next(s for s in publish_steps if s.get('uses','').startswith('actions/download-artifact@')); assert up['with']['name']==down['with']['name']=='packages'; assert up['with']['path']==down['with']['path']=='dist/'; print('Artifact handoff OK:', up['uses'], '->', down['uses'])"
-	uvx zizmor --no-progress --no-exit-codes .
+	$(VENV) python -c "from pathlib import Path; import yaml; data=yaml.safe_load(Path('.github/workflows/publish_to_pypi.yml').read_text(encoding='utf-8')); build_steps=data['jobs']['build']['steps']; publish_steps=data['jobs']['publish']['steps']; up=next(s for s in build_steps if s.get('uses','').startswith('actions/upload-artifact@')); down=next(s for s in publish_steps if s.get('uses','').startswith('actions/download-artifact@')); assert up['with']['name']==down['with']['name']=='packages'; assert up['with']['path']==down['with']['path']=='dist/'; print('Artifact handoff OK:', up['uses'], '->', down['uses'])"
+	uv run --with zizmor zizmor --no-progress --persona pedantic .github/workflows
 
 .PHONY: gha-pin
 gha-pin:

@@ -1,13 +1,13 @@
 # Openmock Project Justfile
 
-OS_VERSION := "3.5.0"
+OS_VERSION := "3.9.0"
 OS_ZIP := "opensearch-" + OS_VERSION + "-windows-x64.zip"
 OS_URL := "https://artifacts.opensearch.org/releases/bundle/opensearch/" + OS_VERSION + "/" + OS_ZIP
 OS_DIR := ".opensearch"
 
 # --- REAL OPENSEARCH (Port 9200) ---
 
-# Install real OpenSearch 3.5.0 locally
+# Install the configured OpenSearch version locally
 install-real:
 	@mkdir -p {{OS_DIR}}
 	@if [ ! -f {{OS_DIR}}/{{OS_ZIP}} ]; then \
@@ -90,3 +90,9 @@ build: sync
 # Run tests
 test: sync
 	uv run pytest tests
+
+# Run release checks with concise output on every supported OS
+check:
+	uv run --all-extras python scripts/check.py
+
+check-llm: check

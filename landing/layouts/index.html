@@ -1,0 +1,63 @@
+{{ define "main" }}
+{{ $p := .Site.Params }}
+<header class="wrap nav">
+  <a class="brand" href="#" aria-label="Openmock home"><span class="mark" aria-hidden="true">[o]</span> openmock</a>
+  <nav aria-label="Main navigation"><a href="#how">How it works</a><a href="#scope">Scope</a><a href="{{ $p.docs }}">Docs ↗</a><a href="{{ $p.github }}">GitHub ↗</a></nav>
+</header>
+<main id="main">
+  <section class="wrap hero">
+    <div class="intro">
+      <p class="eyebrow"><span class="dot"></span> A PYTHON TESTING LIBRARY</p>
+      <h1>Your search code.<br>Your test suite.<br><em>No cluster required.</em></h1>
+      <p class="lead">Keep the OpenSearch client API. Replace the server with a stateful, in-memory fake. Test what happens after a document is written, found, updated, and deleted.</p>
+      <div class="actions"><a class="button" href="{{ $p.docs }}getting-started/">Start testing <span aria-hidden="true">→</span></a><a class="text-link" href="{{ $p.pypi }}">View on PyPI ↗</a></div>
+      <div class="install"><code>uv add --dev openmock</code><button type="button" data-copy="uv add --dev openmock" aria-label="Copy installation command">Copy</button></div>
+      <p id="copy-status" role="status" class="copy-status"></p>
+      <p class="meta">Python 3.11+ <span>·</span> Sync + async clients <span>·</span> MIT licensed</p>
+    </div>
+    <div class="example" aria-label="Example Python test">
+      <div class="filebar"><span><i></i><i></i><i></i></span><span>test_books.py</span><span>PYTHON</span></div>
+      <pre><code><span class="kw">import</span> opensearchpy
+<span class="kw">from</span> openmock <span class="kw">import</span> openmock
+
+<span class="decorator">@openmock</span>
+<span class="kw">def</span> <span class="fn">test_find_a_book</span>():
+    client = opensearchpy.OpenSearch()
+    client.index(
+        index=<span class="str">"books"</span>, id=<span class="str">"1"</span>,
+        body={<span class="str">"title"</span>: <span class="str">"Dune"</span>},
+    )
+    result = client.search(
+        index=<span class="str">"books"</span>,
+        body={<span class="str">"query"</span>: {
+            <span class="str">"match"</span>: {<span class="str">"title"</span>: <span class="str">"Dune"</span>}
+        }},
+    )
+    <span class="kw">assert</span> result[<span class="str">"hits"</span>][<span class="str">"total"</span>][<span class="str">"value"</span>] == <span class="num">1</span></code></pre>
+      <div class="test-result"><span>✓</span> test_find_a_book <strong>PASSED</strong></div>
+      <p class="example-caption">One decorator. Real state transitions. An ordinary assertion.</p>
+    </div>
+  </section>
+  <section id="how" class="wrap process">
+    <div class="section-title"><p class="eyebrow">01 / THE WORKFLOW</p><h2>Write the test around<br>what your application does.</h2></div>
+    <ol class="steps">
+      <li><span class="number">01</span><div><h3>Decorate the test</h3><p><code>@openmock</code> patches client constructors for the decorated call. Construct your client inside that scope.</p></div></li>
+      <li><span class="number">02</span><div><h3>Exercise a workflow</h3><p>Index documents, run supported queries, and update or delete records. Later calls see the state left by earlier calls.</p></div></li>
+      <li><span class="number">03</span><div><h3>Assert the result</h3><p>Check your application’s outcome using familiar OpenSearch-shaped responses. Each decorated call starts with fresh client caches.</p></div></li>
+    </ol>
+  </section>
+  <section id="scope" class="scope-band">
+    <div class="wrap scope">
+      <div><p class="eyebrow">02 / A DELIBERATELY SMALL FAKE</p><h2>Fast feedback for<br>everyday document flows.</h2><p class="lead">Use the mock where a small, predictable model is enough. Keep real-server tests for the behavior that needs OpenSearch.</p><a class="text-link" href="{{ $p.docs }}unit-testing/#api-boundaries">Explore the supported API →</a></div>
+      <div class="scope-list"><article><h3>Documents &amp; queries</h3><p>CRUD, bulk, search, count, pagination, and scrolling. Selected term, match, range, bool, and aggregation behavior.</p></article><article><h3>Sync &amp; async tests</h3><p>Fake clients for both programming styles. Core document workflows are shared; sub-client coverage differs.</p></article><article><h3>A clear boundary</h3><p>No relevance engine, full analyzer pipeline, distributed execution, or complete Painless runtime. Verify those with a real cluster.</p></article></div>
+    </div>
+  </section>
+  <section class="wrap tools">
+    <div class="section-title"><p class="eyebrow">03 / EXPLORE THE FAKE</p><h2>A workbench for your test data.</h2><p>Optional tools for manual experiments. Each runs with its own in-memory state.</p></div>
+    <div class="tool-grid"><article><span class="tool-label">BROWSER</span><h3>Management console</h3><p>Explore indices, search, fake security, and ingest pipelines with Streamlit.</p><code>openmock</code><small>Install the <code>web</code> extra</small></article><article><span class="tool-label">HTTP</span><h3>REST bridge</h3><p>Try the supported HTTP routes from curl or another local tool.</p><code>openmock serve</code><small>Install the <code>rest</code> extra</small></article><article><span class="tool-label">DESKTOP</span><h3>Tkinter inspector</h3><p>Inspect fake data in a desktop interface using Python’s Tk support.</p><code>openmock gui</code><small>Requires Tk and a graphical display</small></article></div>
+    <a class="text-link" href="{{ $p.docs }}web-ui/">Set up the exploration tools →</a>
+  </section>
+  <section class="wrap next"><div><p class="eyebrow">BUILD CONFIDENCE, ONE TEST AT A TIME</p><h2>Start with a small test.</h2><p>Install the library, decorate a function, and make your first assertion.</p></div><div class="next-links"><a class="button" href="{{ $p.docs }}getting-started/">Read the quickstart →</a><a class="text-link" href="{{ $p.docs }}compatibility/">Tested versions &amp; parity limits</a></div></section>
+</main>
+<footer class="wrap footer"><a class="brand" href="#">[o] openmock</a><p>A maintained fork of Python Elasticsearch Mock.</p><nav aria-label="Footer"><a href="{{ $p.github }}/blob/main/LICENSE">License</a><a href="{{ $p.github }}/blob/main/CHANGELOG.md">Changelog</a><a href="{{ $p.github }}/issues">Issues</a></nav></footer>
+{{ end }}

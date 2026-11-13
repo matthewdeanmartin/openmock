@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 import tkinter as tk
 from tkinter import messagebox, scrolledtext, ttk
-from typing import Any
+from typing import Any, cast
 
 from openmock.behaviour.server_failure import server_failure
 from openmock.fake_server import FakeOpenSearchServer
@@ -85,7 +85,7 @@ class _IndicesTab(_Tab):
     def _index_doc(self) -> None:
         idx = self._idx.get().strip()
         doc_id = self._doc_id.get().strip() or None
-        pipeline = self._pipeline_var.get()
+        pipeline: str | None = self._pipeline_var.get()
         pipeline = None if pipeline == "(none)" else pipeline
         try:
             body = json.loads(self._doc_body.get("1.0", "end"))
@@ -608,7 +608,7 @@ class OpenmockApp:
         nb.bind("<<NotebookTabChanged>>", self._on_tab_change)
 
     def _on_tab_change(self, event: tk.Event) -> None:
-        nb: ttk.Notebook = event.widget
+        nb = cast(ttk.Notebook, event.widget)
         idx = nb.index(nb.select())
         self._tabs[idx].refresh()
 

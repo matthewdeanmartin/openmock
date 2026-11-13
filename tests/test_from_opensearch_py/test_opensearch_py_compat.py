@@ -5,7 +5,8 @@ from opensearchpy import Date, Document, Index, Text
 from opensearchpy.exceptions import RequestError
 from opensearchpy.helpers import analysis
 
-from openmock import openmock
+from openmock import FakeOpenSearch
+from tests.backend import cleanup_real_cluster, get_test_hosts, using_real_opensearch
 
 
 class Post(Document):
@@ -14,11 +15,13 @@ class Post(Document):
 
 
 class TestOpenSearchPyCompatibility(unittest.TestCase):
-    @openmock
     def setUp(self):
-        self.client = opensearchpy.OpenSearch(
-            hosts=[{"host": "localhost", "port": 9200}]
+        cleanup_real_cluster()
+        client_class = (
+            opensearchpy.OpenSearch if using_real_opensearch() else FakeOpenSearch
         )
+        self.client = client_class(hosts=get_test_hosts())
+        self.addCleanup(self.client.close)
 
     def test_index_with_slash(self) -> None:
         index_name = "movies/shmovies"
@@ -26,7 +29,10 @@ class TestOpenSearchPyCompatibility(unittest.TestCase):
             self.client.indices.create(index=index_name)
         self.assertEqual(e.exception.status_code, 400)
         self.assertEqual(e.exception.error, "invalid_index_name_exception")
-        self.assertIn("must not contain the following characters", e.exception.args[2])
+        self.assertIn(
+            "must not contain the following characters",
+            e.exception.info["error"]["reason"],
+        )
 
     def test_indices_lifecycle_english(self) -> None:
         index_name = "movies"

@@ -7,7 +7,8 @@ This module provides a fake implementation of the OpenSearch client that can be 
 import datetime
 import json
 from collections import defaultdict
-from typing import Any, Optional
+from copy import deepcopy
+from typing import Any
 
 import opensearchpy
 from opensearchpy import AsyncTransport
@@ -19,6 +20,7 @@ from openmock.fake_asyncindices import FakeAsyncIndicesClient
 from openmock.fake_cluster import FakeClusterClient
 from openmock.fake_opensearch import FakeQueryCondition, MetricType, QueryType
 from openmock.normalize_hosts import _normalize_hosts
+from openmock.search_helpers import pagination, sort_hits
 from openmock.utilities import (
     extract_ignore_as_iterable,
     get_random_id,
@@ -130,7 +132,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
             {
                 "_type": doc_type,
                 "_id": id,
-                "_source": body,
+                "_source": deepcopy(body),
                 "_index": index,
                 "_version": 1,
                 "_seq_no": seq_no,
@@ -192,7 +194,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
             {
                 "_type": doc_type,
                 "_id": id,
-                "_source": body,
+                "_source": deepcopy(body),
                 "_index": index,
                 "_version": version,
                 "_seq_no": seq_no,
@@ -454,8 +456,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                         break
 
         if result:
-            result["found"] = True
-            return result
+            return dict(deepcopy(result), found=True)
         if params and 404 in ignore:
             return {"found": False}
         error_data = {"_index": index, "_type": doc_type, "_id": id, "found": False}
@@ -505,7 +506,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                         merged = {**document["_source"], **body["doc"]}
                         changed = merged != document["_source"]
                         if changed:
-                            document["_source"] = merged
+                            document["_source"] = deepcopy(merged)
                             document["_version"] += 1
                             document["_seq_no"] = self._next_seq_no(index)
                             document["_primary_term"] = 1
@@ -598,6 +599,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                     value = script_params.get(key)
                 new_values[field] = value
 
+        params = dict(params or {}, size=sum(map(len, self.__documents_dict.values())))
         matches = await self.search(
             index=index, doc_type=doc_type, body=body, params=params, headers=headers
         )
@@ -665,6 +667,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         params: Any = None,
         headers: Any = None,
     ) -> Any:
+        params = dict(params or {}, size=sum(map(len, self.__documents_dict.values())))
         matches = await self.search(
             index=index, body=body, params=params, headers=headers
         )
@@ -717,7 +720,6 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
 
         results = []
         for doc_index, doc_id in items:
-            # pylint: disable=bare-except
             try:
                 results.append(
                     await self.get(
@@ -728,7 +730,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
                         headers=headers,
                     )
                 )
-            except:  # noqa
+            except NotFoundError:
                 results.append(
                     {
                         "_index": doc_index,
@@ -816,7 +818,10 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         contents = await self.search(
             index=index, body=body, params=params, headers=headers
         )
-        return {"count": len(contents["hits"]["hits"]), "_shards": contents["_shards"]}
+        return {
+            "count": contents["hits"]["total"]["value"],
+            "_shards": contents["_shards"],
+        }
 
     def _get_fake_query_condition(self, query_type_str, condition):
         return FakeQueryCondition(QueryType.get_query_type(query_type_str), condition)
@@ -903,7 +908,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         **kwargs,
     ) -> Any:
         # def search(self, index=None, doc_type=None, body=None, params=None, headers=None):
-        doc_type: Optional[list] = None
+        doc_type: list | None = None
         searchable_indexes = self._normalize_index_to_list(index)
 
         matches = []
@@ -937,7 +942,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         for match in matches:
             self._find_and_convert_data_types(match["_source"])
 
-        result = {
+        result: dict[str, Any] = {
             "hits": {
                 "total": {"value": len(matches), "relation": "eq"},
                 "max_score": 1.0,
@@ -956,7 +961,7 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
         hits = []
         for match in matches:
             match["_score"] = 1.0
-            hits.append(match)
+            hits.append(deepcopy(match))
 
         # build aggregations
         if body is not None and "aggs" in body:
@@ -972,49 +977,17 @@ class AsyncFakeOpenSearch(opensearchpy.AsyncOpenSearch):
             if aggregations:
                 result["aggregations"] = aggregations
 
-        if body is not None and "sort" in body:
-            for key in body["sort"][0]:
-                if body["sort"][0][key]["order"] == "desc":
-                    hits = sorted(
-                        hits,
-                        key=lambda k, key=key: (
-                            k["_source"].get(key) is None,
-                            k["_source"].get(key),
-                        ),
-                        reverse=True,
-                    )
-                else:
-                    hits = sorted(
-                        hits,
-                        key=lambda k, key=key: (
-                            k["_source"].get(key) is None,
-                            k["_source"].get(key),
-                        ),
-                    )
-
-        if body is not None and "size" in body:
-            start = body.get("from", 0)
-            hits = hits[start : start + body["size"]]
-        elif body is not None and "from" in body:
-            hits = hits[body["from"] :]
-
+        hits = sort_hits(hits, (body or {}).get("sort"))
+        start, size = pagination(body, params)
         if "scroll" in params:
             result["_scroll_id"] = str(get_random_scroll_id())
-            params["size"] = int(params.get("size", 10))
-            params["from"] = int(
-                params.get("from") + params.get("size") if "from" in params else 0
-            )
-            self.__scrolls[result.get("_scroll_id")] = {
+            self.__scrolls[result["_scroll_id"]] = {
                 "index": index,
                 "doc_type": doc_type,
                 "body": body,
-                "params": params,
+                "params": dict(params, size=size, **{"from": start + size}),
             }
-            hits = hits[params.get("from") : params.get("from") + params.get("size")]
-        elif "size" in params:
-            hits = hits[: int(params["size"])]
-        elif body and "size" in body:
-            hits = hits[: int(body["size"])]
+        hits = hits[start : start + size]
 
         result["hits"]["hits"] = hits
 

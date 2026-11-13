@@ -20,10 +20,20 @@ class FakeIndicesClient(IndicesClient):
         invalid_chars = [" ", '"', "*", "\\", "<", "|", ",", ">", "/", "?"]
         for char in invalid_chars:
             if char in index:
+                reason = (
+                    f"Invalid index name [{index}], must not contain the following "
+                    'characters [ , ", *, \\, <, |, ,, >, /, ?]'
+                )
+                error = {
+                    "type": "invalid_index_name_exception",
+                    "reason": reason,
+                    "index": index,
+                    "index_uuid": "_na_",
+                }
                 raise RequestError(
                     400,
                     "invalid_index_name_exception",
-                    f'Invalid index name [{index}], must not contain the following characters [ , ", *, \\, <, |, ,, >, /, ?]',
+                    {"error": {"root_cause": [error], **error}, "status": 400},
                 )
 
         documents_dict = self.__get_documents_dict()

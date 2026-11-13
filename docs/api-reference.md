@@ -1,8 +1,36 @@
 # API reference
 
-The generated API reference remains under `docs/openmock`.
+This reference is built from the current Python source by mkdocstrings. Only
+locally implemented public methods are listed; inherited opensearch-py methods
+are not a promise of support. Read [API boundaries](unit-testing.md#api-boundaries)
+for sync/async differences, placeholders, and unsupported features.
 
-- Browse it from the built site: [Openmock API reference](openmock/index.html)
-- Browse it in the repository: `docs/openmock/`
+## Decorator
 
-This page exists so the MkDocs navigation can include the generated reference cleanly without moving or rewriting the HTML output.
+::: openmock.openmock
+
+## Sync client
+
+::: openmock.fake_opensearch.FakeOpenSearch
+
+## Async client
+
+::: openmock.fake_asyncopensearch.AsyncFakeOpenSearch
+
+## Index clients
+
+::: openmock.fake_indices.FakeIndicesClient
+
+::: openmock.fake_asyncindices.FakeAsyncIndicesClient
+
+## Cluster health
+
+::: openmock.fake_cluster.FakeClusterClient
+
+## Manual exploration server
+
+::: openmock.fake_server.FakeOpenSearchServer
+
+## Failure simulation
+
+::: openmock.behaviour.server_failure

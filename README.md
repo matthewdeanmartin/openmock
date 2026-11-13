@@ -10,8 +10,13 @@ don't really have any input in choice of host and need to get work done.
 ## Installation
 
 ```shell
-pip install openmock
+uv add --dev openmock
 ```
+
+[Documentation](https://openmock.readthedocs.io/en/latest/) · [Project homepage](https://matthewdeanmartin.github.io/openmock/)
+
+Requires Python 3.11 or newer. Tested client/server versions and verification
+results are listed in the [compatibility guide](docs/compatibility.md).
 
 ## Usage
 
@@ -94,7 +99,7 @@ from foo.bar import FooService
 class FooServiceTest(TestCase):
 
     @openmock
-    def should_create_and_read_object(self):
+    def test_should_create_and_read_object(self):
         # Variables used to test
         index = 'test-index'
         expected_document = {
@@ -110,7 +115,7 @@ class FooServiceTest(TestCase):
 
         # Retrieve document from OpenSearch
         document = service.read(index, id)
-        self.assertEquals(expected_document, document)
+        self.assertEqual(expected_document, document)
 
 ```
 
@@ -124,7 +129,7 @@ Openmock ships three interactive admin tools for exploring fake state outside of
 openmock
 ```
 
-**Tkinter desktop GUI** (no extra dependencies — uses Python's built-in `tkinter`):
+**Tkinter desktop GUI** (requires Tk support and a graphical display):
 
 ```bash
 openmock gui
@@ -140,7 +145,7 @@ These tools open a six-tab interface or an HTTP facade covering indices, search 
 
 ## Notes:
 
-- The mocked **search** method evaluates the query against indexed documents and returns matching results, not all documents. Use `match_all` if you want everything.
+- The mocked **search** method evaluates the query against indexed documents and returns matching results, not all documents. Use `match_all` to match all documents; request `size` or scroll to retrieve more than the default ten hits.
 - The mocked **suggest** method returns the exactly suggestions dictionary passed as body serialized in OpenSearch.suggest response. **Attention:** If the term is an *int*, the suggestion will be `python term + 1`. If not, the suggestion will be formatted as `python {0}_suggestion.format(term) `.
   Example:
   - **Suggestion Body**:
@@ -196,14 +201,13 @@ These tools open a six-tab interface or an HTTP facade covering indices, search 
 
 ## Testing
 
-Preferred for testing one version of python.
+Run the full local release checks:
 
 ```bash
-pytest test
+uv run --all-extras python scripts/check.py
 ```
 
-Run the same pytest suite against a disposable Docker OpenSearch instead of the in-memory
-fake:
+Run the parity subset against a disposable Docker OpenSearch server:
 
 ```bash
 uv run python scripts/opensearch_docker.py test
@@ -231,10 +235,10 @@ Won't catch pytest tests.
 python -m unittest
 ```
 
-We are trying to support a full matrix of openmock versions and python versions 3.9+. This is slow.
+Run the configured Python and opensearch-py compatibility matrix:
 
 ```bash
-tox
+uv run tox
 ```
 
 ## Changelog
@@ -243,11 +247,4 @@ See [CHANGELOG.md](https://github.com/matthewdeanmartin/openmock/blob/main/CHANG
 
 ## License
 
-MIT with `normalize_host.py` being Apache 2 from Elasticsearch.
-
-
-## Python 3.15 verification — 2026-10-04
-
-The former unbounded aiohttp requirement let the binary-only resolver select aiohttp 0.13.1 on RC3; it cannot even parse on modern Python. Runtime now requires aiohttp>=3.9,<4. Modern aiohttp still lacks matching RC3 wheels, including prereleases: installation is blocked rather than falsely succeeding with obsolete code. Full core, REST, GUI and web test suite passes on 3.14.7 (287 tests). Top-level help/version flags now exit without starting Streamlit. No native-free async fallback was introduced. Live OpenSearch parity was not run; the suite uses the mock backend.
-
-Dependencies were required to have published wheels; own pure-Python workspace wheels were built locally without build isolation. Locks were refreshed with uv lock --upgrade. Full developer stacks remain separately wheel-blocked (PyYAML or source-only linkcheckmd). No upstream reports or GitHub jobs were sent; bug filing belongs to the human operator.
+MIT with `normalize_hosts.py` being Apache 2 from Elasticsearch.

@@ -27,8 +27,8 @@ __all__ = [
     "FakeIndicesClient",
 ]
 
-OPEN_INSTANCES = {}
-OPEN_ASYNC_INSTANCES = {}
+OPEN_INSTANCES: dict[str, FakeOpenSearch] = {}
+OPEN_ASYNC_INSTANCES: dict[str, AsyncFakeOpenSearch] = {}
 
 
 def _get_openmock(*args, hosts=None, **kwargs):

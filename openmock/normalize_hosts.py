@@ -43,7 +43,7 @@ def _normalize_hosts(hosts):
     for host in hosts:
         if isinstance(host, string_types):
             if "://" not in host:
-                host = "//%s" % host
+                host = f"//{host}"
 
             parsed_url = urlparse(host)
             h = {"host": parsed_url.hostname}
@@ -56,9 +56,8 @@ def _normalize_hosts(hosts):
                 h["use_ssl"] = True
 
             if parsed_url.username or parsed_url.password:
-                h["http_auth"] = "{}:{}".format(
-                    unquote(parsed_url.username),
-                    unquote(parsed_url.password),
+                h["http_auth"] = (
+                    f"{unquote(parsed_url.username)}:{unquote(parsed_url.password)}"
                 )
 
             if parsed_url.path and parsed_url.path != "/":

@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 PARITY_TEST_PATHS = {
+    "tests/test_maintenance_parity.py",
     "tests/test_aggregations.py",
     "tests/test_from_opensearch_py/test_opensearch_py_compat.py",
     "tests/test_new_suites/test_all.py",

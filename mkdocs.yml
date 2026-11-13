@@ -17,10 +17,11 @@ markdown_extensions:
 
 not_in_nav: |
   /requirements.txt
-  /openmock/**
 
 nav:
   - "Home": "index.md"
+  - "Getting started": "getting-started.md"
+  - "Compatibility": "compatibility.md"
   - "Using Openmock in unit tests": "unit-testing.md"
   - "Web UI and REST bridge": "web-ui.md"
   - "Contributing": "contributing.md"
@@ -36,3 +37,11 @@ validation:
 
 plugins:
   - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: ["."]
+          options:
+            show_source: false
+            inherited_members: false
+            filters: ["!^_"]

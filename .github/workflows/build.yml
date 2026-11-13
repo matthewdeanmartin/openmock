@@ -2,31 +2,49 @@ name: Build and Test
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    env:
+      UV_PYTHON: ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.11', '3.14', '3.15']
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         persist-credentials: false
-    - name: Install poetry and pipx
-      run: |
-        pip install poetry && pip install pipx
-    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
       with:
-        python-version: '3.14'
-        # cache: 'uv'   # caching for uv not supported
+        python-version: ${{ matrix.python-version }}
+    - name: Install uv
+      run: python -m pip install uv
+    - name: Release checks
+      run: uv run --all-extras python scripts/check.py
+    - name: Build distribution
+      run: uv build
 
-    - name: Install package managers
-      run: |
-        pip install pipx && pip install uv && pipx install uv && pipx install hatchling && uv sync
-
-    - name: Install Dependencies
-      run: uv sync --all-extras
-
-    - name: Run just check
-      run: uv run make check
+  parity:
+    name: Parity
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+      with:
+        python-version: '3.15'
+    - name: Install uv
+      run: python -m pip install uv
+    - name: OpenSearch 3.9.0 parity
+      run: uv run --all-extras python scripts/opensearch_docker.py test

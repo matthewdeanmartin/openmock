@@ -88,9 +88,10 @@ Two important implications:
 
 Openmock caches fake instances by normalized host and port. In practice that means:
 
-- two clients created with the same host configuration share the same in-memory data,
+- two clients of the same kind (sync or async) with the same host configuration share data,
 - a different host or port gives you a separate fake instance,
-- each decorated test starts with a clean fake.
+- sync and async clients use separate stores,
+- each decorated call clears the caches, so avoid nesting decorated helpers inside decorated tests.
 
 This makes multi-object tests convenient:
 
@@ -117,7 +118,8 @@ The in-memory fake is meant for the common workflows already covered by the test
 - `index`, `create`, `get`, `exists`, `delete`,
 - `update` and `update_by_query`,
 - `count`, `search`, `scroll`, `msearch`,
-- `suggest`,
+- `mget` and `get_source`,
+- synthetic `suggest` responses (not real suggestions),
 - index management through `client.indices`,
 - cluster health and info calls.
 
@@ -134,14 +136,14 @@ Search support includes practical query shapes such as:
 - `composite` aggregation,
 - `cardinality` metric aggregation (inside `composite` only).
 
-**Not supported** (will silently return no results or empty aggregations):
+**Not supported** (unknown query types raise `NotImplementedError`; unsupported top-level aggregations may return empty buckets):
 
 - `wildcard`, `prefix`, `fuzzy`, `regexp` queries,
 - `nested` and `geo` queries,
 - `script` queries and aggregations,
 - numeric aggregations (`avg`, `sum`, `min`, `max`, `percentiles`),
 - `date_histogram` and `histogram` aggregations,
-- relevance scoring (`_score` is not populated),
+- relevance scoring (`_score` is a constant 1.0, not a relevance calculation),
 - full-text analyzers, stemming, and highlighting.
 
 It is still a fake, not a full OpenSearch clone. When behavior details matter, the tests under `tests/fake_opensearch` and `tests/fake_asyncopensearch` are the best executable specification.
@@ -236,3 +238,57 @@ This repository keeps both paths: the normal test flow uses the in-memory fake, 
 - Remember that fake state is process-local and in-memory only.
 - Prefer asserting on business outcomes, not the fake's private internals.
 - If a test depends on subtle OpenSearch semantics, run it against the real backend too.
+
+## Maintenance parity coverage
+
+Verified on 2026-11-12 against **opensearch-py 3.2.0 / OpenSearch 3.9.0**:
+45 selected parity tests pass on Python 3.15.0. The [compatibility table](compatibility.md)
+records the full Python/client matrix and the exact local results.
+
+`tests/test_maintenance_parity.py` runs the same assertions against raw real and
+fake clients, in both sync and async modes. It checks default ten-hit pagination,
+body/query parameter precedence, zero-sized pages, negative pagination errors,
+multi-field scalar sorting, missing values last, scrolling with body page sizes,
+count/update-by-query/delete-by-query beyond ten documents, and document copy
+isolation. The other parity suites cover CRUD, bulk, basic queries, aliases,
+metadata, and terms aggregations. This is contract coverage for that subset;
+it is not a claim of complete OpenSearch compatibility.
+
+Search now returns ten hits by default, just like OpenSearch. Tests that need more
+must request a larger `size` or scroll. Sort support is limited to flat scalar
+source fields; analyzer semantics, distributed execution, snapshot isolation for
+scrolls, and sophisticated scripting remain outside the mock's scope.
+
+The REST security endpoints are development-only in-memory helpers. PATCH uses
+object merging, not the Security plugin's RFC 6902 JSON Patch array format.
+Non-object request bodies return HTTP 400. Their HTTP route tests are mock-only;
+the Docker parity server has its security plugin disabled.
+
+## API boundaries
+
+| Surface | Sync | Async | Limits |
+| --- | --- | --- | --- |
+| Document CRUD, bulk, mget, search, count | Implemented | Implemented | Selected request parameters only; mappings do not validate document types. |
+| Alias CRUD and update_aliases | Implemented | Implemented | Updates apply sequentially, without transactional rollback or alias-filter evaluation. |
+| Index create, exists, delete, refresh, stats | Implemented | Implemented | Refresh is a no-op; stats are placeholders. Async create does not retain mapping/settings metadata. |
+| get_mapping, put_mapping, get_settings, put_settings | Implemented | Not implemented | Sync stores metadata rather than implementing schema enforcement. |
+| indices.analyze | Empty token list | Not implemented | No full-text analysis engine. |
+| cluster.health | Fixed response | Synchronous stub | Do not await the async fake's cluster.health. |
+| suggest | Synthetic response | Synchronous stub | Text gets `_suggestion` appended; integers increment by one. |
+| create_pit | Placeholder identifier | Not implemented | No point-in-time snapshot or PIT search implementation. |
+
+`update` supports partial documents and no-op detection; scripted updates are not
+implemented. `update_by_query` recognizes simple `ctx._source.field = params.value`
+assignments, not the Painless language. Search scores and shard statistics are
+placeholders. Bool/full-text query behavior and aggregation options are only partial.
+Scrolls rerun the query against current state rather than preserving a snapshot.
+
+Constructor patching does not change an `OpenSearch` class imported earlier with
+`from opensearchpy import OpenSearch`; prefer `import opensearchpy` and construct
+`opensearchpy.OpenSearch()` inside the decorated scope. The decorator blocks real
+transport requests while it is active, so an inherited, unimplemented API method
+fails instead of silently reaching a cluster. Direct fake instances do not install
+that global transport guard. Client close/context-manager behavior is inherited.
+
+The backend selector `OPENMOCK_TEST_BACKEND` belongs to this repository's test
+harness; setting it does not change the public `@openmock` decorator into a real client.

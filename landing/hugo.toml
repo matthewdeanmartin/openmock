@@ -1,0 +1,10 @@
+baseURL = "https://matthewdeanmartin.github.io/openmock/"
+locale = "en-us"
+title = "Openmock"
+disableKinds = ["taxonomy", "term", "RSS"]
+
+[params]
+description = "Test your OpenSearch workflows in memory. A stateful Python fake for opensearch-py, with sync and async clients."
+github = "https://github.com/matthewdeanmartin/openmock"
+docs = "https://openmock.readthedocs.io/en/latest/"
+pypi = "https://pypi.org/project/openmock/"

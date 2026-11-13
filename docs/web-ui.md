@@ -10,7 +10,7 @@ All three are meant for development and debugging. They are not production servi
 
 ## Tkinter desktop GUI
 
-The Tkinter GUI ships with the base package and requires no extra dependencies beyond Python's standard `tkinter` module.
+The Tkinter GUI ships with the base package and needs a Python installation with Tk support and a graphical display. Some Linux distributions package Tk separately (for example, `python3-tk`).
 
 Start it with:
 
@@ -31,7 +31,7 @@ The Streamlit app creates a `FakeOpenSearch` instance and keeps it in `st.sessio
 The web UI requires the optional web extras:
 
 ```bash
-pip install openmock[web]
+uv pip install "openmock[web]"
 ```
 
 Start it with:
@@ -49,7 +49,7 @@ uv run openmock
 or:
 
 ```bash
-uv run streamlit run -m openmock.web
+uv run --extra web openmock
 ```
 
 ## What you can do in the UI
@@ -89,7 +89,7 @@ The REST bridge exposes a small HTTP facade over a `FakeOpenSearch` instance. Th
 The REST bridge requires the optional rest extras:
 
 ```bash
-pip install openmock[rest]
+uv pip install "openmock[rest]"
 ```
 
 Start it with:
@@ -120,8 +120,9 @@ The bridge currently exposes a focused subset:
 - `GET /_cluster/health` - fake cluster health
 - `POST /{index}/_doc` and `PUT /{index}/_doc/{id}` - index a document, optionally with `?pipeline=...`
 - `POST` or `PUT /{index}/_create/{id}` - create a document, optionally with `?pipeline=...`
+- `POST /{index}/_create` - index a document with an automatically generated ID
 - `GET` or `POST /{index}/_search` - search an index
-- `GET /{index}/_count` and `GET /_count` - count documents
+- `GET|POST /{index}/_count` and `GET|POST /_count` - count documents
 - `GET /_cat/indices` and `GET /_cat/count` - text or JSON cat output
 - `GET|PUT|PATCH|DELETE /_plugins/_security/api/internalusers...` - fake user CRUD
 - `GET|PUT|PATCH|DELETE /_plugins/_security/api/roles...` - fake role CRUD
@@ -161,3 +162,21 @@ Treat them as separate manual workbenches backed by the same fake implementation
 - verifying production-level OpenSearch compatibility,
 - sharing persistent state across tools or processes,
 - replacing parity tests against a real cluster.
+
+## Bridge limitations and request formats
+
+The bridge is not a complete HTTP implementation of OpenSearch. It has no index
+management, document GET/DELETE, bulk, scroll, or authentication endpoints, so a
+standard client cannot use every method against it. Search pagination and queries
+must be sent in the JSON body; the bridge does not forward search query parameters.
+
+Request bodies must be JSON objects. Invalid JSON or non-object bodies return HTTP
+400. Security PATCH accepts a merged object, not RFC 6902 patch arrays. Missing
+users, roles and pipelines return HTTP 404. Other backend exceptions are not all
+translated to OpenSearch HTTP error responses. The create-without-ID route is a
+convenience extension, not a faithful create API implementation.
+
+Ingest supports `set`, `remove`, `rename`, `lowercase`, `uppercase`, `trim`, `convert`,
+`append`, `split`, `gsub`, and `json` processors. This is a small in-memory subset,
+not a general ingest engine. State is lost on restart. To install and run the optional
+tools from this checkout, use `uv sync --all-extras` first.
