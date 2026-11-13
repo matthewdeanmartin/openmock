@@ -1,6 +1,6 @@
 [project]
 name = "openmock"
-version = "3.2.0"
+version = "3.3.0"
 description = "Stateful in-memory OpenSearch mock for testing synchronous and asynchronous Python code"
 authors = [
     { name = "Marcos Cardoso" },
