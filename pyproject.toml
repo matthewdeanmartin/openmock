@@ -1,7 +1,7 @@
 [project]
 name = "openmock"
 version = "3.2.0"
-description = "Python OpenSearch Mock for test purposes"
+description = "Stateful in-memory OpenSearch mock for testing synchronous and asynchronous Python code"
 authors = [
     { name = "Marcos Cardoso" },
     { name = "Mathew Martin", email = "matthewdeanmartin@gmail.com" },
@@ -9,9 +9,8 @@ authors = [
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.11"
-keywords = ["opensearch", "mocking", "testing"]
+keywords = ["opensearch", "opensearch-py", "mock", "mocking", "testing", "unit-testing", "test-double", "asyncio"]
 classifiers = [
-    "Environment :: Web Environment",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
@@ -21,7 +20,9 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3.15",
     "License :: OSI Approved :: MIT License",
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing :: Mocking",
+    "Topic :: Software Development :: Testing :: Unit",
 ]
 dependencies = [
     "opensearch-py",
@@ -49,6 +50,8 @@ openmock = "openmock.cli:main"
 openmock-serve = "openmock.rest_bridge:main"
 
 [project.urls]
+"Homepage" = "https://matthewdeanmartin.github.io/openmock/"
+"Source" = "https://github.com/matthewdeanmartin/openmock"
 "Bug Tracker" = "https://github.com/matthewdeanmartin/openmock/issues"
 "Change Log" = "https://github.com/matthewdeanmartin/openmock/blob/main/CHANGELOG.md"
 "Documentation" = "https://openmock.readthedocs.io/en/latest/"
