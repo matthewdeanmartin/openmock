@@ -9,26 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add a Hugo GitHub Pages homepage linking to the Read the Docs guides, PyPI, and source.
-- Generate API documentation from current source and validate documentation builds in CI.
-- Verify Python 3.15.0 support with the optional REST and web dependencies.
-- Add 41 regression tests covering sync/async search, document isolation, mget errors, and REST routes.
-- Add a portable release-check runner with concise output through `make check-llm` and `just check-llm`.
-- Add Python 3.11, 3.14, and 3.15 CI coverage on Windows, Linux, and macOS.
-- Add kaclm changelog validation, automatic draft releases, and a release-bump PR workflow modeled on keepachangelog-manager.
+- Support Python 3.15, including the optional REST and web interfaces.
 
 ### Changed
 
-- Upgrade GitHub Actions to current releases and repin every action to a full commit SHA.
 - Require Python 3.11 or newer; Python 3.10 is no longer supported.
-- Target OpenSearch 3.9.0 for Docker parity tests and opensearch-py 3.2.0 for current-client compatibility checks.
-- Retain opensearch-py 2.8.0 in the tox compatibility matrix.
-- Move dated Python upgrade notes out of the README into the compatibility guide.
 
 ### Fixed
 
-- Correct setup instructions, runnable examples, REST routes, and sync/async API limitations in the documentation.
-- Scope workflow write permissions to the jobs that need them and pass an authenticated zizmor 1.32.0 pedantic audit.
 - Default searches to ten hits while preserving the full match count.
 - Honor query-parameter pagination overrides and reject negative offsets and sizes.
 - Sort by multiple scalar fields and place missing values last by default.
@@ -39,11 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Return structured invalid-index-name error details matching OpenSearch.
 - Accept POST requests on REST count endpoints.
 - Return HTTP 400 for malformed JSON and non-object REST request bodies.
-- Route both compatibility suites to the selected backend and close their client transports.
-- Resolve errors from current mypy, pylint, and Ruff versions.
-- Build distributions with uv instead of shell-specific deletion and an undeclared Hatch command.
-- Bind the Docker parity server to loopback.
-- Require aiohttp>=3.9,<4 to prevent wheel-only resolution selecting ancient, unimportable aiohttp releases.
+- Require aiohttp>=3.9,<4 to prevent installation of ancient, unimportable aiohttp releases.
 - Handle top-level --help, -h, and --version without starting the web UI.
 
 ## [3.2.0] - 2025-12-04

@@ -43,10 +43,10 @@ def remove_container(name: str) -> None:
 
 def wait_for_opensearch(port: int, timeout_seconds: int) -> None:
     url = endpoint_url(port)
-    deadline = time.time() + timeout_seconds
+    deadline = time.monotonic() + timeout_seconds
     last_error = None
 
-    while time.time() < deadline:
+    while time.monotonic() < deadline:
         try:
             with urllib.request.urlopen(url, timeout=5) as response:
                 payload = json.loads(response.read().decode("utf-8"))
@@ -54,6 +54,7 @@ def wait_for_opensearch(port: int, timeout_seconds: int) -> None:
                 return
         except (
             urllib.error.URLError,
+            ConnectionError,
             TimeoutError,
             json.JSONDecodeError,
             http.client.RemoteDisconnected,
@@ -85,7 +86,11 @@ def start_container(args) -> None:
         "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m",
         args.image,
     )
-    wait_for_opensearch(args.port, args.wait_seconds)
+    try:
+        wait_for_opensearch(args.port, args.wait_seconds)
+    except RuntimeError:
+        docker("logs", "--tail", "100", args.name, check=False)
+        raise
     print(f"OpenSearch is ready at {endpoint_url(args.port)}")
 
 
@@ -106,13 +111,13 @@ def status_container(args) -> None:
 
 
 def run_tests(args) -> int:
-    start_container(args)
     env = os.environ.copy()
     env["OPENMOCK_TEST_BACKEND"] = "real"
     env["OPENMOCK_REAL_OPENSEARCH_URL"] = endpoint_url(args.port)
     pytest_args = args.pytest_args or ["tests", "-m", "parity"]
 
     try:
+        start_container(args)
         result = subprocess.run(
             ["uv", "run", "python", "-m", "pytest", *pytest_args],
             env=env,
